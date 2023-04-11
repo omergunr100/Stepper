@@ -12,6 +12,7 @@ import com.engine.statistics.StatManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FilesRenamer extends Step {
     public FilesRenamer(){
@@ -29,7 +30,7 @@ public class FilesRenamer extends Step {
 
         TableData result =(TableData)outputs[0].getData();
         result.setTitles(Arrays.asList("Index", "Old Name", "New Name"));
-        ArrayList<FileData> files = ((ListData<FileData>)inputs[0].getData()).getData();
+        List<FileData> files = ((ListData<FileData>)inputs[0].getData()).getData();
         String prefix = ((StringData)inputs[1].getData()).getData();
         String postfix = ((StringData)inputs[2].getData()).getData();
         Logger.log("About to start rename"+files.size()+"files. Adding prefix: "+prefix+"; adding suffix: "+postfix);
