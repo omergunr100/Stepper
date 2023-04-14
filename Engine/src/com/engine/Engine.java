@@ -1,7 +1,6 @@
 package com.engine;
 
-import com.engine.data.io.Input;
-import com.engine.flows.Flow;
+import com.engine.io.api.IDataIO;
 import com.engine.xml.validation.Validator;
 
 import java.util.ArrayList;
@@ -15,7 +14,8 @@ public final class Engine implements IEngine{
     public static void main(String[] args) {
         Engine engine = new Engine();
     }
-    private List<Flow> flows;
+    // TODO: Change to object representation of a flow
+    private List<Object> flows;
     public Engine(){
         // TODO: Read file info from user
         Validator validator = Validator.getInstance("C:\\test\\xml\\ex1.xml");
@@ -66,12 +66,12 @@ public final class Engine implements IEngine{
     }
 
     @Override
-    public List<Input> getFreeMandatoryInputs(String flowName) {
+    public List<IDataIO> getFreeMandatoryInputs(String flowName) {
         return null;
     }
 
     @Override
-    public List<Input> getFreeOptionalInputs(String flowName) {
+    public List<IDataIO> getFreeOptionalInputs(String flowName) {
         return null;
     }
 }

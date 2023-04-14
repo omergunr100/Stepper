@@ -1,8 +1,8 @@
 package com.engine.xml.validation.validators;
 
+import com.engine.step.StepRegistry;
 import com.engine.xml.flow.STFlow;
 import com.engine.xml.steps.STStepInFlow;
-import com.engine.xml.validation.STEPS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class ValidateIllegalStepNames implements IValidator{
     }
     @Override
     public Boolean validate() {
-        List<String> legalNames = Arrays.stream(STEPS.values()).map(STEPS::name).collect(Collectors.toList());
+        List<String> legalNames = Arrays.stream(StepRegistry.values()).map(StepRegistry::name).collect(Collectors.toList());
 
         for(STStepInFlow step : flow.getSTStepsInFlow().getSTStepInFlow())
             if(!legalNames.contains(step.getName()))

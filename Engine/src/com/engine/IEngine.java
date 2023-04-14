@@ -1,6 +1,6 @@
 package com.engine;
 
-import com.engine.data.io.Input;
+import com.engine.io.api.IDataIO;
 
 import java.util.List;
 import java.util.UUID;
@@ -51,11 +51,11 @@ public interface IEngine {
      * @param flowName - name of the flow
      * @return - list of mandatory inputs that are not connected to any step
      */
-    List<Input> getFreeMandatoryInputs(String flowName);
+    List<IDataIO> getFreeMandatoryInputs(String flowName);
 
     /**
      * @param flowName - name of the flow
      * @return - list of optional inputs that are not connected to any step
      */
-    List<Input> getFreeOptionalInputs(String flowName);
+    List<IDataIO> getFreeOptionalInputs(String flowName);
 }

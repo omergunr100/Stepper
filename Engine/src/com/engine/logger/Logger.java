@@ -1,7 +1,5 @@
 package com.engine.logger;
 
-import com.engine.flows.Flow;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -10,39 +8,27 @@ import java.util.Locale;
 
 public class Logger {
     private FileWriter writer;
-    private static Logger logger;
-    private static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
+    private SimpleDateFormat format;
 
-    private Logger(){
-        Date now = new Date();
+    public Logger(String fileName){
+        format = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
         try {
-            this.writer = new FileWriter("./" + now + ".log");
-        } catch (IOException e) {
-        }
-    }
-    public static void init(){
-        logger = new Logger();
-    }
-
-    public static void log(String message){
-        Date now = new Date();
-        try {
-            logger.writer.write(format.format(now) + ": " + message);
+            writer = new FileWriter("./logs/" + fileName + ".log", true);
         } catch (IOException e) {
         }
     }
 
-    public static void logFlow(Flow flow){
+    public void log(String message){
         Date now = new Date();
         try {
-            logger.writer.write(format.format(now) + ": " + flow);
+            writer.write(format.format(now) + ": " + message);
         } catch (IOException e) {
         }
     }
 
-    public static void close(){
+    public void close(){
         try {
-            logger.writer.close();
+            writer.close();
         } catch (IOException e) {
         }
     }
