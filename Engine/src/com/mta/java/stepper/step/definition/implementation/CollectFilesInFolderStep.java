@@ -24,32 +24,37 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
     @Override
     public StepResult execute(IStepExecutionContext context) {
+        // Read inputs
         IDataIO folderNameIO = getInputs().get(0);
         IDataIO filterIO = getInputs().get(1);
         String folderName = (String) context.getInput(folderNameIO, DDRegistry.STRING.getType());
         String filter = (String) context.getInput(filterIO, DDRegistry.STRING.getType());
 
+        // Validate inputs
         File folder = new File(folderName);
         if(!folder.exists()){
-            context.Log("Folder does not exist at: " + folderName);
+            context.log("Folder does not exist at: " + folderName);
+            context.setSummary("Folder does not exist at: " + folderName);
             return StepResult.FAILURE;
         }
         if(!folder.isDirectory()){
-            context.Log("Path is not a directory: " + folderName);
+            context.log("Path is not a directory: " + folderName);
+            context.setSummary("Path is not a directory: " + folderName);
             return StepResult.FAILURE;
         }
-        context.Log("Reading folder " + folderName + " content with filter " + filter);
+        context.log("Reading folder " + folderName + " content with filter " + filter);
 
         List<File> files = Arrays.stream(folder.listFiles()).filter(f->f.isFile()).collect(Collectors.toList());
         if(filter != null && !filter.isEmpty())
             files = files.stream().filter(f->f.getName().endsWith(filter)).collect(Collectors.toList());
 
         if(files.isEmpty()){
-            context.Log("No files found in folder matching the filter");
+            context.log("No files found in folder matching the filter");
+            context.setSummary("No files found in folder matching the filter");
             return StepResult.WARNING;
         }
 
-        context.Log("Found " + files.size() + " files in folder matching the filter");
+        context.log("Found " + files.size() + " files in folder matching the filter");
 
         IDataIO filesListIO = getOutputs().get(0);
         IDataIO totalFoundIO = getOutputs().get(1);

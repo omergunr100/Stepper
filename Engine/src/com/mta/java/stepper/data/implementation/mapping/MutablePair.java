@@ -2,20 +2,19 @@ package com.mta.java.stepper.data.implementation.mapping;
 
 import com.mta.java.stepper.data.api.AbstractDataDef;
 
-public class MutablePair<car extends AbstractDataDef, cdr extends AbstractDataDef> {
+public class MutablePair<car, cdr> {
     private car first;
     private cdr second;
-    private Class<? extends AbstractDataDef> firstType;
-    private Class<? extends AbstractDataDef> secondType;
+    private Class<car> firstType;
+    private Class<cdr> secondType;
 
-    public MutablePair(Class<? extends AbstractDataDef> firstType, Class<? extends AbstractDataDef> secondType) {
+    public MutablePair(Class<car> firstType, Class<cdr> secondType) {
         this.firstType = firstType;
         this.secondType = secondType;
     }
 
-    public MutablePair(Class<? extends AbstractDataDef> firstType, Class<? extends AbstractDataDef> secondType, car first, cdr second) {
-        this.firstType = firstType;
-        this.secondType = secondType;
+    public MutablePair(Class<car> firstType, Class<cdr> secondType, car first, cdr second) {
+        this(firstType, secondType);
         this.first = first;
         this.second = second;
     }
@@ -28,11 +27,11 @@ public class MutablePair<car extends AbstractDataDef, cdr extends AbstractDataDe
         return second;
     }
 
-    public Class<? extends AbstractDataDef> getFirstType() {
+    public Class<car> getFirstType() {
         return firstType;
     }
 
-    public Class<? extends AbstractDataDef> getSecondType() {
+    public Class<cdr> getSecondType() {
         return secondType;
     }
 }

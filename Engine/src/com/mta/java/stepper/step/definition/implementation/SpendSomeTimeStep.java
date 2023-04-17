@@ -21,18 +21,18 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         Integer timeToSpend = (Integer) context.getInput(timeToSpendIO, DDRegistry.NUMBER.getType());
 
         if(timeToSpend <= 0){
-            context.Log("\""+timeToSpendIO.getName()+"\" must be greater than 0!");
+            context.log("\""+timeToSpendIO.getName()+"\" must be greater than 0!");
             context.setSummary("\""+timeToSpendIO.getUserString()+"\" must be greater than 0!");
             return StepResult.FAILURE;
         }
 
-        context.Log("About to sleep for " + timeToSpend + " seconds...");
+        context.log("About to sleep for " + timeToSpend + " seconds...");
         try {
             Thread.sleep(timeToSpend * 1000);
         } catch (InterruptedException e) {
-            context.Log("Thread interrupted while sleeping.");
+            context.log("Thread interrupted while sleeping.");
         }
-        context.Log("Done sleeping...");
+        context.log("Done sleeping...");
 
         return StepResult.SUCCESS;
     }

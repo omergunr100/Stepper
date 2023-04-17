@@ -19,7 +19,7 @@ public class StepExecutionContext implements IStepExecutionContext {
     }
 
     @Override
-    public void Log(String message) {
+    public void log(String message) {
         logger.log(message);
     }
 
@@ -28,12 +28,12 @@ public class StepExecutionContext implements IStepExecutionContext {
         IDataIO alias = mapping.get(name);
 
         if(!variables.containsKey(alias)){
-            Log("Variable " + alias.getName() + " not found in context");
+            log("Variable " + alias.getName() + " not found in context");
             return null;
         }
 
         if(!type.isAssignableFrom(variables.get(alias).getClass())){
-            Log("Variable " + alias.getName() + " is not of type " + type.getName());
+            log("Variable " + alias.getName() + " is not of type " + type.getName());
             return null;
         }
         return type.cast(variables.get(alias));
