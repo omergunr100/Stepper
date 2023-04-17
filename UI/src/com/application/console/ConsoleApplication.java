@@ -1,28 +1,60 @@
 package com.application.console;
 
 import com.application.IApplication;
-import com.engine.Engine;
-import com.engine.IEngine;
+import com.mta.java.stepper.engine.definition.implementation.Engine;
+import com.mta.java.stepper.engine.definition.api.IEngine;
+import com.mta.java.stepper.engine.executor.api.IFlowRunResult;
+import com.mta.java.stepper.flow.definition.api.StepUsageDeclaration;
+import com.mta.java.stepper.flow.definition.implementation.Flow;
+import com.mta.java.stepper.step.definition.StepRegistry;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class ConsoleApplication implements IApplication {
-    private boolean run = true;
-    private IEngine engine;
-    private Scanner scanner;
-
-    ConsoleApplication(IEngine engine) {
-        this.engine = engine;
-        this.scanner = new Scanner(System.in);
-    }
-
     public static void main(String[] args) {
         ConsoleApplication application = new ConsoleApplication(new Engine());
         while(application.run)
             application.presentMenu();
     }
 
+    private boolean run = true;
+    private IEngine engine;
+    private Scanner scanner;
+
+    public ConsoleApplication(IEngine engine) {
+        this.engine = engine;
+        this.scanner = new Scanner(System.in);
+    }
+
+    private Integer getChoiceOfFlow(){
+        List<String> flowNames = engine.getFlowNames();
+        if(flowNames.size() == 0){
+            System.out.println("There are no flows in the system.");
+            return -1;
+        }
+        System.out.println("Please choose one of the following flows: (or enter '0' to exit)");
+
+        for(int i = 0; i < flowNames.size(); i++)
+            System.out.println((i + 1) + ") " + flowNames.get(i));
+
+        String input;
+        Integer choice = null;
+        do {
+            input = scanner.nextLine();
+            try{
+                choice = Integer.parseInt(input);
+                if(choice < 0 || choice > flowNames.size())
+                    throw new NumberFormatException();
+            }catch (NumberFormatException e){
+                System.out.println("Invalid input, please try again.");
+                choice = null;
+            }
+        }while(choice == null);
+
+        return choice;
+    }
 
     @Override
     public void presentMenu() {
@@ -77,84 +109,39 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void showFlowInformation() {
-        List<String> flowNames = engine.getFlowNames();
-        if(flowNames.size() == 0){
-            System.out.println("There are no flows in the system.");
+        Integer choice = getChoiceOfFlow();
+        if(choice <= 0)
             return;
-        }
-        System.out.println("Please choose one of the following flows: (or enter '0' to exit)");
 
-        for(int i = 0; i < flowNames.size(); i++)
-            System.out.println((i + 1) + ") " + flowNames.get(i));
-
-        String input;
-        Integer choice = null;
-        do {
-            input = scanner.nextLine();
-            try{
-                choice = Integer.parseInt(input);
-                if(choice < 0 || choice > flowNames.size())
-                    throw new NumberFormatException();
-            }catch (NumberFormatException e){
-                System.out.println("Invalid input, please try again.");
-                choice = null;
-            }
-        }while(choice == null);
-
-        if(choice == 0){
-            System.out.println("Returning to main menu...");
-            return;
-        }
-
-        System.out.println(engine.getFlowInfo(flowNames.get(choice - 1)));
+        System.out.println(engine.getFlowInfo(engine.getFlowNames().get(choice - 1)));
     }
 
     @Override
     public void executeFlow() {
-        List<String> flowNames = engine.getFlowNames();
-        if(flowNames.size() == 0){
-            System.out.println("There are no flows in the system.");
+        Integer choice = getChoiceOfFlow();
+        if(choice <= 0)
             return;
-        }
-        System.out.println("Please choose one of the following flows: (or enter '0' to exit)");
-
-        for(int i = 0; i < flowNames.size(); i++)
-            System.out.println((i + 1) + ") " + flowNames.get(i));
-
-        String input;
-        Integer choice = null;
-        do {
-            input = scanner.nextLine();
-            try{
-                choice = Integer.parseInt(input);
-                if(choice < 0 || choice > flowNames.size())
-                    throw new NumberFormatException();
-            }catch (NumberFormatException e){
-                System.out.println("Invalid input, please try again.");
-                choice = null;
-            }
-        }while(choice == null);
-
-        if(choice == 0){
-            System.out.println("Returning to main menu...");
-            return;
-        }
-
-
 
         System.out.println("Executing flow...");
-        engine.runFlow(flowNames.get(choice - 1));
+        IFlowRunResult result = engine.runFlow(engine.getFlowNames().get(choice - 1));
+        // TODO: present the user with the results of the run.
         System.out.println("Flow executed successfully.");
     }
 
     @Override
     public void pastRunFullInformation() {
-
+        System.out.println("Please enter the UUID of the run:");
+        String uuid = scanner.nextLine();
+        IFlowRunResult result = engine.getFlowRunInfo(UUID.fromString(uuid));
+        if(result == null)
+            System.out.println("No such run was found.");
+        else
+            System.out.println(result);
     }
 
     @Override
     public void getSystemStatistics() {
-
+        // TODO: implement this method.
     }
 
     @Override
