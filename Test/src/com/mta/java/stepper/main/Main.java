@@ -31,6 +31,39 @@ public class Main {
         // Test for Files Renamer
 //        FilesRenamerTest();
 
+        // Test for Files Content Extractor
+        IStepDefinition step = StepRegistry.FILES_CONTENT_EXTRACTOR;
+        Map<IDataIO, Object> variables = new HashMap<>();
+        IDataIO filesIO = step.getInputs().get(0);
+        IDataIO lineIO = step.getInputs().get(1);
+        IDataIO dataResultIO = step.getOutputs().get(0);
+
+        FileList files = new FileList();
+        files.add(new File("C:\\Users\\omere\\Desktop\\Test\\File1.txt"));
+        Integer line = 1;
+        variables.put(filesIO, files);
+        variables.put(lineIO, line);
+
+        Map<IDataIO, IDataIO> mapping = new HashMap<>();
+        mapping.put(filesIO, filesIO);
+        mapping.put(lineIO, lineIO);
+        mapping.put(dataResultIO, dataResultIO);
+
+        ILogger logger = new MapLogger();
+
+        IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
+
+        StepResult result = step.execute(context);
+
+        System.out.println("Result: " + result);
+        System.out.println("Logs:");
+        for(Log log : logger.getLog("Step"))
+            System.out.println(log);
+        System.out.println("Summary: " + context.getSummary());
+        Relation dataResult = (Relation) variables.get(dataResultIO);
+        System.out.println(dataResult.getColumns());
+        for(Integer i = 0; i < dataResult.getRowCount(); i++)
+            System.out.println(dataResult.getRowByColumnsOrder(i));
     }
 
     private static void FilesRenamerTest() {

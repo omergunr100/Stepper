@@ -26,7 +26,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
     @Override
     public StepResult execute(IStepExecutionContext context) {
-        // Get DataIO
+        // Get DataIOs
         IDataIO filesToRenameIO = getInputs().get(0);
         IDataIO prefixIO = getInputs().get(1);
         IDataIO suffixIO = getInputs().get(2);
