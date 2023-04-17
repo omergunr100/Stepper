@@ -59,7 +59,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
                 Optional<String> line = reader.lines().skip(lineNumber - 1).limit(1).findFirst();
                 data.addRow(Arrays.asList(i.toString(), file.getName(), line.orElse("No such line")));
             } catch (FileNotFoundException e) {
-                context.log("Problem extracting line number" + lineNumber + " from file: " + file.getName());
+                context.log("Problem extracting line number " + lineNumber + " from file: " + file.getName());
                 data.addRow(Arrays.asList(i.toString(), file.getName(), "File not found"));
             }
         }

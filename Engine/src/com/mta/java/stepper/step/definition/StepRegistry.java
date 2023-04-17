@@ -13,7 +13,8 @@ public enum StepRegistry implements IStepDefinition {
     COLLECT_FILES_IN_FOLDER(new CollectFilesInFolderStep()),
     FILES_DELETER(new FilesDeleterStep()),
     FILES_RENAMER(new FilesRenamerStep()),
-    FILES_CONTENT_EXTRACTOR(new FilesContentExtractorStep())
+    FILES_CONTENT_EXTRACTOR(new FilesContentExtractorStep()),
+    CSV_EXPORTER(new CSVExporterStep())
     ;
 
     private final IStepDefinition step;
