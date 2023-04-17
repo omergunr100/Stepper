@@ -1,12 +1,9 @@
 package com.application.console;
 
 import com.application.IApplication;
-import com.mta.java.stepper.engine.definition.implementation.Engine;
 import com.mta.java.stepper.engine.definition.api.IEngine;
+import com.mta.java.stepper.engine.definition.implementation.Engine;
 import com.mta.java.stepper.engine.executor.api.IFlowRunResult;
-import com.mta.java.stepper.flow.definition.api.StepUsageDeclaration;
-import com.mta.java.stepper.flow.definition.implementation.Flow;
-import com.mta.java.stepper.step.definition.StepRegistry;
 
 import java.util.List;
 import java.util.Scanner;
@@ -20,7 +17,7 @@ public class ConsoleApplication implements IApplication {
     }
 
     private boolean run = true;
-    private IEngine engine;
+    private final IEngine engine;
     private Scanner scanner;
 
     public ConsoleApplication(IEngine engine) {

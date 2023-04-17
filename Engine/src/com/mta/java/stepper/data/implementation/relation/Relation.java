@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RelationData {
+public class Relation {
     private List<String> columns;
     private List<TableRow> rows;
 
-    public RelationData(List<String> columns) {
+    public Relation(List<String> columns) {
         this.columns = columns;
         rows = new ArrayList<>();
     }
@@ -38,6 +38,13 @@ public class RelationData {
 
     public Integer getColumnCount(){
         return columns.size();
+    }
+
+    public void addRow(List<String> row){
+        TableRow tableRow = new TableRow();
+        for(int i = 0; i < columns.size(); i++)
+            tableRow.addData(columns.get(i), row.get(i));
+        rows.add(tableRow);
     }
 
     private class TableRow {
