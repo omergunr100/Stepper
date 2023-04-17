@@ -32,6 +32,10 @@ public class Main {
 //        FilesRenamerTest();
 
         // Test for Files Content Extractor
+        FilesContentExtractorTest();
+    }
+
+    private static void FilesContentExtractorTest() {
         IStepDefinition step = StepRegistry.FILES_CONTENT_EXTRACTOR;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO filesIO = step.getInputs().get(0);
