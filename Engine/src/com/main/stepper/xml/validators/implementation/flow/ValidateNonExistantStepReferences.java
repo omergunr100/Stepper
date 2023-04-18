@@ -14,6 +14,7 @@ public class ValidateNonExistantStepReferences implements IValidator {
 
     @Override
     public List<String> validate() {
-        List<>
+        // TODO: Implement this
+        return null;
     }
 }

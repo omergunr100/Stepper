@@ -12,11 +12,20 @@ import java.util.List;
 import java.util.Optional;
 
 public class StepParser implements IParser {
-    private STStepInFlow step;
+    private STStepInFlow step = null;
     private IStepUsageDeclaration stepUsageDeclaration = null;
 
     public StepParser(STStepInFlow step) {
         this.step = step;
+    }
+
+    public StepParser(){
+    }
+
+    public StepParser load(STStepInFlow step){
+        this.step = step;
+        this.stepUsageDeclaration = null;
+        return this;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class StepParser implements IParser {
     }
 
     @Override
-    public Optional<IStepUsageDeclaration> get() {
-        return Optional.ofNullable(stepUsageDeclaration);
+    public IStepUsageDeclaration get() {
+        return stepUsageDeclaration;
     }
 }

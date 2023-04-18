@@ -4,6 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IParser {
-    List<String> parse();
-    <T> Optional<T> get();
+    <T> T parse();
+    <T> T get();
 }
