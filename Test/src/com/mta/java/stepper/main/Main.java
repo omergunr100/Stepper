@@ -38,6 +38,45 @@ public class Main {
 
         // Test for CSV Exporter
 //        CSVExporterTest();
+
+        // Test for Properties Exporter
+//        PropertiesExporterTest();
+    }
+
+    private static void PropertiesExporterTest() {
+        IStepDefinition step = StepRegistry.PROPERTIES_EXPORTER;
+        Map<IDataIO, Object> variables = new HashMap<>();
+        IDataIO sourceIO = step.getInputs().get(0);
+        IDataIO resultIO = step.getOutputs().get(0);
+
+        List<String> columns = Arrays.asList("Column1", "Column2", "Column3");
+        List<String> row1 = Arrays.asList("1", "2", "3");
+        List<String> row2 = Arrays.asList("4", "5", "6");
+        List<String> row3 = Arrays.asList("7", "8", "9");
+        Relation source = new Relation(columns);
+        source.addRow(row1);
+        source.addRow(row2);
+        source.addRow(row3);
+        variables.put(sourceIO, source);
+
+        Map<IDataIO, IDataIO> mapping = new HashMap<>();
+        mapping.put(sourceIO, sourceIO);
+        mapping.put(resultIO, resultIO);
+
+        ILogger logger = new MapLogger();
+
+        IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
+
+        StepResult result = step.execute(context);
+
+        System.out.println("Result: " + result);
+        System.out.println("Summary: " + context.getSummary());
+        System.out.println("Logs:");
+        for(Log log : logger.getLog("Step")) {
+            System.out.println(log);
+        }
+        String csvStr = (String) variables.get(resultIO);
+        System.out.println("Properties String: " + csvStr);
     }
 
     private static void CSVExporterTest() {
