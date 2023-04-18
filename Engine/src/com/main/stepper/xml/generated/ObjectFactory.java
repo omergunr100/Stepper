@@ -8,16 +8,6 @@
 
 package com.main.stepper.xml.generated;
 
-import com.main.stepper.xml.generated.STFlows;
-import com.main.stepper.xml.generated.STStepInFlow;
-import com.main.stepper.xml.generated.STStepsInFlow;
-import com.main.stepper.xml.generated.STFlowLevelAlias;
-import com.main.stepper.xml.generated.STFlowLevelAliasing;
-import com.main.stepper.xml.generated.STCustomMapping;
-import com.main.stepper.xml.generated.STCustomMappings;
-import com.main.stepper.xml.generated.STFlow;
-import com.main.stepper.xml.generated.STStepper;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;

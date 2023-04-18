@@ -1,7 +1,7 @@
 package com.main.stepper.io.implementation;
 
-import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.data.api.IDataDefinition;
+import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 
 public class DataIO implements IDataIO {

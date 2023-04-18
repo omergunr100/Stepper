@@ -1,16 +1,16 @@
 package com.main.stepper.temp;
 
+import com.main.stepper.data.implementation.list.datatype.FileList;
 import com.main.stepper.data.implementation.relation.Relation;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.step.definition.StepRegistry;
 import com.main.stepper.step.definition.api.IStepDefinition;
+import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import com.main.stepper.step.execution.implementation.StepExecutionContext;
-import com.main.stepper.data.implementation.list.datatype.FileList;
-import com.main.stepper.logger.implementation.data.Log;
-import com.main.stepper.step.definition.api.StepResult;
 import javafx.util.Pair;
 
 import java.io.File;

@@ -8,8 +8,6 @@
 
 package com.main.stepper.xml.generated;
 
-import com.main.stepper.xml.generated.STFlows;
-
 import javax.xml.bind.annotation.*;
 
 

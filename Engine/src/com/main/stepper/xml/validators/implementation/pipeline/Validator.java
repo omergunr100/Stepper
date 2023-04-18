@@ -2,13 +2,10 @@ package com.main.stepper.xml.validators.implementation.pipeline;
 
 import com.main.stepper.xml.generated.ObjectFactory;
 import com.main.stepper.xml.generated.STFlow;
-import com.main.stepper.xml.generated.STFlows;
 import com.main.stepper.xml.generated.STStepper;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.file.ValidateFile;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowNames;
-import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowOutputs;
-import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateStepNamesInFlow;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoIllegalStepsInFlow;
 
 import javax.xml.bind.JAXBContext;
