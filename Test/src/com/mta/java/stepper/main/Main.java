@@ -41,6 +41,43 @@ public class Main {
 
         // Test for Properties Exporter
 //        PropertiesExporterTest();
+
+        // Test for File Dumper
+//        FileDumperTest();
+    }
+
+    private static void FileDumperTest() {
+        IStepDefinition step = StepRegistry.FILE_DUMPER;
+        IDataIO contentIO = step.getInputs().get(0);
+        IDataIO pathIO = step.getInputs().get(1);
+        IDataIO resultIO = step.getOutputs().get(0);
+
+        Map<IDataIO, Object> variables = new HashMap<>();
+        variables.put(contentIO, "Hello World!");
+        variables.put(pathIO, "C:\\Users\\omere\\Desktop\\Test\\hello.txt");
+
+        Map<IDataIO, IDataIO> mapping = new HashMap<>();
+        mapping.put(contentIO, contentIO);
+        mapping.put(pathIO, pathIO);
+        mapping.put(resultIO, resultIO);
+
+        ILogger logger = new MapLogger();
+
+        IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
+
+        StepResult result = step.execute(context);
+
+        System.out.println("Result: " + result);
+        System.out.println("Summary: " + context.getSummary());
+        System.out.println("Logs:");
+        if(logger.getLog("Step") != null) {
+            for (Log log : logger.getLog("Step")) {
+                System.out.println(log);
+            }
+        }
+        String resultStr = (String) variables.get(resultIO);
+
+        System.out.println("Result: " + resultStr);
     }
 
     private static void PropertiesExporterTest() {
