@@ -6,9 +6,9 @@
 //
 
 
-package com.main.stepper.xml.stepper;
+package com.main.stepper.xml.generated;
 
-import com.main.stepper.xml.flow.STFlows;
+import com.main.stepper.xml.generated.STFlows;
 
 import javax.xml.bind.annotation.*;
 

@@ -6,17 +6,17 @@
 //
 
 
-package com.main.stepper.xml.validation;
+package com.main.stepper.xml.generated;
 
-import com.main.stepper.xml.flow.STFlows;
-import com.main.stepper.xml.steps.STStepInFlow;
-import com.main.stepper.xml.steps.STStepsInFlow;
-import com.main.stepper.xml.data.aliasing.STFlowLevelAlias;
-import com.main.stepper.xml.data.aliasing.STFlowLevelAliasing;
-import com.main.stepper.xml.data.mapping.STCustomMapping;
-import com.main.stepper.xml.data.mapping.STCustomMappings;
-import com.main.stepper.xml.flow.STFlow;
-import com.main.stepper.xml.stepper.STStepper;
+import com.main.stepper.xml.generated.STFlows;
+import com.main.stepper.xml.generated.STStepInFlow;
+import com.main.stepper.xml.generated.STStepsInFlow;
+import com.main.stepper.xml.generated.STFlowLevelAlias;
+import com.main.stepper.xml.generated.STFlowLevelAliasing;
+import com.main.stepper.xml.generated.STCustomMapping;
+import com.main.stepper.xml.generated.STCustomMappings;
+import com.main.stepper.xml.generated.STFlow;
+import com.main.stepper.xml.generated.STStepper;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

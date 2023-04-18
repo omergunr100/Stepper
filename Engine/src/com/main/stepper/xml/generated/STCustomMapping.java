@@ -6,7 +6,7 @@
 //
 
 
-package com.main.stepper.xml.data.mapping;
+package com.main.stepper.xml.generated;
 
 import javax.xml.bind.annotation.*;
 

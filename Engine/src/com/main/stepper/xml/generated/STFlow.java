@@ -6,11 +6,7 @@
 //
 
 
-package com.main.stepper.xml.flow;
-
-import com.main.stepper.xml.data.aliasing.STFlowLevelAliasing;
-import com.main.stepper.xml.data.mapping.STCustomMappings;
-import com.main.stepper.xml.steps.STStepsInFlow;
+package com.main.stepper.xml.generated;
 
 import javax.xml.bind.annotation.*;
 
