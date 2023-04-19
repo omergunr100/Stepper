@@ -4,6 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IParser {
-    <T> T parse();
+    <T> T parse() throws Exception;
     <T> T get();
 }

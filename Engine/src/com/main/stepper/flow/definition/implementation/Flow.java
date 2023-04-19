@@ -4,22 +4,25 @@ import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Flow implements IFlowDefinition {
     private final String name;
     private final String description;
     private Boolean readOnly;
-    private final List<String> formalOutputs;
+    private final List<IDataIO> requiredInputs;
+    private final List<IDataIO> formalOutputs;
     private final List<IStepUsageDeclaration> steps;
+    private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
 
     public Flow(String name, String description) {
         this.name = name;
         this.description = description;
+        requiredInputs = new ArrayList<>();
         formalOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         readOnly = null;
+        this.mappings = new LinkedHashMap<>();
     }
 
     @Override
@@ -43,29 +46,29 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
-    public void addStep(IStepUsageDeclaration step) {
+    public void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping) {
         steps.add(step);
+        mappings.put(step, stepMapping);
     }
 
     @Override
-    public void addFormalOutput(String name) {
+    public void addFormalOutput(IDataIO name) {
         formalOutputs.add(name);
     }
 
     @Override
-    public List<String> formalOutputNames() {
-        return formalOutputs;
+    public void addUserRequiredInput(IDataIO name) {
+        userRequiredInputs().add(name);
     }
 
     @Override
-    public List<IDataIO> getInputs() {
-        List<IDataIO> inputs = new ArrayList<>();
-        for (int i = steps.size() - 1; i >= 0; i--) {
-            IStepUsageDeclaration step = steps.get(i);
-            inputs.addAll(step.step().getInputs());
-            inputs.removeAll(step.step().getOutputs());
-        }
-        return inputs;
+    public List<IDataIO> userRequiredInputs() {
+        return userRequiredInputs();
+    }
+
+    @Override
+    public List<IDataIO> formalOutputNames() {
+        return formalOutputs;
     }
 
     @Override
