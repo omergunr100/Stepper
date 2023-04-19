@@ -31,7 +31,7 @@ public class FlowExecutor implements IFlowExecutor {
         FlowResult flag = FlowResult.SUCCESS;
 
         Map<IDataIO, Object> userInputs = new HashMap<>();
-        for(IDataIO dataIO : flow.getInputs()){
+        for(IDataIO dataIO : flow.userRequiredInputs()){
             Object value = context.getVariable(dataIO, dataIO.getDataDefinition().getType());
             if(value != null) {
                 userInputs.put(dataIO, value);
@@ -53,11 +53,9 @@ public class FlowExecutor implements IFlowExecutor {
             }
         }
 
-        // TODO: check if output being formal means the step generating it is mandatory (no skip on fail)
         Map<IDataIO, Object> formalOutputs = new HashMap<>();
         if(flag != FlowResult.FAILURE) {
-            for (String name : flow.formalOutputNames()) {
-                IDataIO dataIO = context.getVariableIOByName(name);
+            for (IDataIO dataIO : flow.formalOutputs()) {
                 if (dataIO != null) {
                     formalOutputs.put(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
                 }

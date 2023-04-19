@@ -10,10 +10,11 @@ public interface IFlowDefinition {
     String description();
     Boolean isReadOnly();
     List<IStepUsageDeclaration> steps();
+    IDataIO mapsTo(IStepUsageDeclaration step, IDataIO io);
     void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping);
     void addFormalOutput(IDataIO name);
-    List<IDataIO> formalOutputNames();
+    List<IDataIO> formalOutputs();
     void addUserRequiredInput(IDataIO name);
     List<IDataIO> userRequiredInputs();
-    Boolean validateFlowStructure();
+    List<String> validateFlowStructure();
 }

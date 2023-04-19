@@ -3,6 +3,9 @@ package com.main.stepper.flow.definition.implementation;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateOutputNames;
+import com.main.stepper.xml.validators.implementation.flow.ValidateNoUnUserFriendlyMandatoryInputs;
 
 import java.util.*;
 
@@ -46,6 +49,14 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
+    public IDataIO mapsTo(IStepUsageDeclaration step, IDataIO io) {
+        Optional<Map<IDataIO, IDataIO>> stepMap = Optional.ofNullable(mappings.get(step));
+        if(stepMap.isPresent())
+            return stepMap.get().get(io);
+        return null;
+    }
+
+    @Override
     public void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping) {
         steps.add(step);
         mappings.put(step, stepMapping);
@@ -67,12 +78,13 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
-    public List<IDataIO> formalOutputNames() {
+    public List<IDataIO> formalOutputs() {
         return formalOutputs;
     }
 
     @Override
-    public Boolean validateFlowStructure() {
+    public List<String> validateFlowStructure() {
+        List<String> errors = new ArrayList<>();
         // Checks if the flow is readonly
         for(IStepUsageDeclaration step : steps)
             if(!step.step().isReadOnly())
@@ -80,8 +92,21 @@ public class Flow implements IFlowDefinition {
         if(readOnly == null)
             readOnly = true;
 
-        //TODO: add logic to validate flow structure
+        // validate no duplicate outputs (4.1)
+        IValidator validateNoDuplicateOutputNames = new ValidateNoDuplicateOutputNames(this);
+        errors.addAll(validateNoDuplicateOutputNames.validate());
+        if(!errors.isEmpty())
+            return errors;
 
-        return true;
+        // validate no 'un-user friendly' mandatory inputs (4.2)
+        IValidator validateNoUnUserFriendlyMandatoryInputs = new ValidateNoUnUserFriendlyMandatoryInputs(this);
+        errors.addAll(validateNoUnUserFriendlyMandatoryInputs.validate());
+        if(!errors.isEmpty())
+            return errors;
+
+        // TODO: validate input/output type match
+
+
+        return errors;
     }
 }
