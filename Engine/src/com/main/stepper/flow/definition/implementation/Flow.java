@@ -5,6 +5,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateOutputNames;
+import com.main.stepper.xml.validators.implementation.flow.ValidateNoMultipleMandatoryInputsOfDifferentType;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoUnUserFriendlyMandatoryInputs;
 
 import java.util.*;
@@ -104,8 +105,21 @@ public class Flow implements IFlowDefinition {
         if(!errors.isEmpty())
             return errors;
 
-        // TODO: validate input/output type match
+        // TODO: validate no reference to undefined steps in flow (4.3) - note: maybe implement in MappingParser
 
+        // TODO: validate no outputs come after inputs (4.3) - note: maybe implement in MappingParser
+
+        // TODO: validate input/output type match (4.3) - note: maybe implement in MappingParser
+
+        // TODO: validate no aliasing of steps/data that don't exist (4.4) - note: maybe implement in MappingParser
+
+        // TODO: validate no flow formal output is undefined (4.5) - note: exception in FlowParser
+
+        // validate multiple mandatory inputs with same name but different types (4.6)
+        IValidator validateNoMultipleMandatoryInputsOfDifferentType = new ValidateNoMultipleMandatoryInputsOfDifferentType(this);
+        errors.addAll(validateNoMultipleMandatoryInputsOfDifferentType.validate());
+        if(!errors.isEmpty())
+            return errors;
 
         return errors;
     }
