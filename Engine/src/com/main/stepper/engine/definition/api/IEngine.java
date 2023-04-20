@@ -1,6 +1,7 @@
 package com.main.stepper.engine.definition.api;
 
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface IEngine {
      * @param path - path to the xml file
      * @return - list of errors, if there were no errors, the list will be empty
      */
-    List<String> readSystemFromXML(String path);
+    List<String> readSystemFromXML(String path) throws XMLException;
 
     /**
      * @return - list of flow names

@@ -2,38 +2,58 @@ package com.main.stepper.engine.definition.implementation;
 
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
+import com.main.stepper.xml.generated.STFlow;
+import com.main.stepper.xml.generated.STStepInFlow;
+import com.main.stepper.xml.generated.STStepper;
+import com.main.stepper.xml.parsing.api.IParser;
+import com.main.stepper.xml.parsing.implementation.FlowParser;
+import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public final class Engine implements IEngine {
-    static IEngine getInstance(){
-        return new Engine();
-    }
-
     private final ILogger logger;
     private List<IFlowDefinition> flows;
+    private Boolean validated;
 
     public Engine(){
-        // TODO: Read file info from user
-//        Validator validator = Validator.getInstance("C:\\test\\xml\\ex1.xml");
-//        if(validator.validate()){
-//            for(String error : validator.getErrors())
-//                System.out.println(error);
-//        }
-
         this.logger = new MapLogger();
         this.flows = new ArrayList<>();
+        this.validated = false;
     }
 
     @Override
-    public List<String> readSystemFromXML(String path) {
-        return null;
+    public List<String> readSystemFromXML(String path) throws XMLException {
+        IValidator pipelineValidator = new Validator(path);
+        List<String> errors = pipelineValidator.validate();
+        if(errors.isEmpty()){
+            // Read system from validator
+            STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
+            List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
+            for(STFlow stFlow : stFlows){
+                IParser flowParser = new FlowParser(stFlow);
+                IFlowDefinition flow = flowParser.parse();
+                errors.addAll(flow.validateFlowStructure());
+                if(!errors.isEmpty()){
+                    flows.clear();
+                    return errors;
+                }
+                flows.add(flow);
+            }
+        }
+
+        if(errors.isEmpty())
+            validated = true;
+
+        return errors;
     }
 
     @Override

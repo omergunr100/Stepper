@@ -16,5 +16,7 @@ public interface IFlowDefinition {
     List<IDataIO> formalOutputs();
     void addUserRequiredInput(IDataIO name);
     List<IDataIO> userRequiredInputs();
+    void addUserOptionalInput(IDataIO name);
+    List<IDataIO> userOptionalInputs();
     List<String> validateFlowStructure();
 }

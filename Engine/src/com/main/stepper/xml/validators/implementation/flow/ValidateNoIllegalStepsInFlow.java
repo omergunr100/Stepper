@@ -20,7 +20,7 @@ public class ValidateNoIllegalStepsInFlow implements IValidator {
     @Override
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
-        List<String> legalNames = Arrays.stream(StepRegistry.values()).map(StepRegistry::name).collect(Collectors.toList());
+        List<String> legalNames = Arrays.stream(StepRegistry.values()).map(StepRegistry::getName).collect(Collectors.toList());
 
         for(STStepInFlow step : flow.getSTStepsInFlow().getSTStepInFlow())
             if(!legalNames.contains(step.getName()))

@@ -15,6 +15,7 @@ public class Flow implements IFlowDefinition {
     private final String description;
     private Boolean readOnly;
     private final List<IDataIO> requiredInputs;
+    private final List<IDataIO> optionalInputs;
     private final List<IDataIO> formalOutputs;
     private final List<IStepUsageDeclaration> steps;
     private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
@@ -23,6 +24,7 @@ public class Flow implements IFlowDefinition {
         this.name = name;
         this.description = description;
         requiredInputs = new ArrayList<>();
+        optionalInputs = new ArrayList<>();
         formalOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         readOnly = null;
@@ -70,12 +72,22 @@ public class Flow implements IFlowDefinition {
 
     @Override
     public void addUserRequiredInput(IDataIO name) {
-        userRequiredInputs().add(name);
+        requiredInputs.add(name);
     }
 
     @Override
     public List<IDataIO> userRequiredInputs() {
-        return userRequiredInputs();
+        return requiredInputs;
+    }
+
+    @Override
+    public void addUserOptionalInput(IDataIO name) {
+        optionalInputs.add(name);
+    }
+
+    @Override
+    public List<IDataIO> userOptionalInputs() {
+        return optionalInputs;
     }
 
     @Override
@@ -122,5 +134,13 @@ public class Flow implements IFlowDefinition {
             return errors;
 
         return errors;
+    }
+
+    @Override
+    public String toString() {
+        return "Flow{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

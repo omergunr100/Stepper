@@ -51,4 +51,13 @@ public class StepUsageDeclaration implements IStepUsageDeclaration{
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "StepUsageDeclaration{" +
+                "name='" + name + '\'' +
+                ", skipIfFailed=" + skipIfFailed +
+                ", step=" + step +
+                '}';
+    }
 }

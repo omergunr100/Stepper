@@ -63,4 +63,14 @@ public class DataIO implements IDataIO {
         }
         return name.compareTo(o);
     }
+
+    @Override
+    public String toString() {
+        return "DataIO{" +
+                "name='" + name + '\'' +
+                ", userString='" + userString + '\'' +
+                ", necessity=" + necessity +
+                ", dataDefinition=" + dataDefinition.getType().getSimpleName() +
+                '}';
+    }
 }

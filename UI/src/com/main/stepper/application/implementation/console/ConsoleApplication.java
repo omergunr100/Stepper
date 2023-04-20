@@ -4,6 +4,7 @@ import com.main.stepper.application.api.IApplication;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.exceptions.xml.XMLException;
 
 import java.util.List;
 import java.util.Scanner;
@@ -94,7 +95,14 @@ public class ConsoleApplication implements IApplication {
     public void readSystemFromFile() {
         System.out.println("Please enter the path to the file:");
         String path = scanner.nextLine();
-        List<String> errors = engine.readSystemFromXML(path);
+        List<String> errors = null;
+        try{
+            errors = engine.readSystemFromXML(path);
+        } catch (XMLException e) {
+            System.out.println("An error occurred while reading the file:");
+            System.out.println(e.getMessage());
+            return;
+        }
         if(errors.size() > 0){
             System.out.println("The following errors were encountered:");
             for(String error : errors)

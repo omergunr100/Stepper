@@ -45,4 +45,12 @@ public abstract class AbstractStepDefinition implements IStepDefinition{
     public List<IDataIO> getOutputs() {
         return outputs;
     }
+
+    @Override
+    public String toString() {
+        return "Step{" +
+                "name='" + name + '\'' +
+                ", readOnly=" + readOnly +
+                '}';
+    }
 }

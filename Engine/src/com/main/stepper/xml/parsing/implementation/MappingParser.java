@@ -3,10 +3,7 @@ package com.main.stepper.xml.parsing.implementation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
-import com.main.stepper.xml.generated.STCustomMapping;
-import com.main.stepper.xml.generated.STFlow;
-import com.main.stepper.xml.generated.STFlowLevelAlias;
-import com.main.stepper.xml.generated.STStepInFlow;
+import com.main.stepper.xml.generated.*;
 import com.main.stepper.xml.parsing.api.IParser;
 
 import java.util.*;
@@ -50,37 +47,44 @@ public class MappingParser implements IParser {
                                     .collect(Collectors.toMap(dataIO -> dataIO, dataIO -> dataIO))
                     );
 
-            List<STFlowLevelAlias> flowLevelAlias = flow.getSTFlowLevelAliasing().getSTFlowLevelAlias().stream()
-                    .filter(alias -> alias.getStep().equals(step.name()))
-                    .collect(Collectors.toList());
-            for(STFlowLevelAlias alias : flowLevelAlias){
-                stepDataIOs.stream()
-                        .filter(dataIO -> dataIO.getName().equals(alias.getSourceDataName()))
-                        .forEach(dataIO -> stepMapping.put(dataIO, new DataIO(alias.getAlias(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition())));
-            }
+            STFlowLevelAliasing flowLevelAliasing = flow.getSTFlowLevelAliasing();
+            if(flowLevelAliasing != null){
+                List<STFlowLevelAlias> flowLevelAlias = flow.getSTFlowLevelAliasing().getSTFlowLevelAlias()
+                        .stream()
+                        .filter(alias -> alias.getStep().equals(step.name()))
+                        .collect(Collectors.toList());
 
+                for(STFlowLevelAlias alias : flowLevelAlias){
+                    stepDataIOs.stream()
+                            .filter(dataIO -> dataIO.getName().equals(alias.getSourceDataName()))
+                            .forEach(dataIO -> stepMapping.put(dataIO, new DataIO(alias.getAlias(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition())));
+                }
+
+            }
             mapping.put(step, stepMapping);
         }
 
         // Apply custom mapping
         // Get all custom mappings
-        List<STCustomMapping> customMappings = flow.getSTCustomMappings().getSTCustomMapping();
-        for(IStepUsageDeclaration step : mapping.keySet()){
-            // Get the step mapping
-            Map<IDataIO, IDataIO> stepMapping = mapping.get(step);
-            List<IDataIO> aliasedIOs = stepMapping.values().stream().collect(Collectors.toList());
+        STCustomMappings stCustomMappings = flow.getSTCustomMappings();
+        if(stCustomMappings != null){
+            List<STCustomMapping> customMappings = stCustomMappings.getSTCustomMapping();
+            for(IStepUsageDeclaration step : mapping.keySet()){
+                // Get the step mapping
+                Map<IDataIO, IDataIO> stepMapping = mapping.get(step);
+                List<IDataIO> aliasedIOs = stepMapping.values().stream().collect(Collectors.toList());
 
-            // For each custom mapping for the current step:
-            // find the correlated aliased dataIO and replace it with the custom mapping
-            customMappings
-                    .stream()
-                    .filter(mapping -> mapping.getTargetStep().equals(step.name()))
-                    .forEach(mapping -> {
-                        aliasedIOs.stream()
-                                .filter(dataIO -> dataIO.getName().equals(mapping.getTargetData()))
-                                .forEach(dataIO -> stepMapping.put(stepMapping.keySet().stream().filter(key -> stepMapping.get(key).equals(dataIO)).findAny().get(), new DataIO(mapping.getSourceData(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition())));
-                    });
-            
+                // For each custom mapping for the current step:
+                // find the correlated aliased dataIO and replace it with the custom mapping
+                customMappings
+                        .stream()
+                        .filter(mapping -> mapping.getTargetStep().equals(step.name()))
+                        .forEach(mapping -> {
+                            aliasedIOs.stream()
+                                    .filter(dataIO -> dataIO.getName().equals(mapping.getTargetData()))
+                                    .forEach(dataIO -> stepMapping.put(stepMapping.keySet().stream().filter(key -> stepMapping.get(key).equals(dataIO)).findAny().get(), new DataIO(mapping.getSourceData(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition())));
+                        });
+            }
         }
 
         return mapping;

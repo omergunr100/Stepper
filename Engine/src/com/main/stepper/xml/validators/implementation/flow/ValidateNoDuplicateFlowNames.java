@@ -28,7 +28,7 @@ public final class ValidateNoDuplicateFlowNames implements IValidator {
                 .keySet()
                 .stream()
                 .filter(key -> duplicateCount.get(key) > 1)
-                .forEach(key -> errors.add("Duplicate flow name: " + key + " - shows up " + duplicateCount.get(key) + " times");
+                .forEach(key -> errors.add("Duplicate flow name: " + key + " - shows up " + duplicateCount.get(key) + " times"));
 
         return errors;
     }

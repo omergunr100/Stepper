@@ -1,7 +1,9 @@
 package com.main.stepper.xml.parsing.implementation;
 
+import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.definition.implementation.Flow;
+import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.generated.STFlow;
 import com.main.stepper.xml.parsing.api.IParser;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FlowParser implements IParser {
     private STFlow stflow;
@@ -26,7 +29,7 @@ public class FlowParser implements IParser {
     }
 
     @Override
-    public Flow parse() throws Exception {
+    public Flow parse() throws XMLException {
         // Get flow properties and mapping
         flow = new Flow(stflow.getName(), stflow.getSTFlowDescription());
         Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> flowMapping = new MappingParser(stflow).parse();
@@ -43,7 +46,7 @@ public class FlowParser implements IParser {
             Optional<IDataIO> match = outputs.stream().filter(dataIO -> dataIO.getName().equals(formalName)).findFirst();
 
             if(!match.isPresent())
-                throw new Exception("No match found for formal output name: " + formalName);
+                throw new XMLException("No match found for formal output name: " + formalName + " in flow: " + flow.name());
 
             flow.addFormalOutput(match.get());
         }
@@ -52,12 +55,19 @@ public class FlowParser implements IParser {
         List<IDataIO> currOutputs = new ArrayList<>();
         for(IStepUsageDeclaration step : flow.steps()){
             // There is a match for each dataIO at this stage
-            IDataIO input = step.step().getInputs().stream().map(value -> flowMapping.get(step).get(value)).findFirst().get();
+            List<IDataIO> mappedInputs = step.step().getInputs().stream().map(value -> flowMapping.get(step).get(value)).collect(Collectors.toList());
+            List<IDataIO> mappedOutputs = step.step().getOutputs().stream().map(value -> flowMapping.get(step).get(value)).collect(Collectors.toList());
             // Check if there is a matching output at this stage
-            if(!currOutputs.contains(input)){
-                flow.addUserRequiredInput(input);
-                currOutputs.add(input);
+            mappedInputs.removeAll(currOutputs);
+            for(IDataIO input : mappedInputs){
+                if(input.getNecessity() == DataNecessity.MANDATORY){
+                    flow.addUserRequiredInput(input);
+                    currOutputs.add(input);
+                }
+                else
+                    flow.addUserOptionalInput(input);
             }
+            currOutputs.addAll(mappedOutputs);
         }
 
         return flow;
