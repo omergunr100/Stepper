@@ -7,7 +7,6 @@ import com.main.stepper.xml.validators.api.IValidator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ValidateNoMultipleMandatoryInputsOfDifferentType implements IValidator {
     private Flow flow;
