@@ -1,5 +1,6 @@
 package com.main.stepper.flow.definition.api;
 
+import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.io.api.IDataIO;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface IFlowDefinition {
     void addUserOptionalInput(IDataIO name);
     List<IDataIO> userOptionalInputs();
     List<String> validateFlowStructure();
+    IFlowInformation information();
 }

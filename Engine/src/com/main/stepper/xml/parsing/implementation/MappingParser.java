@@ -72,7 +72,7 @@ public class MappingParser implements IParser {
             for(IStepUsageDeclaration step : mapping.keySet()){
                 // Get the step mapping
                 Map<IDataIO, IDataIO> stepMapping = mapping.get(step);
-                List<IDataIO> aliasedIOs = stepMapping.values().stream().collect(Collectors.toList());
+                List<IDataIO> aliasedIOs = new ArrayList<>(stepMapping.values());
 
                 // For each custom mapping for the current step:
                 // find the correlated aliased dataIO and replace it with the custom mapping

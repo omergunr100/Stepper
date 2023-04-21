@@ -1,6 +1,7 @@
 package com.main.stepper.application.implementation.console;
 
 import com.main.stepper.application.api.IApplication;
+import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
@@ -115,10 +116,44 @@ public class ConsoleApplication implements IApplication {
     @Override
     public void showFlowInformation() {
         Integer choice = getChoiceOfFlow();
-        if(choice <= 0)
+        if(choice == 0)
             return;
 
-        System.out.println(engine.getFlowInfo(engine.getFlowNames().get(choice - 1)));
+        IFlowInformation flowInfo = engine.getFlowInfo(engine.getFlowNames().get(choice - 1));
+        System.out.println("\nFlow information:");
+
+        System.out.println("Name: " + flowInfo.name());
+
+        System.out.println("Description: " + flowInfo.description());
+
+        System.out.println("Formal outputs: ");
+        flowInfo.formalOutputs().forEach(f->{
+            System.out.println("\tName: " + f.getName() + ", Type: " + f.getDataDefinition().getName());
+        });
+
+        System.out.println("Read only: " + flowInfo.isReadOnly());
+
+        System.out.println("Steps in flow:");
+        flowInfo.steps().forEach(s->{
+            System.out.println("\tName: " + s.step().getName() + (s.name().equals(s.step().getName()) ? "" : ", alias: " + s.name()) + ", read only: " + s.step().isReadOnly());
+        });
+
+        System.out.println("Open user inputs: ");
+        flowInfo.openUserInputs().forEach(input->{
+            System.out.println("\tName: " + input.getName() + ", Type: " + input.getDataDefinition().getName() + ", necessity: " + input.getNecessity());
+            System.out.println("\tLinked steps: ");
+            flowInfo.linkedSteps(input).forEach(step->{
+                System.out.println("\t\tName: " + step.step().getName());
+            });
+            System.out.println();
+        });
+
+        System.out.println("Internal outputs: ");
+        flowInfo.internalOutputs().forEach(output->{
+            System.out.println("\tName: " + output.getName() + ", Type: " + output.getDataDefinition().getName());
+            System.out.println("\tProduced by step: " + flowInfo.producer(output).name());
+            System.out.println();
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.main.stepper.engine.definition.api;
 
+import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
@@ -25,7 +26,7 @@ public interface IEngine {
      * @param name - name of the flow
      * @return - flow info
      */
-    String getFlowInfo(String name);
+    IFlowInformation getFlowInfo(String name);
 
     /**
      * @param name - name of the flow

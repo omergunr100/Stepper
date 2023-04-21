@@ -15,7 +15,7 @@ import java.util.UUID;
 public class FlowExecutionContext implements IFlowExecutionContext {
     private final UUID uniqueRunId;
     private final ILogger logger;
-    private Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
+    private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
     private final Map<IDataIO, Object> variables;
 
     public FlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger) {

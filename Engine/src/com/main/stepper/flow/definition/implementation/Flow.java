@@ -1,7 +1,10 @@
 package com.main.stepper.flow.definition.implementation;
 
+import com.main.stepper.engine.data.api.IFlowInformation;
+import com.main.stepper.engine.data.implementation.FlowInformation;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
+import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateOutputNames;
@@ -9,16 +12,20 @@ import com.main.stepper.xml.validators.implementation.flow.ValidateNoMultipleMan
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoUnUserFriendlyMandatoryInputs;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Flow implements IFlowDefinition {
     private final String name;
     private final String description;
     private Boolean readOnly;
-    private final List<IDataIO> requiredInputs;
-    private final List<IDataIO> optionalInputs;
-    private final List<IDataIO> formalOutputs;
+    private final List<IDataIO> requiredInputs; // Post-alias
+    private final List<IDataIO> optionalInputs; // Post-alias
+    private final List<IDataIO> formalOutputs; // Post-alias
+    private final List<IDataIO> allOutputs; // Post-alias
     private final List<IStepUsageDeclaration> steps;
-    private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
+    private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings; // Step -> (Pre-alias -> Post-alias)
+    private final Map<IDataIO, IStepUsageDeclaration> dataToProducer; // Post-alias -> Step, keeps track of which step produces which dataIO
+    private final Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer; // Post-alias -> Step, keeps track of which steps consume which dataIO
 
     public Flow(String name, String description) {
         this.name = name;
@@ -26,9 +33,12 @@ public class Flow implements IFlowDefinition {
         requiredInputs = new ArrayList<>();
         optionalInputs = new ArrayList<>();
         formalOutputs = new ArrayList<>();
+        allOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         readOnly = null;
         this.mappings = new LinkedHashMap<>();
+        this.dataToProducer = new HashMap<>();
+        this.dataToConsumer = new HashMap<>();
     }
 
     @Override
@@ -61,8 +71,43 @@ public class Flow implements IFlowDefinition {
 
     @Override
     public void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping) {
+        // Add the step to the list of steps
         steps.add(step);
         mappings.put(step, stepMapping);
+        allOutputs.addAll(step.step().getOutputs().stream().map(dataIO -> stepMapping.get(dataIO)).collect(Collectors.toList()));
+        stepMapping.values().forEach(dataIO -> {
+            if(!dataToConsumer.containsKey(dataIO))
+                dataToConsumer.put(dataIO, new ArrayList<>());
+            dataToConsumer.get(dataIO).add(step);
+        });
+        // Add the step as the producer of the dataIOs it produces
+        stepMapping
+                .values()
+                .stream()
+                .filter(data -> data.getNecessity().equals(DataNecessity.NA))
+                .forEach(data -> dataToProducer.put(data, step));
+
+        // Add the step as the consumer of the dataIOs it consumes
+        stepMapping
+                .values()
+                .stream()
+                .filter(data -> data.getNecessity().equals(DataNecessity.MANDATORY))
+                .forEach(data -> {
+                    if(!dataToConsumer.containsKey(data))
+                        dataToConsumer.put(data, new ArrayList<>());
+                    if(!dataToConsumer.get(data).contains(step))
+                        dataToConsumer.get(data).add(step);
+                });
+        stepMapping
+                .values()
+                .stream()
+                .filter(data -> data.getNecessity().equals(DataNecessity.OPTIONAL))
+                .forEach(data -> {
+                    if(!dataToConsumer.containsKey(data))
+                        dataToConsumer.put(data, new ArrayList<>());
+                    if(!dataToConsumer.get(data).contains(step))
+                        dataToConsumer.get(data).add(step);
+                });
     }
 
     @Override
@@ -134,6 +179,25 @@ public class Flow implements IFlowDefinition {
             return errors;
 
         return errors;
+    }
+
+    @Override
+    public IFlowInformation information() {
+        List<IDataIO> openInputs = new ArrayList<>();
+        openInputs.addAll(requiredInputs);
+        openInputs.addAll(optionalInputs);
+
+        IFlowInformation flowInformation = new FlowInformation(
+                name,
+                description,
+                formalOutputs,
+                readOnly,
+                steps,
+                openInputs,
+                allOutputs,
+                dataToProducer,
+                dataToConsumer);
+        return flowInformation;
     }
 
     @Override
