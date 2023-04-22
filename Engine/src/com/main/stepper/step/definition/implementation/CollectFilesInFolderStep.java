@@ -1,7 +1,6 @@
 package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
-import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.FileList;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
@@ -11,10 +10,7 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public CollectFilesInFolderStep() {

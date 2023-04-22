@@ -2,12 +2,10 @@ package com.main.stepper.engine.data.implementation;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
-import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class FlowInformation implements IFlowInformation {
     private String name;

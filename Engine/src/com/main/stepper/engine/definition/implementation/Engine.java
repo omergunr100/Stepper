@@ -1,7 +1,6 @@
 package com.main.stepper.engine.definition.implementation;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
-import com.main.stepper.engine.data.implementation.FlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;

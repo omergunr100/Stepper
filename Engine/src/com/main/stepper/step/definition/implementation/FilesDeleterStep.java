@@ -3,7 +3,6 @@ package com.main.stepper.step.definition.implementation;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.FileList;
-import com.main.stepper.data.implementation.mapping.api.PairData;
 import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
@@ -11,7 +10,6 @@ import com.main.stepper.io.implementation.DataIO;
 import com.main.stepper.step.definition.api.AbstractStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
-import javafx.util.Pair;
 
 public class FilesDeleterStep extends AbstractStepDefinition {
     public FilesDeleterStep() {
