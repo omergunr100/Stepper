@@ -9,6 +9,6 @@ public class DoubleDef extends AbstractDataDef {
 
     @Override
     public Double readValue(String data) {
-        return Double.parseDouble(data);
+        return  Double.parseDouble(data);
     }
 }

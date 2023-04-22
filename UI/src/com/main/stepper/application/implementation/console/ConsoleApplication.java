@@ -5,7 +5,10 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
+import com.main.stepper.exceptions.data.BadReadException;
 import com.main.stepper.exceptions.xml.XMLException;
+import com.main.stepper.io.api.IDataIO;
 
 import java.util.List;
 import java.util.Scanner;
@@ -159,11 +162,60 @@ public class ConsoleApplication implements IApplication {
     @Override
     public void executeFlow() {
         Integer choice = getChoiceOfFlow();
-        if(choice <= 0)
+        if(choice == 0)
             return;
 
+        // Get required inputs to run the flow
+        String flowName = engine.getFlowNames().get(choice - 1);
+        ExecutionUserInputs inputs = engine.getExecutionUserInputs(flowName);
+        // Read the inputs from the user
+        Boolean run = false;
+        Integer numInputs = inputs.getOpenUserInputs().size();
+        while(!run){
+            System.out.println("Free flow inputs: (or enter '0' to exit)");
+            for(Integer i = 0; i < numInputs; i++){
+                IDataIO input = inputs.getOpenUserInputs().get(i);
+                System.out.println((i + 1) + ") " + input.getUserString()
+                        + " (" + inputs.getStep(input).name() + ")"
+                        + ", Type: " + input.getDataDefinition().getName()
+                        + ", Necessity: " + input.getNecessity());
+            }
+            if(inputs.validateUserInputs())
+                System.out.println(numInputs + 1 + ") Run flow.");
+
+            String input;
+            choice = null;
+            do {
+                input = scanner.nextLine();
+                try{
+                    choice = Integer.parseInt(input);
+                    if(inputs.validateUserInputs() && choice == numInputs + 1){
+                        run = true;
+                    }
+                    else if(choice < 0 || choice > inputs.getOpenUserInputs().size())
+                        throw new NumberFormatException();
+                }catch (NumberFormatException e){
+                    System.out.println("Invalid input, please try again.");
+                    choice = null;
+                }
+            }while(choice == null);
+
+            if(choice == 0)
+                return;
+
+            if(!run){
+                System.out.println("Please enter the value for the selected input:");
+                input = scanner.nextLine();
+                try {
+                    inputs.readUserInput(inputs.getOpenUserInputs().get(choice - 1), input);
+                } catch (BadReadException e) {
+                    System.out.println("The input doesn't match the required type!");
+                }
+            }
+        }
+
         System.out.println("Executing flow...");
-        IFlowRunResult result = engine.runFlow(engine.getFlowNames().get(choice - 1));
+        IFlowRunResult result = engine.runFlow(flowName, inputs);
         // TODO: present the user with the results of the run.
         System.out.println("Flow executed successfully.");
     }

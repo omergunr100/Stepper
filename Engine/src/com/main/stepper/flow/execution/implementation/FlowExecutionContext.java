@@ -20,7 +20,7 @@ public class FlowExecutionContext implements IFlowExecutionContext {
 
     public FlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger) {
         uniqueRunId = UUID.randomUUID();
-        this.logger = logger;
+        this.logger = logger.getSubLogger(uniqueRunId.toString());
         this.mappings = mappings;
         variables = new HashMap<>();
     }

@@ -24,6 +24,7 @@ public class Flow implements IFlowDefinition {
     private final List<IDataIO> allOutputs; // Post-alias
     private final List<IStepUsageDeclaration> steps;
     private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings; // Step -> (Pre-alias -> Post-alias)
+    private final Map<IDataIO, IStepUsageDeclaration> dataToMandatoryStep; // Post-alias -> Step, keeps track of which step needs the dataIO as mandatory input (first)
     private final Map<IDataIO, IStepUsageDeclaration> dataToProducer; // Post-alias -> Step, keeps track of which step produces which dataIO
     private final Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer; // Post-alias -> Step, keeps track of which steps consume which dataIO
 
@@ -37,6 +38,7 @@ public class Flow implements IFlowDefinition {
         steps = new ArrayList<>();
         readOnly = null;
         this.mappings = new LinkedHashMap<>();
+        this.dataToMandatoryStep = new HashMap<>();
         this.dataToProducer = new HashMap<>();
         this.dataToConsumer = new HashMap<>();
     }
@@ -70,16 +72,23 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
+    public Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings() {
+        return mappings;
+    }
+
+    @Override
     public void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping) {
         // Add the step to the list of steps
         steps.add(step);
         mappings.put(step, stepMapping);
         allOutputs.addAll(step.step().getOutputs().stream().map(dataIO -> stepMapping.get(dataIO)).collect(Collectors.toList()));
-        stepMapping.values().forEach(dataIO -> {
-            if(!dataToConsumer.containsKey(dataIO))
-                dataToConsumer.put(dataIO, new ArrayList<>());
-            dataToConsumer.get(dataIO).add(step);
-        });
+        // TODO: remove this comment if redundant
+//        stepMapping.values().forEach(dataIO -> {
+//            if(!dataToConsumer.containsKey(dataIO))
+//                dataToConsumer.put(dataIO, new ArrayList<>());
+//            dataToConsumer.get(dataIO).add(step);
+//        });
+
         // Add the step as the producer of the dataIOs it produces
         stepMapping
                 .values()
@@ -97,6 +106,8 @@ public class Flow implements IFlowDefinition {
                         dataToConsumer.put(data, new ArrayList<>());
                     if(!dataToConsumer.get(data).contains(step))
                         dataToConsumer.get(data).add(step);
+                    if(!dataToMandatoryStep.containsKey(data))
+                        dataToMandatoryStep.put(data, step);
                 });
         stepMapping
                 .values()
@@ -206,5 +217,13 @@ public class Flow implements IFlowDefinition {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public IStepUsageDeclaration stepRequiringMandatoryInput(IDataIO dataIO) {
+        IStepUsageDeclaration step = dataToMandatoryStep.get(dataIO);
+        if(step == null)
+            step = dataToConsumer.get(dataIO).get(0);
+        return step;
     }
 }

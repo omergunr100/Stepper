@@ -2,6 +2,7 @@ package com.main.stepper.engine.definition.api;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
 
@@ -29,10 +30,16 @@ public interface IEngine {
     IFlowInformation getFlowInfo(String name);
 
     /**
+     * @param flowName - name of the flow
+     * @return - list of mandatory inputs that are not connected to any step (and optional)
+     */
+    ExecutionUserInputs getExecutionUserInputs(String flowName);
+
+    /**
      * @param name - name of the flow
      * @return - run result object
      */
-    IFlowRunResult runFlow(String name);
+    IFlowRunResult runFlow(String name, ExecutionUserInputs inputs);
 
     /**
      * @return - list of flow runs

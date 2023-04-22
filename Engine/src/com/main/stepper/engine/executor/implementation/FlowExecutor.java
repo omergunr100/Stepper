@@ -14,20 +14,33 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FlowExecutor implements IFlowExecutor {
-    private FlowExecutor() {
+    public FlowExecutor() {
     }
 
-    public static IFlowExecutor getInstance() {
-        return new FlowExecutor();
+    @Override
+    public List<IDataIO> userMandatoryInputs() {
+        return null;
+    }
+
+    @Override
+    public List<IDataIO> userOptionalInputs() {
+        return null;
+    }
+
+    @Override
+    public Boolean isReadyToExecute() {
+        return null;
     }
 
     @Override
     public IFlowRunResult executeFlow(IFlowDefinition flow, IFlowExecutionContext context) {
+        // Remember start time
         Temporal startTime = LocalTime.now();
-
+        // Default flag is success
         FlowResult flag = FlowResult.SUCCESS;
 
         Map<IDataIO, Object> userInputs = new HashMap<>();

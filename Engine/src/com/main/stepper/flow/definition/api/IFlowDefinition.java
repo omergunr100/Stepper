@@ -11,6 +11,7 @@ public interface IFlowDefinition {
     String description();
     Boolean isReadOnly();
     List<IStepUsageDeclaration> steps();
+    Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings();
     IDataIO mapsTo(IStepUsageDeclaration step, IDataIO io);
     void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping);
     void addFormalOutput(IDataIO name);
@@ -21,4 +22,5 @@ public interface IFlowDefinition {
     List<IDataIO> userOptionalInputs();
     List<String> validateFlowStructure();
     IFlowInformation information();
+    IStepUsageDeclaration stepRequiringMandatoryInput(IDataIO dataIO);
 }

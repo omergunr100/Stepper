@@ -2,8 +2,13 @@ package com.main.stepper.engine.executor.api;
 
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
+import com.main.stepper.io.api.IDataIO;
+
+import java.util.List;
 
 public interface IFlowExecutor {
+     List<IDataIO> userMandatoryInputs();
+     List<IDataIO> userOptionalInputs();
+     Boolean isReadyToExecute();
      IFlowRunResult executeFlow(IFlowDefinition flow, IFlowExecutionContext context);
-     static IFlowExecutor getInstance(){return null;}
 }
