@@ -1,8 +1,6 @@
 package com.main.stepper.data.implementation.list.datatype;
 
-import com.main.stepper.data.implementation.mapping.MutablePair;
+import com.main.stepper.data.implementation.mapping.api.PairData;
 
-import java.util.ArrayList;
-
-public class MappingList extends ArrayList<MutablePair> {
+public class MappingList extends GenericList<PairData> {
 }

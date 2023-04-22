@@ -47,6 +47,16 @@ public class Relation {
         rows.add(tableRow);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Columns: ");
+        for(String title : columns)
+            builder.append(title).append(", ");
+        builder.append("\nRows: " + rows.size());
+        return builder.toString();
+    }
+
     private class TableRow {
         private Map<String, String> data;
 

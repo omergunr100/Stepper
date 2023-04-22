@@ -1,7 +1,10 @@
 package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
+import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.FileList;
+import com.main.stepper.data.implementation.mapping.api.PairData;
+import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -10,14 +13,12 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import javafx.util.Pair;
 
-import java.io.File;
-
 public class FilesDeleterStep extends AbstractStepDefinition {
     public FilesDeleterStep() {
         super("Files Deleter", false);
         addInput(new DataIO("FILES_LIST", "Files to delete", DataNecessity.MANDATORY, DDRegistry.FILE_LIST));
         addOutput(new DataIO("DELETED_LIST", "Files failed to be deleted", DDRegistry.STRING_LIST));
-        addOutput(new DataIO("DELETION_STATS", "Deletion summary results", DDRegistry.MAPPING));
+        addOutput(new DataIO("DELETION_STATS", "Deletion summary results", DDRegistry.INT_TO_INT_MAPPING));
     }
 
     @Override
@@ -37,21 +38,21 @@ public class FilesDeleterStep extends AbstractStepDefinition {
 
         // Handle empty deletion list case
         if(filesList.size() == 0){
-            Pair<Integer, Integer> deletionStats = new Pair<>(0, 0);
+            IntToIntPair deletionStats = new IntToIntPair(0, 0);
             context.setOutput(deletionStatsIO, deletionStats);
             context.setSummary("No files to delete");
             return StepResult.SUCCESS;
         }
 
         // Try to delete each file
-        for(File file : filesList){
+        for(FileData file : filesList){
             if(!file.delete()){
                 context.log("Failed to delete file: " + file.getAbsolutePath());
                 failedToDelete.add(file);
             }
         }
 
-        Pair<Integer, Integer> deletionStats = new Pair<>(filesList.size() - failedToDelete.size(), failedToDelete.size());
+        IntToIntPair deletionStats = new IntToIntPair(filesList.size() - failedToDelete.size(), failedToDelete.size());
         context.setOutput(deletionStatsIO, deletionStats);
 
         // Handle special cases

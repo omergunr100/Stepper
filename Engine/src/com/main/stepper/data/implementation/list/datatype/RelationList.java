@@ -4,5 +4,5 @@ import com.main.stepper.data.implementation.relation.Relation;
 
 import java.util.ArrayList;
 
-public class RelationList extends ArrayList<Relation> {
+public class RelationList extends GenericList<Relation> {
 }

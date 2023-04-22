@@ -24,7 +24,7 @@ public class ConsoleApplication implements IApplication {
 
     private boolean run = true;
     private final IEngine engine;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public ConsoleApplication(IEngine engine) {
         this.engine = engine;
@@ -43,7 +43,7 @@ public class ConsoleApplication implements IApplication {
             System.out.println((i + 1) + ") " + flowNames.get(i));
 
         String input;
-        Integer choice = null;
+        Integer choice;
         do {
             input = scanner.nextLine();
             try{
@@ -100,7 +100,7 @@ public class ConsoleApplication implements IApplication {
     public void readSystemFromFile() {
         System.out.println("Please enter the path to the file:");
         String path = scanner.nextLine();
-        List<String> errors = null;
+        List<String> errors;
         try{
             errors = engine.readSystemFromXML(path);
         } catch (XMLException e) {
@@ -170,11 +170,11 @@ public class ConsoleApplication implements IApplication {
         String flowName = engine.getFlowNames().get(choice - 1);
         ExecutionUserInputs inputs = engine.getExecutionUserInputs(flowName);
         // Read the inputs from the user
-        Boolean run = false;
-        Integer numInputs = inputs.getOpenUserInputs().size();
+        boolean run = false;
+        int numInputs = inputs.getOpenUserInputs().size();
         while(!run){
             System.out.println("Free flow inputs: (or enter '0' to exit)");
-            for(Integer i = 0; i < numInputs; i++){
+            for(int i = 0; i < numInputs; i++){
                 IDataIO input = inputs.getOpenUserInputs().get(i);
                 System.out.println((i + 1) + ") " + input.getUserString()
                         + " (" + inputs.getStep(input).name() + ")"
@@ -185,7 +185,6 @@ public class ConsoleApplication implements IApplication {
                 System.out.println(numInputs + 1 + ") Run flow.");
 
             String input;
-            choice = null;
             do {
                 input = scanner.nextLine();
                 try{

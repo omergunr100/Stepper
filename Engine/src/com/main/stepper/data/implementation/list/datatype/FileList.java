@@ -1,7 +1,11 @@
 package com.main.stepper.data.implementation.list.datatype;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.main.stepper.data.implementation.file.FileData;
 
-public class FileList extends ArrayList<File> {
+import java.io.File;
+
+public class FileList extends GenericList<FileData> {
+    public boolean add(File file) {
+        return super.add(new FileData(file));
+    }
 }

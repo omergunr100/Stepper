@@ -1,6 +1,7 @@
 package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
+import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.FileList;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
@@ -32,23 +33,31 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         String folderName = (String) context.getInput(folderNameIO, DDRegistry.STRING.getType());
         String filter = (String) context.getInput(filterIO, DDRegistry.STRING.getType());
 
+        FileList files = new FileList();
+        IDataIO filesListIO = getOutputs().get(0);
+        context.setOutput(filesListIO, files);
         // Validate inputs
         File folder = new File(folderName);
         if(!folder.exists()){
             context.log("Folder does not exist at: " + folderName);
             context.setSummary("Folder does not exist at: " + folderName);
+
+            IDataIO totalFoundIO = getOutputs().get(1);
+            context.setOutput(totalFoundIO, files.size());
             return StepResult.FAILURE;
         }
         if(!folder.isDirectory()){
             context.log("Path is not a directory: " + folderName);
             context.setSummary("Path is not a directory: " + folderName);
+
+            IDataIO totalFoundIO = getOutputs().get(1);
+            context.setOutput(totalFoundIO, files.size());
             return StepResult.FAILURE;
         }
         context.log("Reading folder " + folderName + " content with filter " + filter);
 
-        FileList files = new FileList();
         Arrays.stream(folder.listFiles()).filter(File::isFile).forEach(files::add);
-        List<File> remove = new ArrayList<>();
+        FileList remove = new FileList();
         if(filter != null && !filter.isEmpty())
             files.stream().filter(f->!f.getName().endsWith(filter)).forEach(remove::add);
         files.removeAll(remove);
@@ -56,15 +65,16 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         if(files.isEmpty()){
             context.log("No files found in folder matching the filter");
             context.setSummary("No files found in folder matching the filter");
+
+            IDataIO totalFoundIO = getOutputs().get(1);
+            context.setOutput(totalFoundIO, files.size());
             return StepResult.WARNING;
         }
 
         context.log("Found " + files.size() + " files in folder matching the filter");
 
-        IDataIO filesListIO = getOutputs().get(0);
         IDataIO totalFoundIO = getOutputs().get(1);
 
-        context.setOutput(filesListIO, files);
         context.setOutput(totalFoundIO, files.size());
 
         return StepResult.SUCCESS;

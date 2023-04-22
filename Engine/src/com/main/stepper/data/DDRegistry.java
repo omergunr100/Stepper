@@ -3,6 +3,7 @@ package com.main.stepper.data;
 import com.main.stepper.data.api.IDataDefinition;
 import com.main.stepper.data.implementation.file.FileDef;
 import com.main.stepper.data.implementation.list.definition.*;
+import com.main.stepper.data.implementation.mapping.IntToIntMappingDef;
 import com.main.stepper.data.implementation.mapping.MappingDef;
 import com.main.stepper.data.implementation.numeric.DoubleDef;
 import com.main.stepper.data.implementation.numeric.NumberDef;
@@ -17,11 +18,12 @@ public enum DDRegistry implements IDataDefinition {
     DOUBLE(new DoubleDef()),
     RELATION(new RelationDef()),
     FILE(new FileDef()),
-    MAPPING(new MappingDef()),
+    MAPPING(new MappingDef()), // TODO: remove once mapping specific types are implemented
+    INT_TO_INT_MAPPING(new IntToIntMappingDef()),
     STRING_LIST(new StringListDef()),
     RELATION_LIST(new RelationListDef()),
     NUMBER_LIST(new NumberListDef()),
-    MAPPING_LIST(new MappingListDef()),
+    MAPPING_LIST(new MappingListDef()), // TODO: maybe delete if becomes problematic due to many mapping types
     FILE_LIST(new FileListDef()),
     DOUBLE_LIST(new DoubleListDef())
     ;
