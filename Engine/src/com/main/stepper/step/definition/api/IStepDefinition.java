@@ -1,5 +1,6 @@
 package com.main.stepper.step.definition.api;
 
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
@@ -10,5 +11,5 @@ public interface IStepDefinition {
     Boolean isReadOnly();
     List<IDataIO> getInputs();
     List<IDataIO> getOutputs();
-    StepResult execute(IStepExecutionContext context);
+    IStepRunResult execute(IStepExecutionContext context);
 }

@@ -3,6 +3,8 @@ package com.main.stepper.step.definition.implementation;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.list.datatype.FileList;
 import com.main.stepper.data.implementation.relation.Relation;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -11,6 +13,9 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +30,8 @@ public class FilesRenamerStep extends AbstractStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
         // Get DataIOs
         IDataIO filesToRenameIO = getInputs().get(0);
         IDataIO prefixIO = getInputs().get(1);
@@ -48,8 +54,9 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         // Empty case
         if(filesToRename.size() == 0){
             context.log("No files to rename.");
-            context.setSummary("No files to rename.");
-            return StepResult.SUCCESS;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to rename.");
         }
         // Else
         String failed = "";
@@ -73,10 +80,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
         // Failure to change at least 1
         if(!failed.equals("")){
-            context.setSummary("Failed to rename the following files:\n" + failed);
-            return StepResult.WARNING;
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "Failed to rename the following files:\n" + failed);
         }
 
-        return StepResult.SUCCESS;
+        Duration duration = Duration.between(startTime, LocalTime.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
     }
 }

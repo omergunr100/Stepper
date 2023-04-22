@@ -6,6 +6,7 @@ import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
+import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.definition.StepRegistry;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
@@ -47,6 +48,7 @@ public class Main {
     }
 
     private static void FileDumperTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.FILE_DUMPER;
         IDataIO contentIO = step.getInputs().get(0);
         IDataIO pathIO = step.getInputs().get(1);
@@ -65,10 +67,10 @@ public class Main {
 
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
 
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
 
         System.out.println("Result: " + result);
-        System.out.println("Summary: " + context.getSummary());
+        //System.out.println("Summary: " + context.getSummary());
         System.out.println("Logs:");
         if(logger.getLog("Step") != null) {
             for (Log log : logger.getLog("Step")) {
@@ -81,6 +83,7 @@ public class Main {
     }
 
     private static void PropertiesExporterTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.PROPERTIES_EXPORTER;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO sourceIO = step.getInputs().get(0);
@@ -104,10 +107,10 @@ public class Main {
 
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
 
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
 
         System.out.println("Result: " + result);
-        System.out.println("Summary: " + context.getSummary());
+        //System.out.println("Summary: " + context.getSummary());
         System.out.println("Logs:");
         for(Log log : logger.getLog("Step")) {
             System.out.println(log);
@@ -117,6 +120,7 @@ public class Main {
     }
 
     private static void CSVExporterTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.CSV_EXPORTER;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO sourceIO = step.getInputs().get(0);
@@ -141,10 +145,10 @@ public class Main {
 
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
 
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
 
         System.out.println("Result: " + result);
-        System.out.println("Summary: " + context.getSummary());
+        //System.out.println("Summary: " + context.getSummary());
         System.out.println("Logs:");
         for(Log log : logger.getLog("Step")) {
             System.out.println(log);
@@ -154,6 +158,7 @@ public class Main {
     }
 
     private static void FilesContentExtractorTest(int line) {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.FILES_CONTENT_EXTRACTOR;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO filesIO = step.getInputs().get(0);
@@ -175,13 +180,13 @@ public class Main {
 
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
 
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
 
         System.out.println("Result: " + result);
         System.out.println("Logs:");
         for(Log log : logger.getLog("Step"))
             System.out.println(log);
-        System.out.println("Summary: " + context.getSummary());
+        //System.out.println("Summary: " + context.getSummary());
         Relation dataResult = (Relation) variables.get(dataResultIO);
         System.out.println(dataResult.getColumns());
         for(Integer i = 0; i < dataResult.getRowCount(); i++)
@@ -189,6 +194,7 @@ public class Main {
     }
 
     private static void FilesRenamerTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.FILES_RENAMER;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO filesIO = step.getInputs().get(0);
@@ -213,13 +219,13 @@ public class Main {
         ILogger logger = new MapLogger();
 
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
 
         System.out.println("Result: " + result);
         System.out.println("Logs:");
         for(Log log : logger.getLog("Step"))
             System.out.println(log);
-        System.out.println("Summary: " + context.getSummary());
+        //System.out.println("Summary: " + context.getSummary());
         Relation renameResult = (Relation) variables.get(renameResultIO);
         System.out.println(renameResult.getColumns());
         for(Integer i = 0; i < renameResult.getRowCount(); i++)
@@ -227,6 +233,7 @@ public class Main {
     }
 
     private static void FilesDeleterTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.FILES_DELETER;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO filesIO = step.getInputs().get(0);
@@ -242,7 +249,7 @@ public class Main {
         mapping.put(deletionStatsIO, deletionStatsIO);
         ILogger logger = new MapLogger();
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
         System.out.println("Result: " + result);
         System.out.println("The logs:");
         for(Log log : logger.getLog("Step")){
@@ -256,6 +263,7 @@ public class Main {
     }
 
     private static void CollectFilesInFolderTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.COLLECT_FILES_IN_FOLDER;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO folder = step.getInputs().get(0);
@@ -271,7 +279,7 @@ public class Main {
         mapping.put(count, count);
         ILogger logger = new MapLogger();
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
         System.out.println("Result: " + result);
         System.out.println("The logs:");
         for(Log log : logger.getLog("Step")){
@@ -280,6 +288,7 @@ public class Main {
     }
 
     private static void SpendSomeTimeTest() {
+        StatManager statistics = new StatManager();
         IStepDefinition step = StepRegistry.SPEND_SOME_TIME;
         Map<IDataIO, Object> variables = new HashMap<>();
         IDataIO time = step.getInputs().get(0);
@@ -288,7 +297,7 @@ public class Main {
         mapping.put(time, time);
         ILogger logger = new MapLogger();
         IStepExecutionContext context = new StepExecutionContext(variables, mapping, logger.getSubLogger("Step"));
-        StepResult result = step.execute(context);
+        StepResult result = step.execute(context).result();
         System.out.println("Result: " + result);
         System.out.println("The logs:");
         for(Log log : logger.getLog("Step")){

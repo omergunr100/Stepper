@@ -1,5 +1,6 @@
 package com.main.stepper.step.definition;
 
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
@@ -46,7 +47,7 @@ public enum StepRegistry implements IStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
         return step.execute(context);
     }
 }

@@ -14,6 +14,7 @@ import com.main.stepper.flow.execution.implementation.FlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
+import com.main.stepper.statistics.StatManager;
 import com.main.stepper.xml.generated.STFlow;
 import com.main.stepper.xml.generated.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 public final class Engine implements IEngine {
     private final ILogger logger;
+    private final StatManager statistics;
     private List<IFlowDefinition> flows;
     private Boolean validated;
 
@@ -33,6 +35,7 @@ public final class Engine implements IEngine {
         this.logger = new MapLogger();
         this.flows = new ArrayList<>();
         this.validated = false;
+        this.statistics = new StatManager();
     }
 
     private Optional<IFlowDefinition> getFlowByName(String name){
@@ -104,7 +107,8 @@ public final class Engine implements IEngine {
         IFlowDefinition flow = maybeFlow.get();
         IFlowExecutionContext context = new FlowExecutionContext(
                 flow.mappings(),
-                logger
+                logger,
+                statistics
         );
 
         for(IDataIO input : inputs.getUserInputs().keySet()){
@@ -113,7 +117,6 @@ public final class Engine implements IEngine {
 
         IFlowExecutor executor = new FlowExecutor();
         IFlowRunResult result = executor.executeFlow(flow, context);
-        // TODO: Save result for statistics
         return result;
     }
 

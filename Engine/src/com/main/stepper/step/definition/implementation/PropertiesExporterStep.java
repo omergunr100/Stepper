@@ -2,6 +2,8 @@ package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.relation.Relation;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -9,6 +11,9 @@ import com.main.stepper.step.definition.api.AbstractStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.List;
 
 public class PropertiesExporterStep extends AbstractStepDefinition{
@@ -19,7 +24,8 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
         // Get dataIOs
         IDataIO sourceIO = getInputs().get(0);
         IDataIO resultIO = getOutputs().get(0);
@@ -33,9 +39,10 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
         // Empty case
         if(source.getRowCount() == 0){
             context.setOutput(resultIO, "");
-            context.setSummary("There is no data to export");
             context.log("There is no data to export");
-            return StepResult.WARNING;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "There is no data to export");
         }
 
         // Else
@@ -59,6 +66,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
         // Set output
         context.setOutput(resultIO, builder.toString());
 
-        return StepResult.SUCCESS;
+        Duration duration = Duration.between(startTime, LocalTime.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
     }
 }

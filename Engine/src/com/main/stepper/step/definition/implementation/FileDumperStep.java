@@ -1,6 +1,8 @@
 package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -11,6 +13,9 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 
 public class FileDumperStep extends AbstractStepDefinition {
     public FileDumperStep() {
@@ -21,7 +26,8 @@ public class FileDumperStep extends AbstractStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
         // Get dataIOs
         IDataIO contentIO = getInputs().get(0);
         IDataIO fileNameIO = getInputs().get(1);
@@ -36,10 +42,11 @@ public class FileDumperStep extends AbstractStepDefinition {
         try {
             if(file.createNewFile()){
                 if(content.isEmpty()){
-                    context.setSummary("No content to write");
                     context.log("No content to write");
                     context.setOutput(resultIO, "SUCCESS");
-                    return StepResult.WARNING;
+
+                    Duration duration = Duration.between(startTime, LocalTime.now());
+                    return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "No content to write");
                 }
                 else{
                     try{
@@ -47,26 +54,31 @@ public class FileDumperStep extends AbstractStepDefinition {
                         fileWriter.write(content);
                         fileWriter.close();
                         context.setOutput(resultIO, "SUCCESS");
-                        return StepResult.SUCCESS;
+
+                        Duration duration = Duration.between(startTime, LocalTime.now());
+                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
                     } catch (IOException e) {
-                        context.setSummary("Failed in writing content to file");
                         context.log("Failed in writing content to file: " + e.getMessage());
                         context.setOutput(resultIO, "Failed in writing content to file");
-                        return StepResult.FAILURE;
+
+                        Duration duration = Duration.between(startTime, LocalTime.now());
+                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed in writing content to file");
                     }
                 }
             }
             else{
-                context.setSummary("File already exists");
                 context.log("File already exists");
                 context.setOutput(resultIO, "File already exists");
-                return StepResult.FAILURE;
+
+                Duration duration = Duration.between(startTime, LocalTime.now());
+                return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "File already exists");
             }
         } catch (IOException e) {
-            context.setSummary("Failed in creation of new file");
             context.log("Failed in creation of new file: " + e.getMessage());
             context.setOutput(resultIO, "Failed in creation of new file");
-            return StepResult.FAILURE;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed in creation of new file");
         }
     }
 }

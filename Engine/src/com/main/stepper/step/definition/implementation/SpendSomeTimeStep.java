@@ -1,12 +1,18 @@
 package com.main.stepper.step.definition.implementation;
 
 import com.main.stepper.data.DDRegistry;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
 import com.main.stepper.step.definition.api.AbstractStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 
 public class SpendSomeTimeStep extends AbstractStepDefinition {
 
@@ -16,14 +22,17 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
+
         IDataIO timeToSpendIO = getInputs().get(0);
         Integer timeToSpend = (Integer) context.getInput(timeToSpendIO, DDRegistry.NUMBER.getType());
 
         if(timeToSpend <= 0){
-            context.log("\""+timeToSpendIO.getName()+"\" must be greater than 0!");
-            context.setSummary("\""+timeToSpendIO.getUserString()+"\" must be greater than 0!");
-            return StepResult.FAILURE;
+            context.log("Time to spend must be greater than 0!");
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Time to spend must be greater than 0!");
         }
 
         context.log("About to sleep for " + timeToSpend + " seconds...");
@@ -34,6 +43,7 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         }
         context.log("Done sleeping...");
 
-        return StepResult.SUCCESS;
+        Duration duration = Duration.between(startTime, LocalTime.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
     }
 }

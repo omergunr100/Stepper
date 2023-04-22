@@ -3,13 +3,20 @@ package com.main.stepper.step.definition.implementation;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.FileList;
+import com.main.stepper.data.implementation.list.datatype.StringList;
 import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
 import com.main.stepper.step.definition.api.AbstractStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
+
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 
 public class FilesDeleterStep extends AbstractStepDefinition {
     public FilesDeleterStep() {
@@ -20,7 +27,8 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
         // Read inputs
         IDataIO filesListIO = getInputs().get(0);
         FileList filesList = (FileList) context.getInput(filesListIO, DDRegistry.FILE_LIST.getType());
@@ -31,22 +39,22 @@ public class FilesDeleterStep extends AbstractStepDefinition {
 
         context.log("About to start delete " + filesList.size() + " files");
 
-        FileList failedToDelete = new FileList();
+        StringList failedToDelete = new StringList();
         context.setOutput(deletedListIO, failedToDelete);
 
         // Handle empty deletion list case
         if(filesList.size() == 0){
             IntToIntPair deletionStats = new IntToIntPair(0, 0);
             context.setOutput(deletionStatsIO, deletionStats);
-            context.setSummary("No files to delete");
-            return StepResult.SUCCESS;
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to delete");
         }
 
         // Try to delete each file
         for(FileData file : filesList){
             if(!file.delete()){
                 context.log("Failed to delete file: " + file.getAbsolutePath());
-                failedToDelete.add(file);
+                failedToDelete.add(file.getName());
             }
         }
 
@@ -55,16 +63,19 @@ public class FilesDeleterStep extends AbstractStepDefinition {
 
         // Handle special cases
         if(failedToDelete.size() == filesList.size()){
-            context.setSummary("Failed to delete all files");
             context.log("Failed to delete all files");
-            return StepResult.FAILURE;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed to delete all files");
         }
         else if(failedToDelete.size() > 0){
-            context.setSummary("Failed to delete " + failedToDelete.size() + " files");
             context.log("Failed to delete " + failedToDelete.size() + " files");
-            return StepResult.WARNING;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "Failed to delete " + failedToDelete.size() + " files");
         }
 
-        return StepResult.SUCCESS;
+        Duration duration = Duration.between(startTime, LocalTime.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
     }
 }

@@ -3,6 +3,8 @@ package com.main.stepper.step.definition.implementation;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.list.datatype.FileList;
 import com.main.stepper.data.implementation.relation.Relation;
+import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -14,6 +16,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +32,8 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
     }
 
     @Override
-    public StepResult execute(IStepExecutionContext context) {
+    public IStepRunResult execute(IStepExecutionContext context) {
+        Temporal startTime = LocalTime.now();
         // Get the DataIOs
         IDataIO filesListIO = getInputs().get(0);
         IDataIO lineNumberIO = getInputs().get(1);
@@ -46,8 +52,9 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         // Empty case
         if(filesToExtract.size() == 0){
             context.log("No files to extract");
-            context.setSummary("No files to extract");
-            return StepResult.SUCCESS;
+
+            Duration duration = Duration.between(startTime, LocalTime.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to extract");
         }
         // Else
         for(Integer i = 1; i <= filesToExtract.size(); i++){
@@ -64,6 +71,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
             }
         }
 
-        return StepResult.SUCCESS;
+        Duration duration = Duration.between(startTime, LocalTime.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
     }
 }

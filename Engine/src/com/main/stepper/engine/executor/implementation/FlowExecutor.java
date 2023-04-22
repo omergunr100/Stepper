@@ -2,6 +2,7 @@ package com.main.stepper.engine.executor.implementation;
 
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
@@ -50,13 +51,15 @@ public class FlowExecutor implements IFlowExecutor {
                 userInputs.put(dataIO, value);
             }
         }
-        // TODO: add flow run logic
+
         for(IStepUsageDeclaration step : flow.steps()){
             IStepExecutionContext stepContext = context.getStepExecutionContext(step);
-            StepResult result = step.step().execute(stepContext);
+            IStepRunResult result = step.step().execute(stepContext);
+            context.statistics().addRunResult(result);
 
-            if(result == StepResult.FAILURE){
+            if(result.result().equals(StepResult.FAILURE)){
                 if(step.skipIfFailed()){
+                    // TODO: check if skip-if-failed step fails the flow should return warning
                     flag = FlowResult.WARNING;
                 }
                 else{
@@ -66,6 +69,13 @@ public class FlowExecutor implements IFlowExecutor {
             }
         }
 
+        // Add all internal flow outputs
+        Map<IDataIO, Object> internalOutputs = new HashMap<>();
+        context.variables().keySet().stream().filter(dataIO -> !userInputs.keySet().contains(dataIO)).forEach(dataIO -> {
+            internalOutputs.put(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
+        });
+
+        // Add all formal flow outputs
         Map<IDataIO, Object> formalOutputs = new HashMap<>();
         if(flag != FlowResult.FAILURE) {
             for (IDataIO dataIO : flow.formalOutputs()) {
@@ -75,7 +85,8 @@ public class FlowExecutor implements IFlowExecutor {
             }
         }
         Duration duration = Duration.between(startTime, LocalTime.now());
-        // TODO: log flow run result for statistics in the engine
-        return new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, duration, userInputs, formalOutputs);
+        FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs);
+        context.statistics().addRunResult(flowRunResult);
+        return flowRunResult;
     }
 }

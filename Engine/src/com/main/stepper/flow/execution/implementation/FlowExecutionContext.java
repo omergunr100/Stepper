@@ -1,28 +1,31 @@
 package com.main.stepper.flow.execution.implementation;
 
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import com.main.stepper.step.execution.implementation.StepExecutionContext;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class FlowExecutionContext implements IFlowExecutionContext {
     private final UUID uniqueRunId;
     private final ILogger logger;
+    private final StatManager statistics;
     private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
     private final Map<IDataIO, Object> variables;
+    private final List<IStepRunResult> stepRunResults;
 
-    public FlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger) {
+    public FlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger, StatManager statistics) {
         uniqueRunId = UUID.randomUUID();
         this.logger = logger.getSubLogger(uniqueRunId.toString());
         this.mappings = mappings;
         variables = new HashMap<>();
+        this.statistics = statistics;
+        stepRunResults = new ArrayList<>();
     }
 
     @Override
@@ -54,5 +57,20 @@ public class FlowExecutionContext implements IFlowExecutionContext {
     @Override
     public IStepExecutionContext getStepExecutionContext(IStepUsageDeclaration step) {
         return new StepExecutionContext(variables, mappings.get(step), logger);
+    }
+
+    @Override
+    public List<IStepRunResult> getStepRunResults() {
+        return stepRunResults;
+    }
+
+    @Override
+    public Map<IDataIO, Object> variables() {
+        return variables;
+    }
+
+    @Override
+    public StatManager statistics() {
+        return statistics;
     }
 }

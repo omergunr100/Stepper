@@ -2,20 +2,29 @@ package com.main.stepper.step.execution.implementation;
 
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class StepExecutionContext implements IStepExecutionContext {
-    private String summary;
+    private UUID runId;
     private final Map<IDataIO, IDataIO> mapping;
     private final Map<IDataIO, Object> variables;
     private final ILogger logger;
 
+
     public StepExecutionContext(Map<IDataIO, Object> variables, Map<IDataIO, IDataIO> mapping, ILogger logger) {
+        this.runId = UUID.randomUUID();
         this.variables = variables;
         this.mapping = mapping;
-        this.logger = logger;
+        this.logger = logger.getSubLogger(runId.toString());
+    }
+
+    @Override
+    public String getUniqueRunId() {
+        return runId.toString();
     }
 
     @Override
@@ -43,15 +52,5 @@ public class StepExecutionContext implements IStepExecutionContext {
     public void setOutput(IDataIO name, Object value) {
         IDataIO alias = mapping.get(name);
         variables.put(alias, value);
-    }
-
-    @Override
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    @Override
-    public String getSummary() {
-        return summary;
     }
 }
