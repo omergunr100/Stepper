@@ -82,12 +82,6 @@ public class Flow implements IFlowDefinition {
         steps.add(step);
         mappings.put(step, stepMapping);
         allOutputs.addAll(step.step().getOutputs().stream().map(dataIO -> stepMapping.get(dataIO)).collect(Collectors.toList()));
-        // TODO: remove this comment if redundant
-//        stepMapping.values().forEach(dataIO -> {
-//            if(!dataToConsumer.containsKey(dataIO))
-//                dataToConsumer.put(dataIO, new ArrayList<>());
-//            dataToConsumer.get(dataIO).add(step);
-//        });
 
         // Add the step as the producer of the dataIOs it produces
         stepMapping

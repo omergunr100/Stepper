@@ -1,6 +1,7 @@
 package com.main.stepper.application.implementation.console;
 
 import com.main.stepper.application.api.IApplication;
+import com.main.stepper.application.implementation.console.data.parser.DataParser;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
@@ -216,8 +217,18 @@ public class ConsoleApplication implements IApplication {
 
         System.out.println("Executing flow...");
         IFlowRunResult result = engine.runFlow(flowName, inputs);
-        // TODO: present the user with the results of the run.
-        System.out.println("Flow executed successfully.");
+        System.out.println("Flow run info:");
+        System.out.println("\tFlow run id: " + result.runId());
+        System.out.println("\tFlow name: " + result.name());
+        System.out.println("\tFlow execution result flag: " + result.result());
+        System.out.println("\tFlow formal outputs:");
+        DataParser parser = DataParser.instance();
+        for(IDataIO output : result.flowOutputs().keySet()){
+            Object value = result.flowOutputs().get(output);
+            // TODO: check to see if all types have a toString method.
+            System.out.println("\t\t" + output.getUserString() + ": ");
+            System.out.println("\t\t\t" + parser.parse(value).replaceAll("\n","\n\t\t\t"));
+        }
     }
 
     @Override
