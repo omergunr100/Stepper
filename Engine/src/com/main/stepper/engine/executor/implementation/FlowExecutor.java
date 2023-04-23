@@ -14,6 +14,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +53,12 @@ public class FlowExecutor implements IFlowExecutor {
             }
         }
 
+        List<String> stepRunUUID = new ArrayList<>();
         for(IStepUsageDeclaration step : flow.steps()){
             IStepExecutionContext stepContext = context.getStepExecutionContext(step);
             IStepRunResult result = step.step().execute(stepContext);
+            result.setAlias(step.name());
+            stepRunUUID.add(result.runId());
             context.statistics().addRunResult(result);
 
             if(result.result().equals(StepResult.FAILURE)){
@@ -85,7 +89,7 @@ public class FlowExecutor implements IFlowExecutor {
             }
         }
         Duration duration = Duration.between(startTime, LocalTime.now());
-        FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs);
+        FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs, stepRunUUID);
         context.statistics().addRunResult(flowRunResult);
         return flowRunResult;
     }

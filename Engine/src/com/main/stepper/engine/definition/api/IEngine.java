@@ -5,13 +5,13 @@ import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.logger.implementation.data.Log;
+import com.main.stepper.statistics.StatManager;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IEngine {
-    static IEngine getInstance(){return null;}
-
     /**
      * @param path - path to the xml file
      * @return - list of errors, if there were no errors, the list will be empty
@@ -44,28 +44,22 @@ public interface IEngine {
     /**
      * @return - list of flow runs
      */
-    List<String> getFlowRuns();
+    List<IFlowRunResult> getFlowRuns();
 
     /**
      * @param runId - run UUID
      * @return - flow run result object
      */
-    IFlowRunResult getFlowRunInfo(UUID runId);
+    IFlowRunResult getFlowRunInfo(String runId);
 
     /**
-     * @return - statistics about step/flow runs
+     * @return - statistics manager used by the engine
      */
-    String getStatistics();
+    StatManager getStatistics();
 
     /**
-     * @param flowName - name of the flow
-     * @return - list of mandatory inputs that are not connected to any step
+     * @param uuid - the step run uuid
+     * @return - list of logs for the specified run
      */
-    List<IDataIO> getFreeMandatoryInputs(String flowName);
-
-    /**
-     * @param flowName - name of the flow
-     * @return - list of optional inputs that are not connected to any step
-     */
-    List<IDataIO> getFreeOptionalInputs(String flowName);
+    List<Log> getLogs(String uuid);
 }

@@ -13,6 +13,7 @@ import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.flow.execution.implementation.FlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.statistics.StatManager;
 import com.main.stepper.xml.generated.STFlow;
@@ -121,27 +122,26 @@ public final class Engine implements IEngine {
     }
 
     @Override
-    public List<String> getFlowRuns() {
-        return null;
+    public List<IFlowRunResult> getFlowRuns() {
+        return statistics.getFlowRuns();
     }
 
     @Override
-    public IFlowRunResult getFlowRunInfo(UUID runId) {
-        return null;
+    public IFlowRunResult getFlowRunInfo(String runId) {
+        return statistics.getFlowRuns()
+                .stream()
+                .filter(result->result.runId().equals(runId))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public String getStatistics() {
-        return null;
+    public StatManager getStatistics() {
+        return statistics;
     }
 
     @Override
-    public List<IDataIO> getFreeMandatoryInputs(String flowName) {
-        return null;
-    }
-
-    @Override
-    public List<IDataIO> getFreeOptionalInputs(String flowName) {
-        return null;
+    public List<Log> getLogs(String uuid) {
+        return logger.getLog(uuid);
     }
 }

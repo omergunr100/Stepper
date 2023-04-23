@@ -6,14 +6,21 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.data.BadReadException;
 import com.main.stepper.exceptions.xml.XMLException;
+import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.logger.implementation.data.Log;
+import com.main.stepper.statistics.StatManager;
 
+import java.time.LocalTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ConsoleApplication implements IApplication {
     public static void main(String[] args) {
@@ -230,15 +237,70 @@ public class ConsoleApplication implements IApplication {
         }
     }
 
+    private IFlowRunResult getPastRunChoice(){
+        List<IFlowRunResult> runs = engine.getFlowRuns();
+
+        System.out.println("Please choose one of the following flows by 'Run Id': (or enter '0' to exit)");
+
+        for(IFlowRunResult result : runs) {
+            System.out.println("Name: " + result.name()
+                    + "\nRun Id: " + result.runId()
+                    + "\nStart time: " + LocalTime.from(result.startTime()).toString());
+            System.out.println();
+        }
+
+
+        List<String> runIds = runs.stream().map(run->run.runId()).collect(Collectors.toList());
+        String input;
+        do {
+            input = scanner.nextLine();
+            final String in = input;
+            if(input.equals("0"))
+                return null;
+            if(runIds.contains(input))
+                return runs.stream().filter(run->run.runId().equals(in)).findFirst().get();
+            System.out.println("Invalid input, please try again.");
+            input = null;
+        }while(input == null);
+
+        return null;
+    }
+
     @Override
     public void pastRunFullInformation() {
-        System.out.println("Please enter the UUID of the run:");
-        String uuid = scanner.nextLine();
-        IFlowRunResult result = engine.getFlowRunInfo(UUID.fromString(uuid));
-        if(result == null)
-            System.out.println("No such run was found.");
-        else
-            System.out.println(result);
+        IFlowRunResult choice = getPastRunChoice();
+        if(choice == null)
+            return;
+
+        System.out.println("Run Id: " + choice.runId()
+                + "\nFlow name: " + choice.name()
+                + "\nFlow run result: " + choice.result()
+                + "\nFlow run-time: " + choice.duration().toMillis() + " ms"
+                + "\nUser inputs:"
+        );
+        for(IDataIO input : choice.userInputs().keySet()){
+            System.out.println("\tName: " + input.getName()
+                    + "\n\tType: " + input.getDataDefinition().getName()
+                    + "\n\tContent: " + choice.userInputs().get(input)
+                    + "\n"
+            );
+        }
+        // TODO: add print of steps information - probably should add a list of them to FlowRunResult
+        StatManager manager = engine.getStatistics();
+        System.out.println("Steps in flow:");
+        for(String uuid : choice.stepRunUUID()){
+            IStepRunResult result = manager.getStepRunResult(uuid);
+            System.out.println("\tName: " + result.alias()
+                    + "\n\tRun-time: " + result.duration().toMillis() + " ms"
+                    + "\n\tResult flag: " + result.result()
+                    + "\n\tSummary: " + result.summary()
+                    + "\n\tLogs:"
+            );
+            List<Log> stepLogs = engine.getLogs(uuid);
+            for(Log log : stepLogs)
+                System.out.println("\t\t" + log.toString().replaceAll("\n", "\n\t\t"));
+            System.out.println();
+        }
     }
 
     @Override

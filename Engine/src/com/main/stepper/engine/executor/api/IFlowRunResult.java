@@ -5,6 +5,7 @@ import com.main.stepper.io.api.IDataIO;
 
 import java.time.Duration;
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Map;
 
 public interface IFlowRunResult {
@@ -23,4 +24,6 @@ public interface IFlowRunResult {
     Map<IDataIO, Object> internalOutputs();
 
     Map<IDataIO, Object> flowOutputs();
+
+    List<String> stepRunUUID();
 }
