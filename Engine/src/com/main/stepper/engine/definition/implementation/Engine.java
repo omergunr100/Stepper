@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public final class Engine implements IEngine {
     private final ILogger logger;
     private final StatManager statistics;
-    private List<IFlowDefinition> flows;
+    private final List<IFlowDefinition> flows;
     private Boolean validated;
 
     public Engine(){
@@ -45,6 +45,13 @@ public final class Engine implements IEngine {
 
     @Override
     public List<String> readSystemFromXML(String path) throws XMLException {
+        // Reset all variables from old xml
+        validated = false;
+        flows.clear();
+        logger.clear();
+        statistics.clear();
+
+        // Read xml file
         IValidator pipelineValidator = new Validator(path);
         List<String> errors = pipelineValidator.validate();
         if(errors.isEmpty()){

@@ -64,4 +64,9 @@ public class StatManager {
     public Integer getStepRunCount(String stepName){
         return stepRunResults.stream().filter(f->f.name().equals(stepName)).collect(Collectors.toList()).size();
     }
+
+    public void clear() {
+        flowRunResults.clear();
+        stepRunResults.clear();
+    }
 }

@@ -2,6 +2,7 @@ package com.main.stepper.application.implementation.console;
 
 import com.main.stepper.application.api.IApplication;
 import com.main.stepper.application.implementation.console.data.parser.DataParser;
+import com.main.stepper.data.DDRegistry;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
@@ -14,12 +15,10 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.statistics.StatManager;
+import com.main.stepper.step.definition.StepRegistry;
 
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConsoleApplication implements IApplication {
@@ -306,6 +305,24 @@ public class ConsoleApplication implements IApplication {
     @Override
     public void getSystemStatistics() {
         // TODO: implement this method.
+        List<String> flowNames = engine.getFlowNames();
+        StatManager statistics = engine.getStatistics();
+        System.out.println("Showing system statistics:");
+        System.out.println("Flows:");
+        for(String flowName : flowNames){
+            System.out.println("\tFlow name: " + flowName
+                    + "\n\tTimes run: " + statistics.getFlowRunCount(flowName)
+                    + "\n\tAverage run-time: " + statistics.getFlowRunAverageTimeMS(flowName).toMillis() + " ms\n"
+            );
+        }
+        List<String> stepNames = Arrays.stream(StepRegistry.values()).map(StepRegistry::getName).collect(Collectors.toList());
+        System.out.println("Steps:");
+        for(String stepName : stepNames){
+            System.out.println("\tStep name: " + stepName
+                    + "\n\tTimes run: " + statistics.getStepRunCount(stepName)
+                    + "\n\tAverage run-time: " + statistics.getStepRunAverageTimeMS(stepName).toMillis() + " ms\n"
+            );
+        }
     }
 
     @Override

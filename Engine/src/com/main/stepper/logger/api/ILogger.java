@@ -9,5 +9,5 @@ public interface ILogger {
     void log(String message);
     List<Log> getLog(String uuid);
     ILogger getSubLogger(String uuid);
-
+    void clear();
 }

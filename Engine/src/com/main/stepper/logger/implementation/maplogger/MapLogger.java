@@ -45,4 +45,9 @@ public class MapLogger implements ILogger {
     public ILogger getSubLogger(String uuid) {
         return new MapLogger(uuid, logs);
     }
+
+    @Override
+    public void clear() {
+        logs.clear();
+    }
 }
