@@ -295,7 +295,7 @@ public class ConsoleApplication implements IApplication {
                     + "\n\tSummary: " + result.summary()
                     + "\n\tLogs:"
             );
-            List<Log> stepLogs = engine.getLogs(uuid);
+            List<Log> stepLogs = Optional.ofNullable(engine.getLogs(uuid)).orElse(new ArrayList<>());
             for(Log log : stepLogs)
                 System.out.println("\t\t" + log.toString().replaceAll("\n", "\n\t\t"));
             System.out.println();
@@ -304,7 +304,6 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void getSystemStatistics() {
-        // TODO: implement this method.
         List<String> flowNames = engine.getFlowNames();
         StatManager statistics = engine.getStatistics();
         System.out.println("Showing system statistics:");

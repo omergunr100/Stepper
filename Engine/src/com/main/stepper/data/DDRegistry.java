@@ -18,7 +18,6 @@ public enum DDRegistry implements IDataDefinition {
     DOUBLE(new DoubleDef()),
     RELATION(new RelationDef()),
     FILE(new FileDef()),
-    MAPPING(new MappingDef()), // TODO: remove once mapping specific types are implemented
     INT_TO_INT_MAPPING(new IntToIntMappingDef()),
     STRING_LIST(new StringListDef()),
     RELATION_LIST(new RelationListDef()),
