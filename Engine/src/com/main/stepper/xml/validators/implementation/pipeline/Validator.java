@@ -68,20 +68,6 @@ public final class Validator implements IValidator {
 
         // Check for references to steps that aren't defined in flow
 
-
-
-
-
-
-
-    // check for mandatory inputs which are not user friendly
-    // check for step/data names that don't exist in the flow
-    // check for ordering of steps (can't have the output of a step be the input of a step that comes before it)
-    // check for linking of different data types
-    // check for aliasing of step/data names that don't exist in the flow
-    // check that all flow outputs are linked to some step output
-    // check that there aren't multiple mandatory inputs with different data types and same name
-
         return errors;
     }
 

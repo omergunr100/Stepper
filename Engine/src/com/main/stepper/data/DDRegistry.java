@@ -22,7 +22,6 @@ public enum DDRegistry implements IDataDefinition {
     STRING_LIST(new StringListDef()),
     RELATION_LIST(new RelationListDef()),
     NUMBER_LIST(new NumberListDef()),
-    MAPPING_LIST(new MappingListDef()), // TODO: maybe delete if becomes problematic due to many mapping types
     FILE_LIST(new FileListDef()),
     DOUBLE_LIST(new DoubleListDef())
     ;

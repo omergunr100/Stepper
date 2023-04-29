@@ -2,7 +2,6 @@ package com.main.stepper.application.implementation.console;
 
 import com.main.stepper.application.api.IApplication;
 import com.main.stepper.application.implementation.console.data.parser.DataParser;
-import com.main.stepper.data.DDRegistry;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.Engine;
@@ -11,7 +10,6 @@ import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.data.BadReadException;
 import com.main.stepper.exceptions.xml.XMLException;
-import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.statistics.StatManager;
@@ -232,7 +230,12 @@ public class ConsoleApplication implements IApplication {
             Object value = result.flowOutputs().get(output);
             // TODO: check to see if all types have a toString method.
             System.out.println("\t\t" + output.getUserString() + ": ");
-            System.out.println("\t\t\t" + parser.parse(value).replaceAll("\n","\n\t\t\t"));
+            if(value != null){
+                System.out.println("\t\t\t" + parser.parse(value).replaceAll("\n","\n\t\t\t"));
+            }
+            else{
+                System.out.println("\t\t\tValue isn't set due to a run-time error in the flow.");
+            }
         }
     }
 
@@ -284,7 +287,6 @@ public class ConsoleApplication implements IApplication {
                     + "\n"
             );
         }
-        // TODO: add print of steps information - probably should add a list of them to FlowRunResult
         StatManager manager = engine.getStatistics();
         System.out.println("Steps in flow:");
         for(String uuid : choice.stepRunUUID()){

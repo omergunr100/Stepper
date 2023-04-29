@@ -68,11 +68,18 @@ public class MappingParser implements IParser {
         // Get all custom mappings
         STCustomMappings stCustomMappings = flow.getSTCustomMappings();
         if(stCustomMappings != null){
-            List<STCustomMapping> customMappings = stCustomMappings.getSTCustomMapping();
+            // Keep a tab on all the unprocessed custom mappings
+            List<STCustomMapping> customMappings = new ArrayList<>();
+            customMappings.addAll(stCustomMappings.getSTCustomMapping());
+
+            List<STCustomMapping> used = new ArrayList<>();
             for(IStepUsageDeclaration step : mapping.keySet()){
                 // Get the step mapping
                 Map<IDataIO, IDataIO> stepMapping = mapping.get(step);
                 List<IDataIO> aliasedIOs = new ArrayList<>(stepMapping.values());
+
+                // Find custom mappings that reference steps that don't exist
+
 
                 // For each custom mapping for the current step:
                 // find the correlated aliased dataIO and replace it with the custom mapping
@@ -82,7 +89,13 @@ public class MappingParser implements IParser {
                         .forEach(mapping -> {
                             aliasedIOs.stream()
                                     .filter(dataIO -> dataIO.getName().equals(mapping.getTargetData()))
-                                    .forEach(dataIO -> stepMapping.put(stepMapping.keySet().stream().filter(key -> stepMapping.get(key).equals(dataIO)).findAny().get(), new DataIO(mapping.getSourceData(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition())));
+                                    .forEach(dataIO -> {
+                                                stepMapping.put(stepMapping.keySet()
+                                                        .stream()
+                                                        .filter(key -> stepMapping.get(key).equals(dataIO))
+                                                        .findAny().get(),
+                                                        new DataIO(mapping.getSourceData(), dataIO.getUserString(), dataIO.getNecessity(), dataIO.getDataDefinition()));
+                                            });
                         });
             }
         }
