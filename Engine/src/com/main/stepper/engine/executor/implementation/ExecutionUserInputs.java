@@ -1,6 +1,6 @@
 package com.main.stepper.engine.executor.implementation;
 
-import com.main.stepper.exceptions.data.BadReadException;
+import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.DataNecessity;
@@ -34,12 +34,10 @@ public class ExecutionUserInputs {
         return userInputsToSteps.get(input);
     }
 
-    public void readUserInput(IDataIO input, String value) throws BadReadException {
-        // TODO: add BadTypeException to readValue method in case of bad conversion
+    public void readUserInput(IDataIO input, String value) throws BadTypeException {
         try {
             userInputs.put(input, input.getDataDefinition().readValue(value));
-        } catch (UnfriendlyInputException e) {
-        }
+        } catch (UnfriendlyInputException e) {}
     }
 
     public Boolean isFilled(IDataIO input) {
@@ -51,9 +49,7 @@ public class ExecutionUserInputs {
     public Boolean validateUserInputs() {
         List<IDataIO> mandatory = openUserInputs.stream().filter(data -> data.getNecessity().equals(DataNecessity.MANDATORY)).collect(Collectors.toList());
         for (IDataIO input : mandatory) {
-            if (!userInputs.containsKey(input))
-                return false;
-            if(userInputs.get(input) == null)
+            if (!isFilled(input))
                 return false;
         }
         return true;

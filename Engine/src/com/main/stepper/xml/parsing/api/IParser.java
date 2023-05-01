@@ -1,8 +1,8 @@
 package com.main.stepper.xml.parsing.api;
 
-import com.main.stepper.exceptions.xml.XMLException;
+import java.util.List;
 
 public interface IParser {
-    <T> T parse() throws XMLException;
+    List<String> parse();
     <T> T get();
 }

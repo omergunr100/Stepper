@@ -5,6 +5,6 @@ import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
 
 public class IntToIntMappingDef extends AbstractDataDef {
     public IntToIntMappingDef() {
-        super("Mapping", false, IntToIntPair.class);
+        super("Int to Int map", false, IntToIntPair.class);
     }
 }

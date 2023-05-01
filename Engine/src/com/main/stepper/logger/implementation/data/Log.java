@@ -1,19 +1,22 @@
 package com.main.stepper.logger.implementation.data;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
 public class Log {
+    private Instant time;
     private String message;
-    private static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
     public Log(String message){
-        this.message = format.format(new Date()) + " - " + message;
+        this.time = Instant.now();
+        this.message = message;
     }
 
     @Override
     public String toString() {
-        return message;
+        return "[" + formatter.format(time) + "] " + message;
     }
 }

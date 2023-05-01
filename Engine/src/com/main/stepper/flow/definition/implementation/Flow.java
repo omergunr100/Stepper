@@ -7,6 +7,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.flow.ValidateInputOutputOrderAndType;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateOutputNames;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoMultipleMandatoryInputsOfDifferentType;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoUnUserFriendlyMandatoryInputs;
@@ -66,9 +67,7 @@ public class Flow implements IFlowDefinition {
     @Override
     public IDataIO mapsTo(IStepUsageDeclaration step, IDataIO io) {
         Optional<Map<IDataIO, IDataIO>> stepMap = Optional.ofNullable(mappings.get(step));
-        if(stepMap.isPresent())
-            return stepMap.get().get(io);
-        return null;
+        return stepMap.map(iDataIOIDataIOMap -> iDataIOIDataIOMap.get(io)).orElse(null);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class Flow implements IFlowDefinition {
         // Add the step to the list of steps
         steps.add(step);
         mappings.put(step, stepMapping);
-        allOutputs.addAll(step.step().getOutputs().stream().map(dataIO -> stepMapping.get(dataIO)).collect(Collectors.toList()));
+        allOutputs.addAll(step.step().getOutputs().stream().map(stepMapping::get).collect(Collectors.toList()));
 
         // Add the step as the producer of the dataIOs it produces
         stepMapping
@@ -167,22 +166,15 @@ public class Flow implements IFlowDefinition {
         if(!errors.isEmpty())
             return errors;
 
-        // TODO: validate no reference to undefined steps in flow (4.3) - note: maybe implement in MappingParser
-
-        // TODO: validate no outputs come after inputs (4.3) - note: maybe implement in MappingParser
-
-        // TODO: validate input/output type match (4.3) - note: maybe implement in MappingParser
-
-        // TODO: validate no aliasing of steps/data that don't exist (4.4) - note: maybe implement in MappingParser
-
-        // TODO: validate no flow formal output is undefined (4.5) - note: exception in FlowParser
+        // validate no outputs come after inputs (4.3) and validate input/output type match (4.3)
+        IValidator validateInputOutputOrderAndType = new ValidateInputOutputOrderAndType(this);
+        errors.addAll(validateInputOutputOrderAndType.validate());
+        if(!errors.isEmpty())
+            return errors;
 
         // validate multiple mandatory inputs with same name but different types (4.6)
         IValidator validateNoMultipleMandatoryInputsOfDifferentType = new ValidateNoMultipleMandatoryInputsOfDifferentType(this);
         errors.addAll(validateNoMultipleMandatoryInputsOfDifferentType.validate());
-        if(!errors.isEmpty())
-            return errors;
-
         return errors;
     }
 
@@ -192,7 +184,7 @@ public class Flow implements IFlowDefinition {
         openInputs.addAll(requiredInputs);
         openInputs.addAll(optionalInputs);
 
-        IFlowInformation flowInformation = new FlowInformation(
+        return new FlowInformation(
                 name,
                 description,
                 formalOutputs,
@@ -202,7 +194,6 @@ public class Flow implements IFlowDefinition {
                 allOutputs,
                 dataToProducer,
                 dataToConsumer);
-        return flowInformation;
     }
 
     @Override

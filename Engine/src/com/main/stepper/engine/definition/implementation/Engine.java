@@ -9,6 +9,7 @@ import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
+import com.main.stepper.flow.definition.implementation.Flow;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.flow.execution.implementation.FlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
@@ -45,33 +46,35 @@ public final class Engine implements IEngine {
 
     @Override
     public List<String> readSystemFromXML(String path) throws XMLException {
-        // Reset all variables from old xml
-        validated = false;
-        flows.clear();
-        logger.clear();
-        statistics.clear();
-
         // Read xml file
         IValidator pipelineValidator = new Validator(path);
         List<String> errors = pipelineValidator.validate();
-        if(errors.isEmpty()){
-            // Read system from validator
-            STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
-            List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
-            for(STFlow stFlow : stFlows){
-                IParser flowParser = new FlowParser(stFlow);
-                IFlowDefinition flow = flowParser.parse();
-                errors.addAll(flow.validateFlowStructure());
-                if(!errors.isEmpty()){
-                    flows.clear();
-                    return errors;
-                }
-                flows.add(flow);
-            }
+        List<IFlowDefinition> fileFlows = new ArrayList<>();
+
+        if(!errors.isEmpty())
+            return errors;
+
+        // Read system from validator
+        STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
+        List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
+        for(STFlow stFlow : stFlows){
+            IParser flowParser = new FlowParser(stFlow);
+            errors.addAll(flowParser.parse());
+            if(!errors.isEmpty())
+                return errors;
+            IFlowDefinition flow = flowParser.get();
+            errors.addAll(flow.validateFlowStructure());
+            fileFlows.add(flow);
         }
 
-        if(errors.isEmpty())
+        if(errors.isEmpty()){
             validated = true;
+            // Reset all
+            flows.clear();
+            flows.addAll(fileFlows);
+            logger.clear();
+            statistics.clear();
+        }
 
         return errors;
     }

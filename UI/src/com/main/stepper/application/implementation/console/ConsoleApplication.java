@@ -8,7 +8,7 @@ import com.main.stepper.engine.definition.implementation.Engine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
-import com.main.stepper.exceptions.data.BadReadException;
+import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
@@ -212,7 +212,7 @@ public class ConsoleApplication implements IApplication {
                 input = scanner.nextLine();
                 try {
                     inputs.readUserInput(inputs.getOpenUserInputs().get(choice - 1), input);
-                } catch (BadReadException e) {
+                } catch (BadTypeException e) {
                     System.out.println("The input doesn't match the required type!");
                 }
             }
@@ -228,7 +228,6 @@ public class ConsoleApplication implements IApplication {
         DataParser parser = DataParser.instance();
         for(IDataIO output : result.flowOutputs().keySet()){
             Object value = result.flowOutputs().get(output);
-            // TODO: check to see if all types have a toString method.
             System.out.println("\t\t" + output.getUserString() + ": ");
             if(value != null){
                 System.out.println("\t\t\t" + parser.parse(value).replaceAll("\n","\n\t\t\t"));

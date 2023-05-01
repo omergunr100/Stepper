@@ -1,6 +1,6 @@
 package com.main.stepper.data.api;
 
-import com.main.stepper.exceptions.data.BadReadException;
+import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 
 public abstract class AbstractDataDef implements IDataDefinition {
@@ -30,7 +30,7 @@ public abstract class AbstractDataDef implements IDataDefinition {
     }
 
     @Override
-    public <T> T readValue(String data) throws BadReadException, UnfriendlyInputException {
+    public <T> T readValue(String data) throws BadTypeException, UnfriendlyInputException {
         throw new UnfriendlyInputException("This data definition is not user friendly.");
     }
 }

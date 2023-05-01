@@ -2,7 +2,7 @@ package com.main.stepper.flow.definition.api;
 
 import com.main.stepper.step.definition.api.IStepDefinition;
 
-public class StepUsageDeclaration implements IStepUsageDeclaration{
+public class StepUsageDeclaration implements IStepUsageDeclaration, Comparable<String>{
     private final String name;
     private final IStepDefinition step;
     private final Boolean skipIfFailed;
@@ -40,7 +40,7 @@ public class StepUsageDeclaration implements IStepUsageDeclaration{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || (!o.getClass().equals(String.class) && getClass() != o.getClass())) return false;
 
         StepUsageDeclaration that = (StepUsageDeclaration) o;
 
@@ -59,5 +59,10 @@ public class StepUsageDeclaration implements IStepUsageDeclaration{
                 ", skipIfFailed=" + skipIfFailed +
                 ", step=" + step +
                 '}';
+    }
+
+    @Override
+    public int compareTo(String o) {
+        return name.compareTo(o);
     }
 }

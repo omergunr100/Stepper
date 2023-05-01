@@ -4,12 +4,11 @@ import com.main.stepper.data.api.IDataDefinition;
 import com.main.stepper.data.implementation.file.FileDef;
 import com.main.stepper.data.implementation.list.definition.*;
 import com.main.stepper.data.implementation.mapping.IntToIntMappingDef;
-import com.main.stepper.data.implementation.mapping.MappingDef;
 import com.main.stepper.data.implementation.numeric.DoubleDef;
 import com.main.stepper.data.implementation.numeric.NumberDef;
 import com.main.stepper.data.implementation.relation.RelationDef;
 import com.main.stepper.data.implementation.string.StringDef;
-import com.main.stepper.exceptions.data.BadReadException;
+import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 
 public enum DDRegistry implements IDataDefinition {
@@ -48,7 +47,7 @@ public enum DDRegistry implements IDataDefinition {
     }
 
     @Override
-    public <T> T readValue(String data) throws BadReadException, UnfriendlyInputException {
+    public <T> T readValue(String data) throws BadTypeException, UnfriendlyInputException {
         return dataDef.readValue(data);
     }
 }

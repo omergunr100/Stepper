@@ -29,10 +29,14 @@ public class FlowParser implements IParser {
     }
 
     @Override
-    public Flow parse() throws XMLException {
+    public List<String> parse(){
         // Get flow properties and mapping
         flow = new Flow(stflow.getName(), stflow.getSTFlowDescription());
-        Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> flowMapping = new MappingParser(stflow).parse();
+        MappingParser mappingParser = new MappingParser(stflow);
+        List<String> errors = mappingParser.parse();
+        if(!errors.isEmpty())
+            return errors;
+        Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> flowMapping = mappingParser.get();
         // Add all step usages and mappings to flow
         flowMapping.keySet().stream().forEach(step -> flow.addStep(step, flowMapping.get(step)));
         // Get all outputs after aliasing
@@ -46,7 +50,7 @@ public class FlowParser implements IParser {
             Optional<IDataIO> match = outputs.stream().filter(dataIO -> dataIO.getName().equals(formalName)).findFirst();
 
             if(!match.isPresent())
-                throw new XMLException("No match found for formal output name: " + formalName + " in flow: " + flow.name());
+                errors.add("No match found for formal output name: " + formalName + " in flow: " + flow.name());
 
             flow.addFormalOutput(match.get());
         }
@@ -70,7 +74,7 @@ public class FlowParser implements IParser {
             currOutputs.addAll(mappedOutputs);
         }
 
-        return flow;
+        return errors;
     }
 
     @Override
