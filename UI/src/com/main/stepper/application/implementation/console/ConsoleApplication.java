@@ -39,6 +39,7 @@ public class ConsoleApplication implements IApplication {
     }
 
     private Integer getChoiceOfFlow(){
+        System.out.println();
         List<String> flowNames = engine.getFlowNames();
         if(flowNames.size() == 0){
             System.out.println("There are no flows in the system.");
@@ -113,7 +114,7 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void readSystemFromFile() {
-        System.out.println("Please enter the path to the file:");
+        System.out.println("\nPlease enter the path to the file:");
         String path = scanner.nextLine();
         List<String> errors;
         try{
@@ -252,7 +253,12 @@ public class ConsoleApplication implements IApplication {
     private IFlowRunResult getPastRunChoice(){
         List<IFlowRunResult> runs = engine.getFlowRuns();
 
-        System.out.println("Please choose one of the following flows by 'Run Id': (or enter '0' to exit)");
+        if(runs.size() == 0){
+            System.out.println("\nThere are no past runs to show.");
+            return null;
+        }
+
+        System.out.println("\nPlease choose one of the following flows by 'Run Id': (or enter '0' to exit)");
 
         for(IFlowRunResult result : runs) {
             System.out.println("Name: " + result.name()
@@ -318,7 +324,7 @@ public class ConsoleApplication implements IApplication {
     public void getSystemStatistics() {
         List<String> flowNames = engine.getFlowNames();
         StatManager statistics = engine.getStatistics();
-        System.out.println("Showing system statistics:");
+        System.out.println("\nShowing system statistics:");
         System.out.println("Flows:");
         for(String flowName : flowNames){
             System.out.println("\tFlow name: " + flowName
@@ -338,7 +344,7 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void createSystemBackup() {
-        System.out.println("Please enter the save-file path: (or enter '0' to exit)");
+        System.out.println("\nPlease enter the save-file path: (or enter '0' to exit)");
         String path = scanner.nextLine();
         if(path.equals("0"))
             return;
@@ -355,7 +361,7 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void reloadFromBackup() {
-        System.out.println("Please enter the save-file path: (or enter '0' to exit)");
+        System.out.println("\nPlease enter the save-file path: (or enter '0' to exit)");
         String path = scanner.nextLine();
         if(path.equals("0"))
             return;
@@ -375,7 +381,7 @@ public class ConsoleApplication implements IApplication {
 
     @Override
     public void exit() {
-        System.out.println("Exiting...");
+        System.out.println("\nExiting...");
         run = false;
     }
 }
