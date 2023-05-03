@@ -9,13 +9,16 @@ import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.data.BadTypeException;
+import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.definition.StepRegistry;
 
-import java.time.LocalTime;
+import java.io.IOException;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +74,9 @@ public class ConsoleApplication implements IApplication {
         System.out.println("3) Execute flow.");
         System.out.println("4) Show full information about a past run.");
         System.out.println("5) Get system statistics.");
-        System.out.println("6) Exit.");
+        System.out.println("6) Create a backup file.");
+        System.out.println("7) Load from backup file.");
+        System.out.println("8) Exit.");
 
         String input = scanner.nextLine();
         switch (input){
@@ -91,6 +96,12 @@ public class ConsoleApplication implements IApplication {
                 getSystemStatistics();
                 break;
             case "6":
+                createSystemBackup();
+                break;
+            case "7":
+                reloadFromBackup();
+                break;
+            case "8":
                 exit();
                 break;
             default:
@@ -124,7 +135,7 @@ public class ConsoleApplication implements IApplication {
     @Override
     public void showFlowInformation() {
         Integer choice = getChoiceOfFlow();
-        if(choice == 0)
+        if(choice <= 0)
             return;
 
         IFlowInformation flowInfo = engine.getFlowInfo(engine.getFlowNames().get(choice - 1));
@@ -167,7 +178,7 @@ public class ConsoleApplication implements IApplication {
     @Override
     public void executeFlow() {
         Integer choice = getChoiceOfFlow();
-        if(choice == 0)
+        if(choice <= 0)
             return;
 
         // Get required inputs to run the flow
@@ -246,7 +257,7 @@ public class ConsoleApplication implements IApplication {
         for(IFlowRunResult result : runs) {
             System.out.println("Name: " + result.name()
                     + "\nRun Id: " + result.runId()
-                    + "\nStart time: " + LocalTime.from(result.startTime()).toString());
+                    + "\nStart time: " + DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault()).format(result.startTime()));
             System.out.println();
         }
 
@@ -322,6 +333,43 @@ public class ConsoleApplication implements IApplication {
                     + "\n\tTimes run: " + statistics.getStepRunCount(stepName)
                     + "\n\tAverage run-time: " + statistics.getStepRunAverageTimeMS(stepName).toMillis() + " ms\n"
             );
+        }
+    }
+
+    @Override
+    public void createSystemBackup() {
+        System.out.println("Please enter the save-file path: (or enter '0' to exit)");
+        String path = scanner.nextLine();
+        if(path.equals("0"))
+            return;
+
+        try {
+            engine.writeSystemToFile(path);
+            System.out.println("Backup created successfully.");
+        } catch (NotAFileException e) {
+            System.out.println("Error: path isn't a valid file!");
+        } catch (IOException e) {
+            System.out.println("Error: can't write to file!");
+        }
+    }
+
+    @Override
+    public void reloadFromBackup() {
+        System.out.println("Please enter the save-file path: (or enter '0' to exit)");
+        String path = scanner.nextLine();
+        if(path.equals("0"))
+            return;
+
+        try {
+            Boolean result = engine.readSystemFromFile(path);
+            if(result)
+                System.out.println("Backup restored successfully.");
+            else
+                System.out.println("Couldn't restore from backup.");
+        } catch (NotAFileException e) {
+            System.out.println("Error: path isn't a valid file!");
+        } catch (IOException e) {
+            System.out.println("Error: can't read from file!");
         }
     }
 

@@ -3,10 +3,11 @@ package com.main.stepper.flow.definition.api;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.io.api.IDataIO;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public interface IFlowDefinition {
+public interface IFlowDefinition extends Serializable {
     String name();
     String description();
     Boolean isReadOnly();

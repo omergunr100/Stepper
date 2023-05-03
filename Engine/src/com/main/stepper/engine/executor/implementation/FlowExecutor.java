@@ -12,8 +12,7 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,7 @@ public class FlowExecutor implements IFlowExecutor {
     @Override
     public IFlowRunResult executeFlow(IFlowDefinition flow, IFlowExecutionContext context) {
         // Remember start time
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Default flag is success
         FlowResult flag = FlowResult.SUCCESS;
 
@@ -88,7 +87,7 @@ public class FlowExecutor implements IFlowExecutor {
                 }
             }
         }
-        Duration duration = Duration.between(startTime, LocalTime.now());
+        Duration duration = Duration.between(startTime, Instant.now());
         FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs, stepRunUUID);
         context.statistics().addRunResult(flowRunResult);
         return flowRunResult;

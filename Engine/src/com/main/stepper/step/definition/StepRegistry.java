@@ -3,7 +3,6 @@ package com.main.stepper.step.definition;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.step.definition.api.IStepDefinition;
-import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.definition.implementation.*;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 

@@ -4,12 +4,13 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
+import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
-import com.main.stepper.flow.definition.implementation.Flow;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.flow.execution.implementation.FlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
@@ -24,13 +25,14 @@ import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public final class Engine implements IEngine {
-    private final ILogger logger;
-    private final StatManager statistics;
-    private final List<IFlowDefinition> flows;
+    private ILogger logger;
+    private StatManager statistics;
+    private List<IFlowDefinition> flows;
     private Boolean validated;
 
     public Engine(){
@@ -153,5 +155,60 @@ public final class Engine implements IEngine {
     @Override
     public List<Log> getLogs(String uuid) {
         return logger.getLog(uuid);
+    }
+
+    @Override
+    public void writeSystemToFile(String path) throws NotAFileException, IOException {
+        File file = new File(path);
+        if(!file.exists()) {
+            if(file.getParentFile() == null)
+                throw new NotAFileException();
+
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        if(!file.isFile())
+            throw new NotAFileException();
+
+
+        try(
+            FileOutputStream fout = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fout);
+                ){
+            out.writeObject(logger);
+            out.writeObject(statistics);
+            out.writeObject(flows);
+            out.writeObject(validated);
+        } catch (IOException e){
+            throw e;
+        }
+    }
+
+    @Override
+    public Boolean readSystemFromFile(String path) throws NotAFileException, IOException {
+        File file = new File(path);
+        if(!file.exists())
+            return false;
+        if(!file.isFile())
+            throw new NotAFileException();
+
+        try (
+            FileInputStream fin = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fin)
+                ){
+            ILogger tLogger = (ILogger) in.readObject();
+            StatManager tStatistics = (StatManager) in.readObject();
+            List<IFlowDefinition> tFlows = (List<IFlowDefinition>) in.readObject();
+            Boolean tValidated = (Boolean) in.readObject();
+
+            logger = tLogger;
+            statistics = tStatistics;
+            flows = tFlows;
+            validated = tValidated;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+
+        return true;
     }
 }

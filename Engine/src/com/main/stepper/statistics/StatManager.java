@@ -3,19 +3,25 @@ package com.main.stepper.statistics;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StatManager {
+public class StatManager implements Serializable {
     private final List<IFlowRunResult> flowRunResults;
     private final List<IStepRunResult> stepRunResults;
 
     public StatManager(){
         flowRunResults = new LinkedList<>();
         stepRunResults = new LinkedList<>();
+    }
+
+    public StatManager(List<IFlowRunResult> flowRunResults, List<IStepRunResult> stepRunResults){
+        this.flowRunResults = flowRunResults;
+        this.stepRunResults = stepRunResults;
     }
 
     public List<IFlowRunResult> getFlowRuns(){

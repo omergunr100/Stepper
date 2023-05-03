@@ -63,6 +63,16 @@ public interface IApplication {
     void getSystemStatistics();
 
     /**
+     * Writes the system information to specified file.
+     */
+    void createSystemBackup();
+
+    /**
+     * Reads system information from file
+     */
+    void reloadFromBackup();
+
+    /**
      * Exits the application.
      */
     void exit();

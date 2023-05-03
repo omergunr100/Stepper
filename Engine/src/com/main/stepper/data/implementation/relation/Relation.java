@@ -1,11 +1,12 @@
 package com.main.stepper.data.implementation.relation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Relation {
+public class Relation implements Serializable {
     private List<String> columns;
     private List<TableRow> rows;
 
@@ -57,7 +58,7 @@ public class Relation {
         return builder.toString();
     }
 
-    private class TableRow {
+    private class TableRow implements Serializable {
         private Map<String, String> data;
 
         public TableRow() {

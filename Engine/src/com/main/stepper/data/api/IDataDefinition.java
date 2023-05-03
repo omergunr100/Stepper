@@ -3,7 +3,9 @@ package com.main.stepper.data.api;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 
-public interface IDataDefinition {
+import java.io.Serializable;
+
+public interface IDataDefinition extends Serializable {
     String getName();
     Boolean isUserFriendly();
     Class<?> getType();

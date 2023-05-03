@@ -5,7 +5,7 @@ import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.io.api.IDataIO;
 
 import java.time.Duration;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -13,14 +13,14 @@ public class FlowRunResult implements IFlowRunResult {
     private final String runId;
     private final String name;
     private final FlowResult result;
-    private final Temporal startTime;
+    private final Instant startTime;
     private final Duration duration;
     private final Map<IDataIO, Object> userInputs;
     private final Map<IDataIO, Object> internalOutputs;
     private final Map<IDataIO, Object> flowOutputs;
     private final List<String> stepRunUUID;
 
-    public FlowRunResult(String runId, String name, FlowResult result, Temporal startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID) {
+    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID) {
         this.runId = runId;
         this.name = name;
         this.result = result;
@@ -48,7 +48,7 @@ public class FlowRunResult implements IFlowRunResult {
     }
 
     @Override
-    public Temporal startTime() {
+    public Instant startTime() {
         return startTime;
     }
 

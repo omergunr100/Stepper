@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MapLogger implements ILogger {
     private String uuid;
-    private Map<String, List<Log>> logs;
+    private final Map<String, List<Log>> logs;
 
     public MapLogger(){
         uuid = null;

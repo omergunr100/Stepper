@@ -3,13 +3,16 @@ package com.main.stepper.engine.definition.api;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
+import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.statistics.StatManager;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-public interface IEngine {
+public interface IEngine extends Serializable {
     /**
      * @param path - path to the xml file
      * @return - list of errors, if there were no errors, the list will be empty
@@ -60,4 +63,15 @@ public interface IEngine {
      * @return - list of logs for the specified run
      */
     List<Log> getLogs(String uuid);
+
+    /**
+     * @param path - path to the file
+     */
+    void writeSystemToFile(String path) throws NotAFileException, IOException;
+
+    /**
+     * @param path - path to the file
+     * @return - true if successful, false if failed
+     */
+    Boolean readSystemFromFile(String path) throws NotAFileException, IOException;
 }
