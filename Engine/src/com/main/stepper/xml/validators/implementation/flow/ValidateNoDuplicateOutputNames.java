@@ -43,7 +43,7 @@ public class ValidateNoDuplicateOutputNames implements IValidator {
         duplicateCount.keySet().stream()
                 .filter(key -> duplicateCount.get(key) > 1)
                 .forEach(key ->{
-                    errors.add("Output: " + key.getName() + ", shows up: " + duplicateCount.get(key) + " times in flow.");
+                    errors.add("Output: " + key.getName() + ", shows up: " + duplicateCount.get(key) + " times in flow: " + flow.name());
                 });
 
         return errors;

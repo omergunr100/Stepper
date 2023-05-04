@@ -24,7 +24,7 @@ public class ValidateNoUnUserFriendlyMandatoryInputs implements IValidator {
                 .filter(input -> !input.getDataDefinition().isUserFriendly())
                 .collect(Collectors.toList())
                 .forEach(input -> {
-                    errors.add("Input: " + input.getName() + " is mandatory and isn't user friendly.");
+                    errors.add("Input: " + input.getName() + " is mandatory and isn't user friendly in flow: " + flow.name());
                 });
 
         return errors;

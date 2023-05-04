@@ -30,7 +30,7 @@ public class ValidateNoDuplicateFlowOutputs implements IValidator {
                 .keySet()
                 .stream()
                 .filter(key -> flowOutputs.get(key) > 1)
-                .forEach(key -> errors.add("Duplicate flow output name: " + key + " - shows up " + flowOutputs.get(key) + " times"));
+                .forEach(key -> errors.add("Duplicate flow output name: " + key + " - shows up " + flowOutputs.get(key) + " times in flow: " + flow.getName()));
 
         return errors;
     }
