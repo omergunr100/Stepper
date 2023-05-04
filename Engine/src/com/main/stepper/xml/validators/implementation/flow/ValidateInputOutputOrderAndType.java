@@ -20,11 +20,13 @@ public class ValidateInputOutputOrderAndType implements IValidator {
         List<String> errors = new ArrayList<>();
         // Get all outputs and their generating step index
         Map<IDataIO, Integer> allOutputs = new HashMap<>();
+        Map<IDataIO, IStepUsageDeclaration> outputToStep = new HashMap<>();
         for (int i = 0; i < flow.steps().size(); i++){
             IStepUsageDeclaration step = flow.steps().get(i);
             int finalI = i;
             flow.mappings().get(step).values().stream().filter(dataIO -> dataIO.getNecessity().equals(DataNecessity.NA)).forEach(output->{
                 allOutputs.put(output, finalI);
+                outputToStep.put(output, step);
             });
         }
 
@@ -42,7 +44,7 @@ public class ValidateInputOutputOrderAndType implements IValidator {
                     }
                     // Check if the input and output are of the same type
                     else if(!input.getDataDefinition().getType().equals(output.getDataDefinition().getType())){
-                        errors.add("Flow: " + flow.name() + " - Input: " + input.getName() + " and Output: " + output.getName() + " are of different types.");
+                        errors.add("Flow: " + flow.name() + " - Input: " + input.getName() + " of step: " + step.name() + " and Output: " + output.getName() + " of step: " + outputToStep.get(output).name() + " are of different types.");
                     }
                 }
             });

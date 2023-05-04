@@ -110,27 +110,37 @@ public class MappingParser implements IParser {
                 }
 
                 // Check for non-existent source step
-                if(sourceLoc == -1)
+                if(sourceLoc == -1) {
                     errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getSourceStep() + " is not a valid step name.");
+                    return errors;
+                }
                 // Check for non-existent source dataIO / not output
                 else{
                     IStepUsageDeclaration source = stepsInFlow.get(sourceLoc);
-                    if(mapping.get(source).values().stream().filter(dataIO->dataIO.getNecessity().equals(DataNecessity.NA)).filter(dataIO->dataIO.getName().equals(custom.getSourceData())).count() != 1)
-                        errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getSourceData() + " is not a valid data member name in step: " + source.name());
+                    if(mapping.get(source).values().stream().filter(dataIO->dataIO.getNecessity().equals(DataNecessity.NA)).filter(dataIO->dataIO.getName().equals(custom.getSourceData())).count() != 1) {
+                        errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getSourceData() + " is not a valid output name in step: " + source.name());
+                        return errors;
+                    }
                 }
                 // Check for non-existent target step
-                if (targetLoc == -1)
+                if (targetLoc == -1) {
                     errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getTargetStep() + " is not a valid step name.");
+                    return errors;
+                }
                 // Check for non-existent target dataIO / not input
                 else{
                     IStepUsageDeclaration target = stepsInFlow.get(targetLoc);
-                    if(mapping.get(target).values().stream().filter(dataIO->!dataIO.getNecessity().equals(DataNecessity.NA)).filter(dataIO->dataIO.getName().equals(custom.getTargetData())).count() != 1)
-                        errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getTargetData() + " is not a valid data member name in step: " + target.name());
+                    if(mapping.get(target).values().stream().filter(dataIO->!dataIO.getNecessity().equals(DataNecessity.NA)).filter(dataIO->dataIO.getName().equals(custom.getTargetData())).count() != 1) {
+                        errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getTargetData() + " is not a valid input name in step: " + target.name());
+                        return errors;
+                    }
                 }
 
                 // Check if source comes before target
-                if(sourceLoc > targetLoc)
+                if(sourceLoc > targetLoc) {
                     errors.add("Flow: " + flow.getName() + " - " + "Custom mapping: " + custom.getSourceStep() + " must come before " + custom.getTargetStep() + ".");
+                    return errors;
+                }
             }
 
             if(!errors.isEmpty())
