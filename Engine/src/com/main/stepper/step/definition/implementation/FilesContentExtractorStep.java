@@ -12,10 +12,7 @@ import com.main.stepper.step.definition.api.AbstractStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
@@ -60,14 +57,17 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         for(Integer i = 1; i <= filesToExtract.size(); i++){
             File file = filesToExtract.get(i - 1);
             context.log("About to start work on file: " + file.getName());
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new FileReader(file));
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+
                 Optional<String> line = reader.lines().skip(lineNumber - 1).limit(1).findFirst();
                 data.addRow(Arrays.asList(i.toString(), file.getName(), line.orElse("No such line")));
             } catch (FileNotFoundException e) {
                 context.log("Problem extracting line number " + lineNumber + " from file: " + file.getName());
                 data.addRow(Arrays.asList(i.toString(), file.getName(), "File not found"));
+            } catch (IOException e) {
+                context.log("Problem reading from file: " + file.getName());
+                data.addRow(Arrays.asList(i.toString(), file.getName(), "Problem reading file"));
             }
         }
 

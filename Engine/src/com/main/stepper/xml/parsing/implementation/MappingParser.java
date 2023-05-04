@@ -92,6 +92,9 @@ public class MappingParser implements IParser {
                 return errors;
         }
 
+        // Validate no
+
+
         // Get all custom mappings
         STCustomMappings stCustomMappings = flow.getSTCustomMappings();
         if(stCustomMappings != null){

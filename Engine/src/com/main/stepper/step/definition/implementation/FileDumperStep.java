@@ -49,10 +49,8 @@ public class FileDumperStep extends AbstractStepDefinition {
                     return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "No content to write");
                 }
                 else{
-                    try{
-                        FileWriter fileWriter = new FileWriter(file);
+                    try (FileWriter fileWriter = new FileWriter(file)) {
                         fileWriter.write(content);
-                        fileWriter.close();
                         context.setOutput(resultIO, "SUCCESS");
 
                         Duration duration = Duration.between(startTime, LocalTime.now());

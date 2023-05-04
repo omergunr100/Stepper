@@ -18,6 +18,9 @@ public class ValidateNoDuplicateFlowOutputs implements IValidator {
     @Override
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
+        if(flow.getSTFlowOutput().equals(""))
+            return errors;
+
         Map<String, Integer> flowOutputs = new HashMap<>();
 
         for(String output : flow.getSTFlowOutput().split(","))

@@ -46,13 +46,18 @@ public class FlowParser implements IParser {
         });
 
         // Add formal outputs
-        for(String formalName : stflow.getSTFlowOutput().split(",")) {
-            Optional<IDataIO> match = outputs.stream().filter(dataIO -> dataIO.getName().equals(formalName)).findFirst();
+        if(!stflow.getSTFlowOutput().equals("")){
+            for(String formalName : stflow.getSTFlowOutput().split(",")) {
+                Optional<IDataIO> match = outputs.stream().filter(dataIO -> dataIO.getName().equals(formalName)).findFirst();
 
-            if(!match.isPresent())
-                errors.add("No match found for formal output name: " + formalName + " in flow: " + flow.name());
+                if(!match.isPresent())
+                    errors.add("No match found for formal output name: " + formalName + " in flow: " + flow.name());
+                else
+                    flow.addFormalOutput(match.get());
+            }
 
-            flow.addFormalOutput(match.get());
+            if (!errors.isEmpty())
+                return errors;
         }
 
         // Add user required inputs

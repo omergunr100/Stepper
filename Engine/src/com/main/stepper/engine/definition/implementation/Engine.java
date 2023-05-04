@@ -23,6 +23,7 @@ import com.main.stepper.xml.generated.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowOutputs;
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
 import java.io.*;
@@ -60,6 +61,12 @@ public final class Engine implements IEngine {
         STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
         List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
         for(STFlow stFlow : stFlows){
+            // Validate no duplicate formal outputs
+            IValidator validateNoDuplicateFlowOutputs = new ValidateNoDuplicateFlowOutputs(stFlow);
+            errors.addAll(validateNoDuplicateFlowOutputs.validate());
+            if(!errors.isEmpty())
+                return errors;
+
             IParser flowParser = new FlowParser(stFlow);
             errors.addAll(flowParser.parse());
             if(!errors.isEmpty())
