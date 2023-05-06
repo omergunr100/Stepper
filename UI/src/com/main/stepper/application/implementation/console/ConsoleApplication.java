@@ -245,7 +245,7 @@ public class ConsoleApplication implements IApplication {
                 System.out.println("\t\t\t" + parser.parse(value).replaceAll("\n","\n\t\t\t"));
             }
             else{
-                System.out.println("\t\t\tValue isn't set due to a run-time error in the flow.");
+                System.out.println("\t\t\tNot created due to failure in flow.");
             }
         }
     }
@@ -300,6 +300,15 @@ public class ConsoleApplication implements IApplication {
             System.out.println("\tName: " + input.getName()
                     + "\n\tType: " + input.getDataDefinition().getName()
                     + "\n\tContent: " + choice.userInputs().get(input)
+                    + "\n"
+            );
+        }
+        System.out.println("Outputs:");
+        for(IDataIO output : choice.flowOutputs().keySet()){
+            Object value = choice.flowOutputs().getOrDefault(output, "Not created due to failure in flow.");
+            System.out.println("\tName: " + output.getName()
+                    + "\n\tType: " + output.getDataDefinition().getName()
+                    + "\n\tContent: " + value
                     + "\n"
             );
         }
