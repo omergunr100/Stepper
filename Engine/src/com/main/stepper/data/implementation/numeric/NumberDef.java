@@ -1,6 +1,7 @@
 package com.main.stepper.data.implementation.numeric;
 
 import com.main.stepper.data.api.AbstractDataDef;
+import com.main.stepper.exceptions.data.BadTypeException;
 
 public class NumberDef extends AbstractDataDef {
     public NumberDef() {
@@ -8,7 +9,11 @@ public class NumberDef extends AbstractDataDef {
     }
 
     @Override
-    public Integer readValue(String data) {
-        return Integer.valueOf(data);
+    public Integer readValue(String data) throws BadTypeException {
+        try{
+            return Integer.valueOf(data);
+        } catch (NumberFormatException e){
+            throw new BadTypeException(e);
+        }
     }
 }
