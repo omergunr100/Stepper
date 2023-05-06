@@ -13,10 +13,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FlowExecutor implements IFlowExecutor {
     public FlowExecutor() {
@@ -44,8 +41,14 @@ public class FlowExecutor implements IFlowExecutor {
         // Default flag is success
         FlowResult flag = FlowResult.SUCCESS;
 
-        Map<IDataIO, Object> userInputs = new HashMap<>();
+        Map<IDataIO, Object> userInputs = new LinkedHashMap<>();
         for(IDataIO dataIO : flow.userRequiredInputs()){
+            Object value = context.getVariable(dataIO, dataIO.getDataDefinition().getType());
+            if(value != null) {
+                userInputs.put(dataIO, value);
+            }
+        }
+        for(IDataIO dataIO : flow.userOptionalInputs()){
             Object value = context.getVariable(dataIO, dataIO.getDataDefinition().getType());
             if(value != null) {
                 userInputs.put(dataIO, value);
@@ -60,9 +63,13 @@ public class FlowExecutor implements IFlowExecutor {
             stepRunUUID.add(result.runId());
             context.statistics().addRunResult(result);
 
+            if(result.result().equals(StepResult.WARNING)){
+                if(!step.skipIfFailed())
+                    flag = FlowResult.WARNING;
+            }
+
             if(result.result().equals(StepResult.FAILURE)){
                 if(step.skipIfFailed()){
-                    // TODO: check if skip-if-failed step fails the flow should return warning
                     flag = FlowResult.WARNING;
                 }
                 else{
