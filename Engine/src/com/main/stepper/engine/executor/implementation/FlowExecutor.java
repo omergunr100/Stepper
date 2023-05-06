@@ -64,11 +64,9 @@ public class FlowExecutor implements IFlowExecutor {
             context.statistics().addRunResult(result);
 
             if(result.result().equals(StepResult.WARNING)){
-                if(!step.skipIfFailed())
-                    flag = FlowResult.WARNING;
+                flag = FlowResult.WARNING;
             }
-
-            if(result.result().equals(StepResult.FAILURE)){
+            else if(result.result().equals(StepResult.FAILURE)){
                 if(step.skipIfFailed()){
                     flag = FlowResult.WARNING;
                 }
