@@ -6,7 +6,7 @@
 //
 
 
-package com.main.stepper.xml.generated;
+package com.main.stepper.xml.generated.ex1;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}ST-CustomMapping" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}ST-StepInFlow" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,41 +34,41 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stCustomMapping"
+    "stStepInFlow"
 })
-@XmlRootElement(name = "ST-CustomMappings")
-public class STCustomMappings {
+@XmlRootElement(name = "ST-StepsInFlow")
+public class STStepsInFlow {
 
-    @XmlElement(name = "ST-CustomMapping", required = true)
-    protected List<STCustomMapping> stCustomMapping;
+    @XmlElement(name = "ST-StepInFlow", required = true)
+    protected List<STStepInFlow> stStepInFlow;
 
     /**
-     * Gets the value of the stCustomMapping property.
+     * Gets the value of the stStepInFlow property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stCustomMapping property.
+     * This is why there is not a <CODE>set</CODE> method for the stStepInFlow property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSTCustomMapping().add(newItem);
+     *    getSTStepInFlow().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link STCustomMapping }
+     * {@link STStepInFlow }
      * 
      * 
      */
-    public List<STCustomMapping> getSTCustomMapping() {
-        if (stCustomMapping == null) {
-            stCustomMapping = new ArrayList<STCustomMapping>();
+    public List<STStepInFlow> getSTStepInFlow() {
+        if (stStepInFlow == null) {
+            stStepInFlow = new ArrayList<STStepInFlow>();
         }
-        return this.stCustomMapping;
+        return this.stStepInFlow;
     }
 
 }

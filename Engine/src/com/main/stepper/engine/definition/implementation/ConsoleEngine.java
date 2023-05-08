@@ -4,7 +4,6 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.engine.NotAFileException;
@@ -18,8 +17,8 @@ import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.statistics.StatManager;
-import com.main.stepper.xml.generated.STFlow;
-import com.main.stepper.xml.generated.STStepper;
+import com.main.stepper.xml.generated.ex1.STFlow;
+import com.main.stepper.xml.generated.ex1.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
@@ -30,13 +29,13 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public final class Engine implements IEngine {
+public final class ConsoleEngine implements IEngine {
     private ILogger logger;
     private StatManager statistics;
     private List<IFlowDefinition> flows;
     private Boolean validated;
 
-    public Engine(){
+    public ConsoleEngine(){
         this.logger = new MapLogger();
         this.flows = new ArrayList<>();
         this.validated = false;

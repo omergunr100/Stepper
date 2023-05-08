@@ -6,7 +6,7 @@
 //
 
 
-package com.main.stepper.xml.generated;
+package com.main.stepper.xml.generated.ex1;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}ST-FlowLevelAlias" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}ST-Flow" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,41 +34,41 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stFlowLevelAlias"
+    "stFlow"
 })
-@XmlRootElement(name = "ST-FlowLevelAliasing")
-public class STFlowLevelAliasing {
+@XmlRootElement(name = "ST-Flows")
+public class STFlows {
 
-    @XmlElement(name = "ST-FlowLevelAlias", required = true)
-    protected List<STFlowLevelAlias> stFlowLevelAlias;
+    @XmlElement(name = "ST-Flow", required = true)
+    protected List<STFlow> stFlow;
 
     /**
-     * Gets the value of the stFlowLevelAlias property.
+     * Gets the value of the stFlow property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stFlowLevelAlias property.
+     * This is why there is not a <CODE>set</CODE> method for the stFlow property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSTFlowLevelAlias().add(newItem);
+     *    getSTFlow().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link STFlowLevelAlias }
+     * {@link STFlow }
      * 
      * 
      */
-    public List<STFlowLevelAlias> getSTFlowLevelAlias() {
-        if (stFlowLevelAlias == null) {
-            stFlowLevelAlias = new ArrayList<STFlowLevelAlias>();
+    public List<STFlow> getSTFlow() {
+        if (stFlow == null) {
+            stFlow = new ArrayList<STFlow>();
         }
-        return this.stFlowLevelAlias;
+        return this.stFlow;
     }
 
 }

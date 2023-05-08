@@ -4,7 +4,7 @@ import com.main.stepper.application.api.IApplication;
 import com.main.stepper.application.implementation.console.data.parser.DataParser;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
-import com.main.stepper.engine.definition.implementation.Engine;
+import com.main.stepper.engine.definition.implementation.ConsoleEngine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class ConsoleApplication implements IApplication {
     public static void main(String[] args) {
-        ConsoleApplication application = new ConsoleApplication(new Engine());
+        ConsoleApplication application = new ConsoleApplication(new ConsoleEngine());
         while(application.run)
             application.presentMenu();
     }

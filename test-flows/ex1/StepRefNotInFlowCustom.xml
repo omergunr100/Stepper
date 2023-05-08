@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ST-Stepper xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Stepper-V1.xsd">
+<ST-Stepper xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Stepper-V1.xsd">
     <ST-Flows>
         <ST-Flow name="TestFlow1">
             <ST-FlowDescription>Does some stuff for testing purposes</ST-FlowDescription>

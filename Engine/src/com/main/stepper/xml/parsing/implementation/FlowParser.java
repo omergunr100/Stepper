@@ -1,11 +1,10 @@
 package com.main.stepper.xml.parsing.implementation;
 
-import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.definition.implementation.Flow;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
-import com.main.stepper.xml.generated.STFlow;
+import com.main.stepper.xml.generated.ex1.STFlow;
 import com.main.stepper.xml.parsing.api.IParser;
 
 import java.util.ArrayList;
