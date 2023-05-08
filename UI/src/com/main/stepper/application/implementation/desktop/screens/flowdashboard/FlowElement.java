@@ -1,20 +1,13 @@
 package com.main.stepper.application.implementation.desktop.screens.flowdashboard;
 
-import com.main.stepper.flow.definition.api.IFlowDefinition;
-import com.main.stepper.flow.definition.implementation.Flow;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class FlowElement extends VBox {
-    private IFlowDefinition flow;
-
-    public FlowElement() {
+    public FlowElement(String name, String description) {
         super();
-
-    }
-
-    private void init(){
-        
+        Label fName = new Label("Flow name: " + name);
+        Label fDescription = new Label("Flow description: " + description);
+        this.getChildren().addAll(fName, fDescription);
     }
 }
