@@ -19,6 +19,7 @@ public class Flow implements IFlowDefinition {
     private final String name;
     private final String description;
     private Boolean readOnly;
+    List<IFlowDefinition> continuations;
     private final List<IDataIO> requiredInputs; // Post-alias
     private final List<IDataIO> optionalInputs; // Post-alias
     private final List<IDataIO> formalOutputs; // Post-alias
@@ -37,6 +38,7 @@ public class Flow implements IFlowDefinition {
         formalOutputs = new ArrayList<>();
         allOutputs = new ArrayList<>();
         steps = new ArrayList<>();
+        continuations = new ArrayList<>();
         readOnly = null;
         this.mappings = new LinkedHashMap<>();
         this.dataToMandatoryStep = new HashMap<>();
@@ -62,6 +64,16 @@ public class Flow implements IFlowDefinition {
     @Override
     public List<IStepUsageDeclaration> steps() {
         return steps;
+    }
+
+    @Override
+    public List<IFlowDefinition> continuations() {
+        return continuations;
+    }
+
+    @Override
+    public void addContinuation(IFlowDefinition continuation) {
+        continuations.add(continuation);
     }
 
     @Override

@@ -95,6 +95,11 @@ public final class ConsoleEngine implements IEngine {
     }
 
     @Override
+    public List<IFlowDefinition> getFlows() {
+        return flows;
+    }
+
+    @Override
     public IFlowInformation getFlowInfo(String name) {
         Optional<IFlowDefinition> flow = getFlowByName(name);
         if(!flow.isPresent())

@@ -5,6 +5,7 @@ import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
+import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.statistics.StatManager;
 
@@ -23,6 +24,11 @@ public interface IEngine extends Serializable {
      * @return - list of flow names
      */
     List<String> getFlowNames();
+
+    /**
+     * @return - list of flows
+     */
+    List<IFlowDefinition> getFlows();
 
     /**
      * @param name - name of the flow

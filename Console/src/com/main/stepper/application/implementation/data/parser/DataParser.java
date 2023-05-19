@@ -1,4 +1,4 @@
-package com.main.stepper.application.implementation.console.data.parser;
+package com.main.stepper.application.implementation.data.parser;
 
 public class DataParser {
     private static DataParser instance = null;

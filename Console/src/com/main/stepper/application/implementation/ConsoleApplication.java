@@ -1,7 +1,7 @@
-package com.main.stepper.application.implementation.console;
+package com.main.stepper.application.implementation;
 
+import com.main.stepper.application.implementation.data.parser.DataParser;
 import com.main.stepper.application.api.IApplication;
-import com.main.stepper.application.implementation.console.data.parser.DataParser;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.ConsoleEngine;
