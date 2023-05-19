@@ -4,7 +4,7 @@ import com.main.stepper.application.resources.fxml.header.loadcss.LoadCSSControl
 import com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.application.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.engine.definition.api.IEngine;
-import com.main.stepper.engine.definition.implementation.ConsoleEngine;
+import com.main.stepper.engine.definition.implementation.DesktopEngine;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
@@ -20,8 +20,7 @@ public class RootController {
     }
 
     @FXML public void initialize(){
-        // TODO: replace with DesktopEngine
-        this.engine = new ConsoleEngine();
+        this.engine = new DesktopEngine();
 
         this.loadFileController.setRootController(this);
         this.loadCSSController.setRootController(this);
