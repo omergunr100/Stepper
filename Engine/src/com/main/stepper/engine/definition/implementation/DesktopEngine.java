@@ -2,17 +2,23 @@ package com.main.stepper.engine.definition.implementation;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
+import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
+import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
+import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
+import com.main.stepper.flow.execution.api.IFlowExecutionContext;
+import com.main.stepper.flow.execution.implementation.FlowExecutionContext;
+import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.statistics.StatManager;
-import com.main.stepper.xml.generated.ex1.STFlow;
-import com.main.stepper.xml.generated.ex1.STStepper;
+import com.main.stepper.xml.generated.ex2.STFlow;
+import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
@@ -20,20 +26,24 @@ import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFl
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class DesktopEngine implements IEngine {
     private ILogger logger;
     private StatManager statistics;
     private List<IFlowDefinition> flows;
     private Boolean validated;
+    private Executor executor;
 
     public DesktopEngine(){
         this.logger = new MapLogger();
-        this.flows = new ArrayList<>();
+        this.flows = Collections.synchronizedList(new ArrayList<>());
         this.validated = false;
         this.statistics = new StatManager();
+        this.executor = null;
     }
 
     @Override
@@ -42,6 +52,10 @@ public class DesktopEngine implements IEngine {
         IValidator pipelineValidator = new Validator(path);
         List<String> errors = pipelineValidator.validate();
         List<IFlowDefinition> fileFlows = new ArrayList<>();
+
+        // TODO: add thread pool and continuations validators
+        int numThreads = 10;
+        this.executor = Executors.newFixedThreadPool(numThreads);
 
         if(!errors.isEmpty())
             return errors;
@@ -79,27 +93,63 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public List<String> getFlowNames() {
-        return null;
+        return flows.stream().map(IFlowDefinition::name).collect(Collectors.toList());
     }
 
     @Override
     public List<IFlowDefinition> getFlows() {
-        return null;
+        return flows;
     }
 
     @Override
     public IFlowInformation getFlowInfo(String name) {
-        return null;
+        IFlowDefinition requested = flows.stream().filter(flow -> flow.name().equals(name)).findFirst().orElse(null);
+        if(requested == null)
+            return null;
+        return requested.information();
     }
 
     @Override
     public ExecutionUserInputs getExecutionUserInputs(String flowName) {
-        return null;
+        IFlowDefinition requested = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst().orElse(null);
+        if(requested == null)
+            return null;
+        List<IDataIO> openInputs = new ArrayList<>();
+        openInputs.addAll(requested.userRequiredInputs());
+        openInputs.addAll(requested.userOptionalInputs());
+
+        Map<IDataIO, IStepUsageDeclaration> mapping = new HashMap<>();
+        openInputs.forEach(i->{
+            mapping.put(i, requested.stepRequiringMandatoryInput(i));
+        });
+
+        return new ExecutionUserInputs(openInputs, mapping);
     }
 
     @Override
     public IFlowRunResult runFlow(String name, ExecutionUserInputs inputs) {
-        return null;
+        Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(name)).findFirst();
+        if(!maybeFlow.isPresent()){
+            return null;
+        }
+
+        IFlowDefinition requested = maybeFlow.get();
+        synchronized (requested){
+            IFlowExecutionContext context = new FlowExecutionContext(
+                    requested.mappings(),
+                    logger,
+                    statistics
+            );
+
+            for(IDataIO input : inputs.getUserInputs().keySet()){
+                context.setVariable(input, inputs.getUserInputs().get(input));
+            }
+
+            IFlowExecutor executor = new FlowExecutor();
+            this.executor.execute(()->executor.executeFlow(requested, context));
+            IFlowRunResult result = executor.executeFlow(requested, context);
+            return null;
+        }
     }
 
     @Override
