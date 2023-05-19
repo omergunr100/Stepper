@@ -53,13 +53,10 @@ public class DesktopEngine implements IEngine {
         List<String> errors = pipelineValidator.validate();
         List<IFlowDefinition> fileFlows = new ArrayList<>();
 
-        // TODO: add thread pool and continuations validators
-        int numThreads = 10;
-        this.executor = Executors.newFixedThreadPool(numThreads);
 
         if(!errors.isEmpty())
             return errors;
-
+        // TODO: add thread pool and continuations validators
         // Read system from validator
         STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
         List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
@@ -86,6 +83,7 @@ public class DesktopEngine implements IEngine {
             flows.addAll(fileFlows);
             logger.clear();
             statistics.clear();
+            executor = Executors.newFixedThreadPool(stepper.getSTThreadPool());
         }
 
         return errors;
@@ -164,12 +162,12 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public StatManager getStatistics() {
-        return null;
+        return statistics;
     }
 
     @Override
     public List<Log> getLogs(String uuid) {
-        return null;
+        return logger.getLog(uuid);
     }
 
     @Override

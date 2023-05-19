@@ -1,7 +1,7 @@
 package com.main.stepper.xml.validators.implementation.flow;
 
-import com.main.stepper.xml.generated.ex1.STFlow;
-import com.main.stepper.xml.generated.ex1.STStepInFlow;
+import com.main.stepper.xml.generated.ex2.STFlow;
+import com.main.stepper.xml.generated.ex2.STStepInFlow;
 import com.main.stepper.xml.validators.api.IValidator;
 
 import java.util.*;

@@ -3,7 +3,7 @@ package com.main.stepper.xml.parsing.implementation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.definition.api.StepUsageDeclaration;
 import com.main.stepper.step.definition.StepRegistry;
-import com.main.stepper.xml.generated.ex1.STStepInFlow;
+import com.main.stepper.xml.generated.ex2.STStepInFlow;
 import com.main.stepper.xml.parsing.api.IParser;
 
 import java.util.ArrayList;

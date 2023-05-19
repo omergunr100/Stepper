@@ -4,7 +4,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
-import com.main.stepper.xml.generated.ex1.*;
+import com.main.stepper.xml.generated.ex2.*;
 import com.main.stepper.xml.parsing.api.IParser;
 
 import java.util.*;
