@@ -1,0 +1,14 @@
+.root {
+    -fx-background-color: #333333; /* Dark gray background color */
+    -fx-text-fill: #FF0000; /* Red text color */
+    -fx-padding: 10px; /* Padding around the error message */
+    -fx-font-size: 20px; /* Font size */
+    -fx-font-weight: bold; /* Font weight */
+}
+
+.error-label {
+    -fx-background-color: #333333; /* Dark gray background color */
+    -fx-text-fill: #FF0000; /* Red text color */
+    -fx-padding: 5px; /* Padding around the label */
+    -fx-font-size: 20px; /* Font size */
+}

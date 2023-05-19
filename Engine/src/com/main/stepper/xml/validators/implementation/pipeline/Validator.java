@@ -1,8 +1,8 @@
 package com.main.stepper.xml.validators.implementation.pipeline;
 
-import com.main.stepper.xml.generated.ObjectFactory;
-import com.main.stepper.xml.generated.STFlow;
-import com.main.stepper.xml.generated.STStepper;
+import com.main.stepper.xml.generated.ex2.ObjectFactory;
+import com.main.stepper.xml.generated.ex2.STFlow;
+import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.file.ValidateFile;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowNames;
@@ -63,10 +63,6 @@ public final class Validator implements IValidator {
                             errors.addAll(illegalStepValidator.validate());
                         }
                 );
-        if (!errors.isEmpty())
-            return errors;
-
-        // Check for references to steps that aren't defined in flow
 
         return errors;
     }

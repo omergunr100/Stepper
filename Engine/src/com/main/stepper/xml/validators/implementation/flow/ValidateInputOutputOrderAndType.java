@@ -7,7 +7,6 @@ import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.validators.api.IValidator;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ValidateInputOutputOrderAndType implements IValidator {
     private Flow flow;

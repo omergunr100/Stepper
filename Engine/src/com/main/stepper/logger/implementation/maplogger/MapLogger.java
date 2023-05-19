@@ -3,10 +3,7 @@ package com.main.stepper.logger.implementation.maplogger;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapLogger implements ILogger {
     private String uuid;
@@ -14,10 +11,10 @@ public class MapLogger implements ILogger {
 
     public MapLogger(){
         uuid = null;
-        logs = new HashMap<>();
+        logs = Collections.synchronizedMap(new HashMap<>());
     }
 
-    public MapLogger(String uuid, Map<String, List<Log>> logs){
+    private MapLogger(String uuid, Map<String, List<Log>> logs){
         this.uuid = uuid;
         this.logs = logs;
     }
@@ -25,20 +22,20 @@ public class MapLogger implements ILogger {
     @Override
     public void log(String uuid, String message) {
         if(!logs.containsKey(uuid))
-            logs.put(uuid, new ArrayList<>());
+            logs.put(uuid, Collections.synchronizedList(new ArrayList<>()));
         logs.get(uuid).add(new Log(message));
     }
 
     @Override
     public void log(String message) {
         if(!logs.containsKey(uuid))
-            logs.put(uuid, new ArrayList<>());
+            logs.put(uuid, Collections.synchronizedList(new ArrayList<>()));
         logs.get(uuid).add(new Log(message));
     }
 
     @Override
     public List<Log> getLog(String uuid) {
-        return logs.get(uuid);
+        return new ArrayList<>(logs.get(uuid));
     }
 
     @Override

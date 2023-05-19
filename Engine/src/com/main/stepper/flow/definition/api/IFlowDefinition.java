@@ -12,6 +12,8 @@ public interface IFlowDefinition extends Serializable {
     String description();
     Boolean isReadOnly();
     List<IStepUsageDeclaration> steps();
+    List<IFlowDefinition> continuations();
+    void addContinuation(IFlowDefinition continuation);
     Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings();
     IDataIO mapsTo(IStepUsageDeclaration step, IDataIO io);
     void addStep(IStepUsageDeclaration step, Map<IDataIO, IDataIO> stepMapping);

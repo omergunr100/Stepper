@@ -7,6 +7,7 @@ import com.main.stepper.step.definition.api.StepResult;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +18,8 @@ public class StatManager implements Serializable {
     private final List<IStepRunResult> stepRunResults;
 
     public StatManager(){
-        flowRunResults = new LinkedList<>();
-        stepRunResults = new LinkedList<>();
-    }
-
-    public StatManager(List<IFlowRunResult> flowRunResults, List<IStepRunResult> stepRunResults){
-        this.flowRunResults = flowRunResults;
-        this.stepRunResults = stepRunResults;
+        flowRunResults = Collections.synchronizedList(new LinkedList<>());
+        stepRunResults = Collections.synchronizedList(new LinkedList<>());
     }
 
     public List<IFlowRunResult> getFlowRuns(){
