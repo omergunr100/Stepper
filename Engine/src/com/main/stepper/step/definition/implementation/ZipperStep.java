@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -32,10 +33,12 @@ public class ZipperStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Read inputs and output
-        String source = (String) context.getInput(getInputs().get(0), DDRegistry.STRING.getType());
-        ZipperEnumData operation = (ZipperEnumData) context.getInput(getInputs().get(1), DDRegistry.ZIPPER_ENUM.getType());
+        List<IDataIO> inputs = getInputs();
+        String source = (String) context.getInput(inputs.get(0), DDRegistry.STRING.getType());
+        ZipperEnumData operation = (ZipperEnumData) context.getInput(inputs.get(1), DDRegistry.ZIPPER_ENUM.getType());
         String op = operation.getValue().orElse("non-specified");
-        IDataIO result = getOutputs().get(0);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO result = outputs.get(0);
         // Log operation
         context.log("About to perform operation " + op + " on source " + source);
 

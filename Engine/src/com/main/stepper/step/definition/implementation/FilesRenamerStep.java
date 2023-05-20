@@ -33,10 +33,12 @@ public class FilesRenamerStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get DataIOs
-        IDataIO filesToRenameIO = getInputs().get(0);
-        IDataIO prefixIO = getInputs().get(1);
-        IDataIO suffixIO = getInputs().get(2);
-        IDataIO renameResultIO = getOutputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO filesToRenameIO = inputs.get(0);
+        IDataIO prefixIO = inputs.get(1);
+        IDataIO suffixIO = inputs.get(2);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO renameResultIO = outputs.get(0);
 
         // Initialize output table
         List<String> columns = Arrays.asList("Index", "Original name", "New name");

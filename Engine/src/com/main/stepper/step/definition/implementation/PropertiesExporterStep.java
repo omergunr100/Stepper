@@ -27,8 +27,10 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get dataIOs
-        IDataIO sourceIO = getInputs().get(0);
-        IDataIO resultIO = getOutputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO sourceIO = inputs.get(0);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO resultIO = outputs.get(0);
 
         // Get variable
         Relation source = (Relation) context.getInput(sourceIO, DDRegistry.RELATION.getType());

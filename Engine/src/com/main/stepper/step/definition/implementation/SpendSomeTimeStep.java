@@ -13,6 +13,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 public class SpendSomeTimeStep extends AbstractStepDefinition {
 
@@ -25,7 +26,8 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
 
-        IDataIO timeToSpendIO = getInputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO timeToSpendIO = inputs.get(0);
         Integer timeToSpend = (Integer) context.getInput(timeToSpendIO, DDRegistry.NUMBER.getType());
 
         if(timeToSpend <= 0){

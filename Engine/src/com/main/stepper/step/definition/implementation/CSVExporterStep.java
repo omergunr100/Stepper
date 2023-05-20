@@ -14,6 +14,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 public class CSVExporterStep extends AbstractStepDefinition {
     public CSVExporterStep() {
@@ -26,8 +27,10 @@ public class CSVExporterStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get dataIOs
-        IDataIO sourceIO = getInputs().get(0);
-        IDataIO resultIO = getOutputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO sourceIO = inputs.get(0);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO resultIO = outputs.get(0);
 
         // Get data
         Relation source = (Relation) context.getInput(sourceIO, sourceIO.getDataDefinition().getType());

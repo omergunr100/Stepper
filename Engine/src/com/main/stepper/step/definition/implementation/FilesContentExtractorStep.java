@@ -32,9 +32,11 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get the DataIOs
-        IDataIO filesListIO = getInputs().get(0);
-        IDataIO lineNumberIO = getInputs().get(1);
-        IDataIO dataResultIO = getOutputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO filesListIO = inputs.get(0);
+        IDataIO lineNumberIO = inputs.get(1);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO dataResultIO = outputs.get(0);
 
         // Initialize output table
         List<String> columns = Arrays.asList("Index", "Original name", "Extracted data");

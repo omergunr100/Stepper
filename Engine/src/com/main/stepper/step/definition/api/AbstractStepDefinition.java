@@ -38,12 +38,16 @@ public abstract class AbstractStepDefinition implements IStepDefinition{
 
     @Override
     public List<IDataIO> getInputs() {
-        return inputs;
+        synchronized (inputs) {
+            return new ArrayList<>(inputs);
+        }
     }
 
     @Override
     public List<IDataIO> getOutputs() {
-        return outputs;
+        synchronized (outputs) {
+            return new ArrayList<>(outputs);
+        }
     }
 
     @Override

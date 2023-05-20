@@ -17,6 +17,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 public class FilesDeleterStep extends AbstractStepDefinition {
     public FilesDeleterStep() {
@@ -30,12 +31,14 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Read inputs
-        IDataIO filesListIO = getInputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO filesListIO = inputs.get(0);
         FileList filesList = (FileList) context.getInput(filesListIO, DDRegistry.FILE_LIST.getType());
 
         // Get outputs for later
-        IDataIO deletedListIO = getOutputs().get(0);
-        IDataIO deletionStatsIO = getOutputs().get(1);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO deletedListIO = outputs.get(0);
+        IDataIO deletionStatsIO = outputs.get(1);
 
         context.log("About to start delete " + filesList.size() + " files");
 

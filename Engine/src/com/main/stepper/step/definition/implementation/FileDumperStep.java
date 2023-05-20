@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 public class FileDumperStep extends AbstractStepDefinition {
     public FileDumperStep() {
@@ -29,9 +30,11 @@ public class FileDumperStep extends AbstractStepDefinition {
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get dataIOs
-        IDataIO contentIO = getInputs().get(0);
-        IDataIO fileNameIO = getInputs().get(1);
-        IDataIO resultIO = getOutputs().get(0);
+        List<IDataIO> inputs = getInputs();
+        IDataIO contentIO = inputs.get(0);
+        IDataIO fileNameIO = inputs.get(1);
+        List<IDataIO> outputs = getOutputs();
+        IDataIO resultIO = outputs.get(0);
 
         // Get inputs
         String content = (String) context.getInput(contentIO, contentIO.getDataDefinition().getType());
