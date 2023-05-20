@@ -83,7 +83,10 @@ public class DesktopEngine implements IEngine {
             flows.addAll(fileFlows);
             logger.clear();
             statistics.clear();
-            executor = Executors.newFixedThreadPool(stepper.getSTThreadPool());
+            if(stepper.getSTThreadPool() == 0)
+                executor = Executors.newFixedThreadPool(1);
+            else
+                executor = Executors.newFixedThreadPool(stepper.getSTThreadPool());
         }
 
         return errors;

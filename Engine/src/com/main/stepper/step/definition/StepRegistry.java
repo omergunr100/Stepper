@@ -16,7 +16,8 @@ public enum StepRegistry implements IStepDefinition {
     FILES_CONTENT_EXTRACTOR(new FilesContentExtractorStep()),
     CSV_EXPORTER(new CSVExporterStep()),
     PROPERTIES_EXPORTER(new PropertiesExporterStep()),
-    FILE_DUMPER(new FileDumperStep())
+    FILE_DUMPER(new FileDumperStep()),
+    ZIPPER(new ZipperStep()),
     ;
 
     private final IStepDefinition step;
