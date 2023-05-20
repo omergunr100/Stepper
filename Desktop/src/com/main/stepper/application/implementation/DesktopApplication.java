@@ -1,5 +1,6 @@
 package com.main.stepper.application.implementation;
 
+import com.main.stepper.application.resources.css.CSSRegistry;
 import com.main.stepper.application.resources.fxml.root.RootController;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.application.Application;
@@ -39,6 +40,7 @@ public class DesktopApplication extends Application {
         rootController.setPrimaryStage(primaryStage);
 
         Scene scene = new Scene(root, 840, 520);
+        scene.getStylesheets().add(CSSRegistry.class.getResource(CSSRegistry.DEFAULT.getFile().getPath()).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

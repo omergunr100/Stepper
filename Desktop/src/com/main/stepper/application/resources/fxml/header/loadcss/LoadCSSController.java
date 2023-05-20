@@ -29,9 +29,9 @@ public class LoadCSSController {
         choice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onChange(newValue));
     }
 
-    private void onChange(CSSRegistry newValue) {
+    public void onChange(CSSRegistry newValue) {
         rootController.getPrimaryStage().getScene().getStylesheets().clear();
-        if(newValue == CSSRegistry.DEFAULT){
+        if(newValue == null){
             return;
         }
         URL url = CSSRegistry.class.getResource(newValue.getFile().getPath());

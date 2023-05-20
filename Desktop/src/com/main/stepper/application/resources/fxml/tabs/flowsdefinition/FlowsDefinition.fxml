@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -20,7 +19,7 @@
           <RowConstraints vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <TreeTableView fx:id="selectedFlowTree" prefHeight="200.0" prefWidth="200.0" />
+            <fx:include fx:id="selectedFlowTree" source="../../reusable/FlowTreeView.fxml" />
             <Button fx:id="executeFlowButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#executeFlow" prefHeight="50.0" prefWidth="200.0" text="Execute Flow" GridPane.rowIndex="1" />
          </children>
       </GridPane>

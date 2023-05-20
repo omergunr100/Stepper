@@ -1,30 +1,32 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsdefinition;
 
+import com.main.stepper.application.resources.fxml.reusable.FlowTreeViewController;
 import com.main.stepper.application.resources.fxml.root.RootController;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 
 public class FlowsDefinitionController {
     private RootController rootController;
     private IFlowDefinition currentFlow;
     @FXML private TableView<IFlowDefinition> flowsTableView;
-    @FXML private TreeTableView<IFlowDefinition> selectedFlowTree;
+    @FXML private FlowTreeViewController selectedFlowTreeController;
     @FXML private Button executeFlowButton;
 
     public FlowsDefinitionController() {
     }
 
     @FXML public void initialize(){
+        // Have no flow selected initially
         this.currentFlow = null;
+
+        // Initialize flow table
         TableColumn<IFlowDefinition, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().name()));
         nameColumn.setPrefWidth(100);
+
 
         TableColumn<IFlowDefinition, String> descriptionColumn = new TableColumn<>("Description");
         descriptionColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().description()));
@@ -53,6 +55,8 @@ public class FlowsDefinitionController {
                 this.executeFlowButton.setDisable(true);
             }
         });
+
+        flowsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     public void setRootController(RootController rootController) {
@@ -65,10 +69,13 @@ public class FlowsDefinitionController {
 
     public void setCurrentFlow(IFlowDefinition currentFlow) {
         this.currentFlow = currentFlow;
+        this.selectedFlowTreeController.setCurrentFlow(currentFlow.information());
+        //this.selectedFlowTreeController.expandAll();
     }
 
     public void updateFlows() {
         flowsTableView.setItems(FXCollections.observableArrayList(rootController.getEngine().getFlows()));
+        this.selectedFlowTreeController.setCurrentFlow(null);
     }
 
     public void executeFlow() {

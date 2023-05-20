@@ -3,7 +3,7 @@ package com.main.stepper.application.resources.css;
 import java.io.File;
 
 public enum CSSRegistry {
-    DEFAULT("Default", null),
+    DEFAULT("Default", new File("default.css")),
     DARK("Dark", new File("dark-theme.css")),
     CASPIAN("Caspian", new File("caspian.css"));
 

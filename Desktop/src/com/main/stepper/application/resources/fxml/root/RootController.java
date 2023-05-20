@@ -7,11 +7,13 @@ import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.DesktopEngine;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class RootController {
     private IEngine engine;
     private Stage primaryStage;
+    @FXML GridPane root;
     @FXML LoadFileController loadFileController;
     @FXML LoadCSSController loadCSSController;
     @FXML FlowsDefinitionController flowsDefinitionController;
@@ -40,10 +42,12 @@ public class RootController {
     }
 
     public void loadFlows() {
+        root.setDisable(true);
         flowsDefinitionController.updateFlows();
+        root.setDisable(false);
     }
 
     public void executeFlow(IFlowDefinition currentFlow) {
-        // TODO: implement
+
     }
 }
