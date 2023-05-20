@@ -1,6 +1,7 @@
 package com.main.stepper.data;
 
 import com.main.stepper.data.api.IDataDefinition;
+import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumDef;
 import com.main.stepper.data.implementation.file.FileDef;
 import com.main.stepper.data.implementation.list.definition.*;
 import com.main.stepper.data.implementation.mapping.IntToIntMappingDef;
@@ -22,7 +23,8 @@ public enum DDRegistry implements IDataDefinition {
     RELATION_LIST(new RelationListDef()),
     NUMBER_LIST(new NumberListDef()),
     FILE_LIST(new FileListDef()),
-    DOUBLE_LIST(new DoubleListDef())
+    DOUBLE_LIST(new DoubleListDef()),
+    ZIPPER_ENUM(new ZipperEnumDef())
     ;
 
     DDRegistry(IDataDefinition dataDef) {
