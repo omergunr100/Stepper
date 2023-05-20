@@ -18,6 +18,7 @@ public enum StepRegistry implements IStepDefinition {
     PROPERTIES_EXPORTER(new PropertiesExporterStep()),
     FILE_DUMPER(new FileDumperStep()),
     ZIPPER(new ZipperStep()),
+    COMMAND_LINE(new CommandLineStep()),
     ;
 
     private final IStepDefinition step;
