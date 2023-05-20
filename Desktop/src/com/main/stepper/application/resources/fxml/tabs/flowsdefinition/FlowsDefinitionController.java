@@ -1,6 +1,6 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsdefinition;
 
-import com.main.stepper.application.resources.fxml.reusable.FlowTreeViewController;
+import com.main.stepper.application.resources.fxml.reusable.flowdetails.FlowTreeViewController;
 import com.main.stepper.application.resources.fxml.root.RootController;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.beans.property.SimpleStringProperty;
@@ -48,12 +48,10 @@ public class FlowsDefinitionController {
 
         flowsTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             this.setCurrentFlow(newValue);
-            if (newValue != null) {
+            if (newValue != null)
                 this.executeFlowButton.setDisable(false);
-            }
-            else{
+            else
                 this.executeFlowButton.setDisable(true);
-            }
         });
 
         flowsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.reusable.flowinput.FlowInputController">
+   <children>
+      <HBox fillHeight="false" spacing="10.0">
+         <children>
+            <Label text="Name:" />
+            <Label fx:id="nameLabel" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="7.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox fillHeight="false" spacing="10.0">
+         <children>
+            <Label text="Description:" />
+            <Label fx:id="userStringLabel" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="7.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox fillHeight="false" spacing="10.0">
+         <children>
+            <Label text="Necessity:" />
+            <Label fx:id="necessityLabel" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="7.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox fillHeight="false" spacing="10.0">
+         <children>
+            <Label text="Type:" />
+            <Label fx:id="typeLabel" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="7.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox fillHeight="false" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Label text="Value:" />
+            <TextField fx:id="valueField" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

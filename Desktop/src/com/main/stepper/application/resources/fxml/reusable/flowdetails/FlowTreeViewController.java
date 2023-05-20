@@ -1,4 +1,4 @@
-package com.main.stepper.application.resources.fxml.reusable;
+package com.main.stepper.application.resources.fxml.reusable.flowdetails;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;

@@ -40,9 +40,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </ScrollPane>
-      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+      <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
         <tabs>
-          <Tab closable="false" text="Flows Definition">
+          <Tab fx:id="flowsDefinitionTab" closable="false" text="Flows Definition">
                <content>
                   <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                      <content>
@@ -51,9 +51,16 @@
                   </ScrollPane>
                </content>
             </Tab>
-          <Tab closable="false" text="Flows Execution" />
-            <Tab closable="false" text="Executions History" />
-            <Tab closable="false" text="Statistics" />
+          <Tab fx:id="flowsExecutionTab" closable="false" text="Flows Execution">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                     <content>
+                        <fx:include fx:id="flowExecution" source="../tabs/flowsexecution/FlowExecution.fxml" />
+                     </content>
+                  </ScrollPane>
+               </content></Tab>
+            <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History" />
+            <Tab fx:id="statisticsTab" closable="false" text="Statistics" />
         </tabs>
       </TabPane>
    </children>

@@ -19,7 +19,7 @@
           <RowConstraints vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <fx:include fx:id="selectedFlowTree" source="../../reusable/FlowTreeView.fxml" />
+            <fx:include fx:id="selectedFlowTree" source="../../reusable/flowdetails/FlowTreeView.fxml" />
             <Button fx:id="executeFlowButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#executeFlow" prefHeight="50.0" prefWidth="200.0" text="Execute Flow" GridPane.rowIndex="1" />
          </children>
       </GridPane>

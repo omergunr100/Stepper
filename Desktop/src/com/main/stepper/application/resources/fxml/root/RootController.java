@@ -3,10 +3,13 @@ package com.main.stepper.application.resources.fxml.root;
 import com.main.stepper.application.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.application.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.FlowExecutionController;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.DesktopEngine;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -14,9 +17,15 @@ public class RootController {
     private IEngine engine;
     private Stage primaryStage;
     @FXML GridPane root;
+    @FXML TabPane tabs;
+    @FXML Tab flowsDefinitionTab;
+    @FXML Tab flowsExecutionTab;
+    @FXML Tab executionsHistoryTab;
+    @FXML Tab statisticsTab;
     @FXML LoadFileController loadFileController;
     @FXML LoadCSSController loadCSSController;
     @FXML FlowsDefinitionController flowsDefinitionController;
+    @FXML FlowExecutionController flowExecutionController;
 
     public RootController() {
     }
@@ -27,6 +36,7 @@ public class RootController {
         this.loadFileController.setRootController(this);
         this.loadCSSController.setRootController(this);
         this.flowsDefinitionController.setRootController(this);
+        this.flowExecutionController.setRootController(this);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -48,6 +58,7 @@ public class RootController {
     }
 
     public void executeFlow(IFlowDefinition currentFlow) {
-
+        this.flowExecutionController.setCurrentFlow(currentFlow);
+        this.tabs.getSelectionModel().select(flowsExecutionTab);
     }
 }
