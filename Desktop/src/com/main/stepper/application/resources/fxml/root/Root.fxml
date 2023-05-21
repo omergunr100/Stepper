@@ -2,43 +2,43 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <GridPane fx:id="root" minHeight="400.0" minWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.root.RootController">
    <columnConstraints>
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="850.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="79.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="0.0" prefHeight="35.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0" vgrow="ALWAYS" />
    </rowConstraints>
    <children>
-      <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" vbarPolicy="NEVER" vmax="2.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-         <content>
-            <HBox alignment="CENTER" fillHeight="false" spacing="20.0">
-               <children>
-                  <fx:include fx:id="loadFile" source="../header/loadfile/LoadFile.fxml" GridPane.columnSpan="2" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES" />
-                  <fx:include fx:id="loadCSS" source="../header/loadcss/LoadCSS.fxml" GridPane.columnIndex="2" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES" />
-               </children>
-               <padding>
-                  <Insets bottom="15.0" />
-               </padding>
-            </HBox>
-         </content>
+      <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" vbarPolicy="NEVER" vmax="2.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
          <GridPane.margin>
-            <Insets />
+            <Insets bottom="5.0" top="5.0" />
          </GridPane.margin>
          <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="25.0" left="5.0" right="5.0" top="5.0" />
          </padding>
+         <content>
+            <SplitPane dividerPositions="0.7" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="800.0">
+              <items>
+                  <fx:include fx:id="loadFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../header/loadfile/LoadFile.fxml" GridPane.columnSpan="2" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES" />
+                  <fx:include fx:id="loadCSS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../header/loadcss/LoadCSS.fxml" GridPane.columnIndex="2" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES" />
+              </items>
+               <opaqueInsets>
+                  <Insets bottom="10.0" />
+               </opaqueInsets>
+            </SplitPane>
+         </content>
       </ScrollPane>
       <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
         <tabs>

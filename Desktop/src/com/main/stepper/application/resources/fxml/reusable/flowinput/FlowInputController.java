@@ -1,11 +1,17 @@
 package com.main.stepper.application.resources.fxml.reusable.flowinput;
 
+import com.main.stepper.data.implementation.enumeration.api.IHasValues;
+import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
+import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumDef;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.io.api.IDataIO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+
+import java.util.List;
 
 public class FlowInputController {
     private IDataIO input;
@@ -19,12 +25,28 @@ public class FlowInputController {
     public FlowInputController() {
     }
 
+    @FXML public void initialize(){
+        root.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+    }
+
     public void init(IDataIO input) {
         this.input = input;
         nameLabel.setText(input.getName());
         userStringLabel.setText(input.getUserString());
         necessityLabel.setText(input.getNecessity().toString());
-        typeLabel.setText(input.getDataDefinition().getName());
+        // todo: figure out why it doesn't detect enum
+        if(input.getDataDefinition().getType().isInstance(ZipperEnumData.class)) {
+            StringBuilder builder = new StringBuilder();
+            List<String> values = ZipperEnumData.getValues();
+            builder.append("Enumerator: (");
+            for(String value : values) {
+                builder.append(value).append("\\");
+            }
+            builder.deleteCharAt(builder.lastIndexOf("\\")).append(")");
+            typeLabel.setText(builder.toString());
+        }
+        else
+            typeLabel.setText(input.getDataDefinition().getName());
     }
 
     public IDataIO input() {
@@ -37,6 +59,10 @@ public class FlowInputController {
 
     public void setValue(String value) {
         valueField.setText(value);
+    }
+
+    public void setInputStyle(String css) {
+        valueField.setStyle(css);
     }
 
     public void setVisible(boolean visible) {

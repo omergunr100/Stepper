@@ -37,7 +37,11 @@ public class ExecutionUserInputs {
     public void readUserInput(IDataIO input, String value) throws BadTypeException {
         try {
             userInputs.put(input, input.getDataDefinition().readValue(value));
-        } catch (UnfriendlyInputException e) {}
+        } catch (UnfriendlyInputException ignored) {
+        } catch (BadTypeException e) {
+            userInputs.put(input, null);
+            throw e;
+        }
     }
 
     public Boolean isFilled(IDataIO input) {

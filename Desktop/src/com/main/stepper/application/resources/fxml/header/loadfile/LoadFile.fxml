@@ -5,10 +5,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox fx:id="loadFile" alignment="CENTER_LEFT" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController">
+<HBox fx:id="loadFile" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController">
    <children>
       <Button fx:id="loadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFile" text="Load XML file" textAlignment="JUSTIFY" />
-      <TextField fx:id="filePathTextField" editable="false" prefHeight="25.0" prefWidth="300.0">
+      <TextField fx:id="filePathTextField" editable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
