@@ -120,6 +120,7 @@ public class FlowExecutionController {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(FlowInputController.class.getResource("FlowInput.fxml"));
             try {
+                // load fxml file
                 Parent inputComp = loader.load();
                 FlowInputController flowInputController = loader.getController();
                 flowInputController.init(dataIO);
@@ -127,7 +128,7 @@ public class FlowExecutionController {
                 inputComp.setOpacity(0.0);
                 inputsFlowPane.getChildren().add(inputComp);
                 // animate fade in
-                FadeTransition ft = new FadeTransition(Duration.millis(500), inputComp);
+                FadeTransition ft = new FadeTransition(Duration.millis(250), inputComp);
                 ft.setFromValue(0.0);
                 ft.setToValue(1.0);
                 animations.add(ft);

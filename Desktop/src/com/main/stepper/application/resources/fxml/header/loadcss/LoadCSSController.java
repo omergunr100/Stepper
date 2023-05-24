@@ -7,10 +7,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class LoadCSSController {
     @FXML private RootController rootController;
-    @FXML private ChoiceBox<CSSRegistry> choice;
+    @FXML private ChoiceBox<String> choice;
 
     public LoadCSSController() {
     }
@@ -22,19 +24,20 @@ public class LoadCSSController {
     @FXML public void initialize(){
         choice.setItems(
                 FXCollections.observableArrayList(
-                        CSSRegistry.values()
+                        Arrays.stream(CSSRegistry.values()).map(CSSRegistry::getName).collect(Collectors.toList())
                 )
         );
         choice.getSelectionModel().selectFirst();
         choice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onChange(newValue));
     }
 
-    public void onChange(CSSRegistry newValue) {
+    public void onChange(String newValue) {
         rootController.getPrimaryStage().getScene().getStylesheets().clear();
-        if(newValue == null){
+        CSSRegistry value = Arrays.stream(CSSRegistry.values()).filter(cssRegistry -> cssRegistry.getName().equals(newValue)).findFirst().orElse(null);
+        if(value == null){
             return;
         }
-        URL url = CSSRegistry.class.getResource(newValue.getFile().getPath());
+        URL url = CSSRegistry.class.getResource(value.getFile().getPath());
         rootController.getPrimaryStage().getScene().getStylesheets().add(url.toExternalForm());
     }
 }

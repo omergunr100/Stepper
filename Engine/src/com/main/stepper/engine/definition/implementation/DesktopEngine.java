@@ -135,8 +135,9 @@ public class DesktopEngine implements IEngine {
         }
 
         IFlowDefinition requested = maybeFlow.get();
+        IFlowExecutionContext context;
         synchronized (requested){
-            IFlowExecutionContext context = new FlowExecutionContext(
+            context = new FlowExecutionContext(
                     requested.mappings(),
                     logger,
                     statistics
@@ -146,11 +147,10 @@ public class DesktopEngine implements IEngine {
                 context.setVariable(input, inputs.getUserInputs().get(input));
             }
 
-            IFlowExecutor executor = new FlowExecutor();
-            this.executor.execute(()->executor.executeFlow(requested, context));
-            IFlowRunResult result = executor.executeFlow(requested, context);
-            return null;
         }
+        IFlowExecutor executor = new FlowExecutor();
+        this.executor.execute(()->executor.executeFlow(requested, context));
+        return null;
     }
 
     @Override
