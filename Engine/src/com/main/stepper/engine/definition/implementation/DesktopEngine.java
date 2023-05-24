@@ -155,7 +155,7 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public List<IFlowRunResult> getFlowRuns() {
-        return null;
+        return statistics.getFlowRuns();
     }
 
     @Override

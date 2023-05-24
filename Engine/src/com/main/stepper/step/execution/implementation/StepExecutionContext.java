@@ -41,6 +41,9 @@ public class StepExecutionContext implements IStepExecutionContext {
             return null;
         }
 
+        if(variables.get(alias) == null)
+            return null;
+
         if(!type.isAssignableFrom(variables.get(alias).getClass())){
             log("Variable " + alias.getName() + " is not of type " + type.getName());
             return null;
