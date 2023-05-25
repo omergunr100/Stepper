@@ -48,8 +48,7 @@ public class RootController {
                 // sleep for 150m
                 try {
                     Thread.sleep(150);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ignored) {
                 }
             }
         });

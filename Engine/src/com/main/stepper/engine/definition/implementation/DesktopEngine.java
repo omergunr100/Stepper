@@ -160,7 +160,7 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public IFlowRunResult getFlowRunInfo(String runId) {
-        return null;
+        return statistics.getFlowRunResult(runId);
     }
 
     @Override
