@@ -55,6 +55,9 @@ public class RootController {
         });
         updateFlowRunHistoryThread.setDaemon(true);
         updateFlowRunHistoryThread.start();
+
+        // select initial window
+        tabs.getSelectionModel().select(flowsDefinitionTab);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -74,6 +77,7 @@ public class RootController {
         flowExecutionHistoryController.reset();
         flowExecutionController.reset();
         flowsDefinitionController.updateFlows();
+        tabs.getSelectionModel().select(flowsDefinitionTab);
         root.setDisable(false);
     }
 

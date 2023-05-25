@@ -46,7 +46,14 @@ public class FlowExecutionController {
     }
 
     public void reset() {
-        // todo: implement reset of window
+        startButton.setDisable(true);
+        currentFlow = null;
+        if (validateInputsThread != null)
+            validateInputsThread.interrupt();
+        executionUserInputs = null;
+        inputsFlowPane.getChildren().clear();
+        flowInputControllers.clear();
+        flowDetailsTreeController.setCurrentFlow(null);
     }
 
     public void setCurrentFlow(IFlowDefinition currentFlow) {
@@ -146,6 +153,5 @@ public class FlowExecutionController {
     private void startFlow() {
         rootController.getEngine().runFlow(currentFlow.name(), executionUserInputs);
         executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
-        // todo: empty inputs
     }
 }

@@ -21,7 +21,8 @@ public class FlowRunDetailsController {
     }
 
     public void reset() {
-        // todo: implement reset of window
+        currentFlow = null;
+        table.getItems().clear();
     }
 
     @FXML public void initialize(){
