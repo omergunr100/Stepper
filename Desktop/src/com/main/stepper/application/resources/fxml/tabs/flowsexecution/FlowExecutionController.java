@@ -45,10 +45,14 @@ public class FlowExecutionController {
         this.rootController = rootController;
     }
 
+    public void reset() {
+        // todo: implement reset of window
+    }
+
     public void setCurrentFlow(IFlowDefinition currentFlow) {
         this.currentFlow = currentFlow;
         flowDetailsTreeController.setCurrentFlow(currentFlow.information());
-        this.executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+        executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
 
         setInputs();
 
@@ -58,55 +62,54 @@ public class FlowExecutionController {
         // todo: add listener for tab change, only run this thread if this tab is selected
         validateInputsThread = new Thread(()->{
             while (true){
-                synchronized (executionUserInputs) {
-                    synchronized (flowInputControllers){
-                        for(FlowInputController flowInputController : flowInputControllers) {
-                            try {
-                                if(flowInputController.getValue().isEmpty()){
-                                    executionUserInputs.readUserInput(flowInputController.input(), null);
-                                    throw new BadTypeException("Empty input");
-                                }
+                try{
+                    synchronized (executionUserInputs) {
+                        synchronized (flowInputControllers){
+                            for(FlowInputController flowInputController : flowInputControllers) {
+                                try {
+                                    if(flowInputController.getValue().isEmpty()){
+                                        executionUserInputs.readUserInput(flowInputController.input(), null);
+                                        throw new BadTypeException("Empty input");
+                                    }
 
-                                executionUserInputs.readUserInput(flowInputController.input(), flowInputController.getValue());
-                                // input is valid: green
-                                flowInputController.setInputStyle(
-                                        "-fx-text-box-border: lightgreen ;\n" +
-                                        "  -fx-focus-color: lightgreen ;"
-                                );
-                            } catch (BadTypeException e) {
-                                if(flowInputController.input().getNecessity().equals(DataNecessity.OPTIONAL)){
-                                    // input is optional and bad type: yellow
+                                    executionUserInputs.readUserInput(flowInputController.input(), flowInputController.getValue());
+                                    // input is valid: green
                                     flowInputController.setInputStyle(
-                                            "-fx-text-box-border: yellow ;\n" +
-                                            "  -fx-focus-color: yellow ;"
+                                            "-fx-text-box-border: lightgreen ;\n" +
+                                            "  -fx-focus-color: lightgreen ;"
                                     );
-                                }
-                                else{
-                                    // input is mandatory and bad type: red
-                                    flowInputController.setInputStyle(
-                                            "-fx-text-box-border: red ;\n" +
-                                            "  -fx-focus-color: red ;"
-                                    );
+                                } catch (BadTypeException e) {
+                                    if(flowInputController.input().getNecessity().equals(DataNecessity.OPTIONAL)){
+                                        // input is optional and bad type: yellow
+                                        flowInputController.setInputStyle(
+                                                "-fx-text-box-border: yellow ;\n" +
+                                                "  -fx-focus-color: yellow ;"
+                                        );
+                                    }
+                                    else{
+                                        // input is mandatory and bad type: red
+                                        flowInputController.setInputStyle(
+                                                "-fx-text-box-border: red ;\n" +
+                                                "  -fx-focus-color: red ;"
+                                        );
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (executionUserInputs.validateUserInputs())
-                        startButton.setDisable(false);
-                    else
-                        startButton.setDisable(true);
-                }
-                try {
+                        if (executionUserInputs.validateUserInputs())
+                            startButton.setDisable(false);
+                        else
+                            startButton.setDisable(true);
+                    }
                     Thread.sleep(150);
-                } catch (InterruptedException ignored) {
-                    return;
+                }catch (InterruptedException e) {
+                    break;
                 }
             }
         });
         validateInputsThread.setDaemon(true);
-         validateInputsThread.start();
-
+        validateInputsThread.start();
     }
 
     // initialize input components
@@ -138,10 +141,6 @@ public class FlowExecutionController {
             animations.get(i).setOnFinished(event -> next.play());
         }
         animations.get(0).play();
-    }
-
-    public void validateInputs() {
-
     }
 
     private void startFlow() {

@@ -45,7 +45,7 @@ public class RootController {
             while(true) {
                 // update table with history
                 flowExecutionHistoryController.updateTable(engine.getFlowRuns());
-                // sleep for 150ms
+                // sleep for 150m
                 try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
@@ -71,6 +71,8 @@ public class RootController {
 
     public void loadFlows() {
         root.setDisable(true);
+        flowExecutionHistoryController.reset();
+        flowExecutionController.reset();
         flowsDefinitionController.updateFlows();
         root.setDisable(false);
     }

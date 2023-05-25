@@ -1,6 +1,5 @@
 package com.main.stepper.data.implementation.enumeration.zipper;
 
-import com.main.stepper.data.implementation.enumeration.api.IHasValues;
 import com.main.stepper.exceptions.data.EnumValueMissingException;
 
 import java.util.*;

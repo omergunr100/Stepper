@@ -20,6 +20,10 @@ public class FlowRunDetailsController {
     public FlowRunDetailsController() {
     }
 
+    public void reset() {
+        // todo: implement reset of window
+    }
+
     @FXML public void initialize(){
         // initial value
         this.currentFlow = null;

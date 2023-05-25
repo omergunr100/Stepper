@@ -34,6 +34,8 @@ public class CommandLineStep extends AbstractStepDefinition {
         List<IDataIO> inputs = getInputs();
         String command = (String) context.getInput(inputs.get(0), DDRegistry.STRING.getType());
         String arguments = (String) context.getInput(inputs.get(1), DDRegistry.STRING.getType());
+        if(arguments == null)
+            arguments = "";
 
         List<IDataIO> outputs = getOutputs();
         IDataIO result = outputs.get(0);
@@ -42,7 +44,8 @@ public class CommandLineStep extends AbstractStepDefinition {
         context.log("About to invoke " + command + " " + arguments);
 
         // Make command using process builder
-        ProcessBuilder pb = new ProcessBuilder(command, arguments);
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command("cmd.exe", "/c", command + (arguments.equals("") ? arguments : " " + arguments));
         // Run command
         String resultString = "";
         try {
