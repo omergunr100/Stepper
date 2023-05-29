@@ -5,6 +5,7 @@ import com.main.stepper.xml.generated.ex2.STFlow;
 import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.validators.api.IValidator;
 import com.main.stepper.xml.validators.implementation.file.ValidateFile;
+import com.main.stepper.xml.validators.implementation.flow.ValidateContinuationNames;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowNames;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoIllegalStepsInFlow;
 
@@ -54,6 +55,10 @@ public final class Validator implements IValidator {
 
         // Get flows from validator
         List<STFlow> flows = stepper.getSTFlows().getSTFlow();
+
+        // check for continuation names that don't exist
+        IValidator continuationNameValidator = new ValidateContinuationNames(flows);
+        errors.addAll(continuationNameValidator.validate());
 
         // Check for steps in flows that are not registered
         flows.stream()

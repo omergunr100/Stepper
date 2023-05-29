@@ -13,6 +13,10 @@ public class RelationViewController {
     public RelationViewController() {
     }
 
+    @FXML public void initialize() {
+        table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+
     public void reset() {
         table.getItems().clear();
         table.getColumns().clear();
