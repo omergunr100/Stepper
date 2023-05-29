@@ -28,6 +28,11 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     }
 
     @Override
+    public Class<? extends AbstractStepDefinition> getStepClass() {
+        return CollectFilesInFolderStep.class;
+    }
+
+    @Override
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Read inputs

@@ -8,6 +8,7 @@ import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
@@ -58,7 +59,13 @@ public class FlowExecutor implements IFlowExecutor {
         List<String> stepRunUUID = new ArrayList<>();
         for(IStepUsageDeclaration step : flow.steps()){
             IStepExecutionContext stepContext = context.getStepExecutionContext(step);
-            IStepRunResult result = step.step().execute(stepContext);
+            IStepDefinition stepDef = null;
+            try {
+                stepDef = step.step().getStepClass().newInstance();
+            } catch (InstantiationException ignored) {
+            } catch (IllegalAccessException ignored) {
+            }
+            IStepRunResult result = stepDef.execute(stepContext);
             result.setAlias(step.name());
             stepRunUUID.add(result.runId());
             context.statistics().addRunResult(result);

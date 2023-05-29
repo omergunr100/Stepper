@@ -22,6 +22,7 @@ import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.flow.ValidateContinuationTypes;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowOutputs;
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
@@ -76,6 +77,25 @@ public class DesktopEngine implements IEngine {
             fileFlows.add(flow);
         }
 
+        // Insert continuations
+        for (IFlowDefinition flow : fileFlows) {
+            List<String> contNames = flow.continuationNames();
+            for (String contName : contNames) {
+                IFlowDefinition continuation = fileFlows.stream().filter(f -> f.name().equals(contName)).findFirst().orElse(null);
+                if(continuation == null){
+                    errors.add("Continuation: " + contName + " not found for flow: " + flow.name());
+                    return errors;
+                }
+                else
+                    flow.addContinuation(continuation);
+            }
+        }
+        // todo: Check continuations validity
+//        for (IFlowDefinition flow : fileFlows){
+//            IValidator validateContinuations = new ValidateContinuationTypes(flow);
+//            errors.addAll(validateContinuations.validate());
+//        }
+
         if(errors.isEmpty()){
             validated = true;
             // Reset all
@@ -94,16 +114,22 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public List<String> getFlowNames() {
+        if (!validated)
+            return null;
         return flows.stream().map(IFlowDefinition::name).collect(Collectors.toList());
     }
 
     @Override
     public List<IFlowDefinition> getFlows() {
+        if (!validated)
+            return null;
         return flows;
     }
 
     @Override
     public IFlowInformation getFlowInfo(String name) {
+        if (!validated)
+            return null;
         IFlowDefinition requested = flows.stream().filter(flow -> flow.name().equals(name)).findFirst().orElse(null);
         if(requested == null)
             return null;
@@ -112,6 +138,8 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public ExecutionUserInputs getExecutionUserInputs(String flowName) {
+        if (!validated)
+            return null;
         IFlowDefinition requested = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst().orElse(null);
         if(requested == null)
             return null;
@@ -129,6 +157,8 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public IFlowRunResult runFlow(String name, ExecutionUserInputs inputs) {
+        if (!validated)
+            return null;
         Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(name)).findFirst();
         if(!maybeFlow.isPresent()){
             return null;
@@ -155,31 +185,42 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public List<IFlowRunResult> getFlowRuns() {
+        if (!validated)
+            return null;
         return statistics.getFlowRuns();
     }
 
     @Override
     public IFlowRunResult getFlowRunInfo(String runId) {
+        if (!validated)
+            return null;
         return statistics.getFlowRunResult(runId);
     }
 
     @Override
     public StatManager getStatistics() {
+        if (!validated)
+            return null;
         return statistics;
     }
 
     @Override
     public List<Log> getLogs(String uuid) {
+        if (!validated)
+            return null;
         return logger.getLog(uuid);
     }
 
     @Override
     public void writeSystemToFile(String path) throws NotAFileException, IOException {
-
+        if (!validated)
+            return;
     }
 
     @Override
     public Boolean readSystemFromFile(String path) throws NotAFileException, IOException {
+        if (!validated)
+            return null;
         return null;
     }
 }

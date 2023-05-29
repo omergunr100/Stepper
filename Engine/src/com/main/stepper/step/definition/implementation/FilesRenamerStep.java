@@ -30,6 +30,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
     }
 
     @Override
+    public Class<? extends AbstractStepDefinition> getStepClass() {
+        return FilesRenamerStep.class;
+    }
+
+    @Override
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get DataIOs

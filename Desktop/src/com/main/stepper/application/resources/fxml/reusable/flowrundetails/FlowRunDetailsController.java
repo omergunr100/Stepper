@@ -64,6 +64,7 @@ public class FlowRunDetailsController {
     }
     public void updateTable(List<IFlowRunResult> results){
         table.getItems().clear();
-        table.getItems().addAll(FXCollections.observableArrayList(results));
+        if(results != null)
+            table.getItems().addAll(FXCollections.observableArrayList(results));
     }
 }

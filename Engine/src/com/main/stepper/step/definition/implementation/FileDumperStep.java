@@ -27,6 +27,11 @@ public class FileDumperStep extends AbstractStepDefinition {
     }
 
     @Override
+    public Class<? extends AbstractStepDefinition> getStepClass() {
+        return FileDumperStep.class;
+    }
+
+    @Override
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get dataIOs

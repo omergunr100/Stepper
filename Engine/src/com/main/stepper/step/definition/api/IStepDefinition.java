@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface IStepDefinition extends Serializable {
+    Class<? extends AbstractStepDefinition> getStepClass();
     String getName();
     Boolean isReadOnly();
     List<IDataIO> getInputs();

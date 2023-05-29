@@ -19,7 +19,9 @@ public class Flow implements IFlowDefinition {
     private final String name;
     private final String description;
     private Boolean readOnly;
-    List<IFlowDefinition> continuations;
+    private List<String> continuationNames;
+    private List<IFlowDefinition> continuations;
+    private Map<IFlowDefinition, Map<IDataIO, IDataIO>> continuationMappings;
     private final List<IDataIO> requiredInputs; // Post-alias
     private final List<IDataIO> optionalInputs; // Post-alias
     private final List<IDataIO> formalOutputs; // Post-alias
@@ -38,6 +40,7 @@ public class Flow implements IFlowDefinition {
         formalOutputs = new ArrayList<>();
         allOutputs = new ArrayList<>();
         steps = new ArrayList<>();
+        continuationNames = new ArrayList<>();
         continuations = new ArrayList<>();
         readOnly = null;
         this.mappings = new LinkedHashMap<>();
@@ -67,8 +70,28 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
+    public void addContinuationName(String continuationName) {
+        continuationNames.add(continuationName);
+    }
+
+    @Override
+    public List<String> continuationNames() {
+        return continuationNames;
+    }
+
+    @Override
     public List<IFlowDefinition> continuations() {
         return continuations;
+    }
+
+    @Override
+    public void addContinuationMapping(IFlowDefinition continuation, Map<IDataIO, IDataIO> mapping) {
+        continuationMappings.put(continuation, mapping);
+    }
+
+    @Override
+    public Map<IDataIO, IDataIO> continuationMapping(IFlowDefinition continuation) {
+        return continuationMappings.getOrDefault(continuation, null);
     }
 
     @Override
@@ -222,5 +245,20 @@ public class Flow implements IFlowDefinition {
         if(step == null)
             step = dataToConsumer.get(dataIO).get(0);
         return step;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Flow flow = (Flow) o;
+
+        return Objects.equals(name, flow.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

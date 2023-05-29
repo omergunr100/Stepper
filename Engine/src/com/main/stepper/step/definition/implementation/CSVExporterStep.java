@@ -24,6 +24,11 @@ public class CSVExporterStep extends AbstractStepDefinition {
     }
 
     @Override
+    public Class<? extends AbstractStepDefinition> getStepClass() {
+        return CSVExporterStep.class;
+    }
+
+    @Override
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Get dataIOs

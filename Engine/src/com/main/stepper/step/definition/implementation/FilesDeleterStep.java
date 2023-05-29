@@ -28,6 +28,11 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     }
 
     @Override
+    public Class<? extends AbstractStepDefinition> getStepClass() {
+        return FilesDeleterStep.class;
+    }
+
+    @Override
     public IStepRunResult execute(IStepExecutionContext context) {
         Temporal startTime = LocalTime.now();
         // Read inputs
