@@ -115,6 +115,7 @@ public class FlowExecutionController {
                 }
             }
         });
+        validateInputsThread.setName("Validate Inputs Thread");
         validateInputsThread.setDaemon(true);
         validateInputsThread.start();
     }

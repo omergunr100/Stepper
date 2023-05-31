@@ -5,9 +5,12 @@ import com.main.stepper.application.resources.fxml.header.loadfile.LoadFileContr
 import com.main.stepper.application.resources.fxml.reusable.flowrundetails.FlowRunDetailsController;
 import com.main.stepper.application.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.FlowExecutionController;
+import com.main.stepper.application.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.DesktopEngine;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
+import com.main.stepper.statistics.dto.StatDTO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -28,6 +31,7 @@ public class RootController {
     @FXML FlowsDefinitionController flowsDefinitionController;
     @FXML FlowExecutionController flowExecutionController;
     @FXML FlowRunDetailsController flowExecutionHistoryController;
+    @FXML StatisticsScreenController statisticsScreenController;
 
     public RootController() {
     }
@@ -44,14 +48,15 @@ public class RootController {
         Thread updateFlowRunHistoryThread = new Thread(() -> {
             while(true) {
                 // update table with history
-                flowExecutionHistoryController.updateTable(engine.getFlowRuns());
-                // sleep for 150m
+                Platform.runLater(() -> flowExecutionHistoryController.updateTable(engine.getFlowRuns()));
                 try {
-                    Thread.sleep(150);
-                } catch (InterruptedException ignored) {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    return;
                 }
             }
         });
+        updateFlowRunHistoryThread.setName("Update Flow Run History Thread");
         updateFlowRunHistoryThread.setDaemon(true);
         updateFlowRunHistoryThread.start();
 
@@ -73,6 +78,7 @@ public class RootController {
 
     public void loadFlows() {
         root.setDisable(true);
+        Platform.runLater(() -> statisticsScreenController.bind(engine.getStatistics().getStatistics(StatDTO.TYPE.FLOW), engine.getStatistics().getStatistics(StatDTO.TYPE.STEP)));
         flowExecutionHistoryController.reset();
         flowExecutionController.reset();
         flowsDefinitionController.updateFlows();
