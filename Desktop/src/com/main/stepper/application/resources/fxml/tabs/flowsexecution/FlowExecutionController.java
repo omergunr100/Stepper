@@ -66,7 +66,6 @@ public class FlowExecutionController {
         // initialize validation thread
         if(validateInputsThread != null)
             validateInputsThread.interrupt();
-        // todo: add listener for tab change, only run this thread if this tab is selected
         validateInputsThread = new Thread(()->{
             while (true){
                 try{

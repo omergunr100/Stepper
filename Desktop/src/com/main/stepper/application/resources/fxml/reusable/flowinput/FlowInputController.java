@@ -32,7 +32,7 @@ public class FlowInputController {
         userStringLabel.setText(input.getUserString());
         necessityLabel.setText(input.getNecessity().toString());
         // todo: figure out why it doesn't detect enum
-        if(input.getDataDefinition().getType().isInstance(ZipperEnumData.class)) {
+        if(input.getDataDefinition().getType().isAssignableFrom(ZipperEnumData.class)) {
             StringBuilder builder = new StringBuilder();
             List<String> values = ZipperEnumData.getValues();
             builder.append("Enumerator: (");

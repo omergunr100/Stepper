@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
 <GridPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.root.RootController">
    <columnConstraints>
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="850.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints minHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
@@ -34,11 +40,11 @@
             </SplitPane>
          </content>
       </ScrollPane>
-      <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+      <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
         <tabs>
           <Tab fx:id="flowsDefinitionTab" closable="false" text="Flows Definition">
                <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                      <content>
                         <fx:include fx:id="flowsDefinition" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/flowsdefinition/FlowsDefinition.fxml" />
                      </content>
@@ -59,9 +65,9 @@
                </content></Tab>
             <Tab fx:id="statisticsTab" closable="false" text="Statistics">
                <content>
-                  <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                      <content>
-                        <fx:include fx:id="statisticsScreen" source="../tabs/statistics/tab/StatisticsScreen.fxml" />
+                        <fx:include fx:id="statisticsScreen" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/statistics/tab/StatisticsScreen.fxml" />
                      </content>
                   </ScrollPane>
                </content></Tab>
