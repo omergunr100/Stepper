@@ -4,9 +4,7 @@ import com.main.stepper.application.resources.fxml.tabs.statistics.selector.Sele
 import com.main.stepper.statistics.dto.StatDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

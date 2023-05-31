@@ -3,7 +3,6 @@ package com.main.stepper.data.implementation.enumeration.zipper;
 import com.main.stepper.data.api.AbstractDataDef;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.EnumValueMissingException;
-import com.main.stepper.exceptions.data.UnfriendlyInputException;
 
 public class ZipperEnumDef extends AbstractDataDef {
     public ZipperEnumDef() {

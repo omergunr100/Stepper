@@ -22,7 +22,6 @@ import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
-import com.main.stepper.xml.validators.implementation.flow.ValidateContinuationTypes;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowOutputs;
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 

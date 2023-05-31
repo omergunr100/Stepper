@@ -2,17 +2,10 @@ package com.main.stepper.application.implementation;
 
 import com.main.stepper.application.resources.css.CSSRegistry;
 import com.main.stepper.application.resources.fxml.root.RootController;
-import com.main.stepper.flow.definition.api.IFlowDefinition;
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableStringValue;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.net.URL;

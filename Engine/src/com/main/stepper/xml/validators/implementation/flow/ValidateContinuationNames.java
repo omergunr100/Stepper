@@ -3,7 +3,6 @@ package com.main.stepper.xml.validators.implementation.flow;
 import com.main.stepper.xml.generated.ex2.STContinuation;
 import com.main.stepper.xml.generated.ex2.STContinuations;
 import com.main.stepper.xml.generated.ex2.STFlow;
-import com.main.stepper.xml.generated.ex2.STFlows;
 import com.main.stepper.xml.validators.api.IValidator;
 
 import java.util.ArrayList;

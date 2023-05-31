@@ -1,9 +1,6 @@
 package com.main.stepper.application.resources.fxml.reusable.flowinput;
 
-import com.main.stepper.data.implementation.enumeration.api.IHasValues;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
-import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumDef;
-import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.io.api.IDataIO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

@@ -2,7 +2,6 @@ package com.main.stepper.step.execution.implementation;
 
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
-import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.util.Map;

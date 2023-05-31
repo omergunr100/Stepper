@@ -1,9 +1,6 @@
 package com.test;
 
-import com.main.stepper.application.resources.dataview.list.ListViewController;
-import com.main.stepper.application.resources.dataview.relation.RelationViewController;
 import com.main.stepper.application.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
-import com.main.stepper.data.implementation.relation.Relation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,9 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class TestApp extends Application {
 
