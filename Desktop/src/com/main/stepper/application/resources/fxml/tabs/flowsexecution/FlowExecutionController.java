@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -28,19 +29,22 @@ public class FlowExecutionController {
     private volatile ExecutionUserInputs executionUserInputs = null;
     private Thread validateInputsThread = null;
     private List<FlowInputController> flowInputControllers;
+    private List<Parent> flowInputComponents = new ArrayList<>();
     @FXML SplitPane root;
     @FXML FlowPane inputsFlowPane;
-    @FXML volatile Button startButton;
+    @FXML Button startButton;
     @FXML FlowTreeViewController flowDetailsTreeController;
     @FXML VBox executionDetailsVBoxController;
+    @FXML CheckBox mandatoryBox;
+    @FXML CheckBox optionalBox;
 
     public FlowExecutionController() {
     }
 
     @FXML public void initialize(){
-        startButton.setDisable(true);
         startButton.setOnAction(event -> startFlow());
         flowInputControllers = new ArrayList<>();
+        flowInputComponents = new ArrayList<>();
     }
 
     public void setRootController(RootController rootController) {
@@ -49,6 +53,8 @@ public class FlowExecutionController {
 
     public void reset() {
         startButton.setDisable(true);
+        optionalBox.setDisable(true);
+        mandatoryBox.setDisable(true);
         currentFlow = null;
         if (validateInputsThread != null)
             validateInputsThread.interrupt();
@@ -119,11 +125,14 @@ public class FlowExecutionController {
         validateInputsThread.setName("Validate Inputs Thread");
         validateInputsThread.setDaemon(true);
         validateInputsThread.start();
+        mandatoryBox.setDisable(false);
+        optionalBox.setDisable(false);
     }
 
     // initialize input components
     private void setInputs() {
         this.flowInputControllers.clear();
+        this.flowInputComponents.clear();
         this.inputsFlowPane.getChildren().clear();
         List<FadeTransition> animations = new ArrayList<>();
         for(IDataIO dataIO : executionUserInputs.getOpenUserInputs()) {
@@ -135,6 +144,7 @@ public class FlowExecutionController {
                 FlowInputController flowInputController = loader.getController();
                 flowInputController.init(dataIO);
                 flowInputControllers.add(flowInputController);
+                flowInputComponents.add(inputComp);
                 inputComp.setOpacity(0.0);
                 inputsFlowPane.getChildren().add(inputComp);
                 // animate fade in
@@ -152,9 +162,45 @@ public class FlowExecutionController {
         animations.get(0).play();
     }
 
-    private void startFlow() {
+    @FXML private void startFlow() {
         rootController.getEngine().runFlow(currentFlow.name(), executionUserInputs);
         executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+    }
+
+    @FXML private void toggleMandatory() {
+        if(mandatoryBox.isSelected()){
+            int startInd = 0;
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.MANDATORY)) {
+                    inputsFlowPane.getChildren().add(startInd, flowInputComponents.get(i));
+                    startInd++;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.MANDATORY)) {
+                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
+                }
+            }
+        }
+    }
+
+    @FXML private void toggleOptional() {
+        if(optionalBox.isSelected()){
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.OPTIONAL)) {
+                    inputsFlowPane.getChildren().add(flowInputComponents.get(i));
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.OPTIONAL)) {
+                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
+                }
+            }
+        }
     }
 
     private void addExecutionData(Parent component) {

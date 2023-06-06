@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
 <SplitPane fx:id="root" dividerPositions="0.3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.application.resources.fxml.tabs.flowsexecution.FlowExecutionController">
    <items>
       <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Flow inputs">
          <content>
-            <GridPane>
+            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
@@ -15,20 +24,33 @@
                 <ColumnConstraints hgrow="NEVER" percentWidth="15.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints percentHeight="85.0" vgrow="SOMETIMES" />
-                <RowConstraints percentHeight="15.0" vgrow="NEVER" />
+                <RowConstraints fillHeight="false" valignment="BOTTOM" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" valignment="TOP" vgrow="NEVER" />
+                <RowConstraints fillHeight="false" vgrow="NEVER" />
+                  <RowConstraints vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS">
+                  <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minViewportHeight="200.0" minViewportWidth="400.0" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2147483647" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
                      <content>
-                        <FlowPane fx:id="inputsFlowPane" hgap="5.0" maxWidth="1.7976931348623157E308" rowValignment="TOP" vgap="5.0">
+                        <FlowPane fx:id="inputsFlowPane" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" prefHeight="163.0" prefWidth="536.0" rowValignment="TOP" vgap="5.0">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </FlowPane>
                      </content>
                   </ScrollPane>
-                  <Button fx:id="startButton" mnemonicParsing="false" text="Start Execution" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER" />
+                  <ButtonBar GridPane.columnIndex="3" GridPane.rowSpan="2" />
+                  <Button fx:id="startButton" disable="true" mnemonicParsing="false" onAction="#startFlow" text="Start Execution" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER" />
+                  <CheckBox fx:id="mandatoryBox" disable="true" mnemonicParsing="false" onAction="#toggleMandatory" selected="true" text="Mandatory" GridPane.columnIndex="3" GridPane.halignment="LEFT">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="optionalBox" disable="true" mnemonicParsing="false" onAction="#toggleOptional" selected="true" text="Optional" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </GridPane.margin>
+                  </CheckBox>
                </children>
             </GridPane>
          </content>

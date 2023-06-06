@@ -42,6 +42,7 @@ public class Flow implements IFlowDefinition {
         allOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         continuationNames = new ArrayList<>();
+        continuationMappings = new HashMap<>();
         customContinuationMappings = new HashMap<>();
         continuations = new ArrayList<>();
         readOnly = null;
