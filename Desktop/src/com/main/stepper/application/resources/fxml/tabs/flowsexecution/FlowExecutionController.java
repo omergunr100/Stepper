@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class FlowExecutionController {
     @FXML FlowPane inputsFlowPane;
     @FXML volatile Button startButton;
     @FXML FlowTreeViewController flowDetailsTreeController;
+    @FXML VBox executionDetailsVBoxController;
 
     public FlowExecutionController() {
     }
@@ -153,5 +155,9 @@ public class FlowExecutionController {
     private void startFlow() {
         rootController.getEngine().runFlow(currentFlow.name(), executionUserInputs);
         executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+    }
+
+    private void addExecutionData(Parent component) {
+
     }
 }

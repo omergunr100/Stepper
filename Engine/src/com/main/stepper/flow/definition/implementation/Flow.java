@@ -21,6 +21,7 @@ public class Flow implements IFlowDefinition {
     private Boolean readOnly;
     private List<String> continuationNames;
     private List<IFlowDefinition> continuations;
+    private Map<String, Map<String, String>> customContinuationMappings;
     private Map<IFlowDefinition, Map<IDataIO, IDataIO>> continuationMappings;
     private final List<IDataIO> requiredInputs; // Post-alias
     private final List<IDataIO> optionalInputs; // Post-alias
@@ -41,6 +42,7 @@ public class Flow implements IFlowDefinition {
         allOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         continuationNames = new ArrayList<>();
+        customContinuationMappings = new HashMap<>();
         continuations = new ArrayList<>();
         readOnly = null;
         this.mappings = new LinkedHashMap<>();
@@ -67,6 +69,16 @@ public class Flow implements IFlowDefinition {
     @Override
     public List<IStepUsageDeclaration> steps() {
         return steps;
+    }
+
+    @Override
+    public void addCustomContinuationMapping(String continuation, Map<String, String> mapping) {
+        customContinuationMappings.put(continuation, mapping);
+    }
+
+    @Override
+    public Map<String, String> customContinuationMapping(String continuation) {
+        return customContinuationMappings.get(continuation);
     }
 
     @Override

@@ -8,10 +8,7 @@ import com.main.stepper.xml.generated.ex2.STContinuation;
 import com.main.stepper.xml.generated.ex2.STFlow;
 import com.main.stepper.xml.parsing.api.IParser;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FlowParser implements IParser {
@@ -32,10 +29,17 @@ public class FlowParser implements IParser {
     public List<String> parse(){
         // Get flow properties and mapping
         flow = new Flow(stflow.getName(), stflow.getSTFlowDescription());
-        // Get flow continuation names
-        if(stflow.getSTContinuations() != null)
-            for (STContinuation continuation : stflow.getSTContinuations().getSTContinuation())
+        // Get flow continuation names and custom mappings
+        if(stflow.getSTContinuations() != null) {
+            for (STContinuation continuation : stflow.getSTContinuations().getSTContinuation()) {
                 flow.addContinuationName(continuation.getTargetFlow());
+                Map<String, String> customContinuationMappings = new HashMap<>();
+                continuation.getSTContinuationMapping().forEach(mapping -> {
+                    customContinuationMappings.put(mapping.getSourceData(), mapping.getTargetData());
+                });
+                flow.addCustomContinuationMapping(continuation.getTargetFlow(), customContinuationMappings);
+            }
+        }
         // Get flow mappings
         MappingParser mappingParser = new MappingParser(stflow);
         List<String> errors = mappingParser.parse();

@@ -12,6 +12,8 @@ public interface IFlowDefinition extends Serializable {
     String description();
     Boolean isReadOnly();
     List<IStepUsageDeclaration> steps();
+    void addCustomContinuationMapping(String continuation, Map<String, String> mapping);
+    Map<String, String> customContinuationMapping(String continuation);
     void addContinuationName(String continuationName);
     List<String> continuationNames();
     void addContinuation(IFlowDefinition continuation);

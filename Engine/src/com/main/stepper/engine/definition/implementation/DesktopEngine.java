@@ -22,6 +22,7 @@ import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
 import com.main.stepper.xml.parsing.implementation.FlowParser;
 import com.main.stepper.xml.validators.api.IValidator;
+import com.main.stepper.xml.validators.implementation.flow.ValidateContinuationTypes;
 import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateFlowOutputs;
 import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 
@@ -53,12 +54,17 @@ public class DesktopEngine implements IEngine {
         List<String> errors = pipelineValidator.validate();
         List<IFlowDefinition> fileFlows = new ArrayList<>();
 
-
         if(!errors.isEmpty())
             return errors;
-        // TODO: add thread pool and continuations validators
+
         // Read system from validator
         STStepper stepper = (STStepper) pipelineValidator.getAdditional().get();
+        // Check if thread pool size is valid
+        if(stepper.getSTThreadPool() <= 0){
+            errors.add("Thread pool size must be a positive integer");
+            return errors;
+        }
+        // Validate flows
         List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
         for(STFlow stFlow : stFlows){
             // Validate no duplicate formal outputs
@@ -90,10 +96,10 @@ public class DesktopEngine implements IEngine {
             }
         }
         // todo: Check continuations validity
-//        for (IFlowDefinition flow : fileFlows){
-//            IValidator validateContinuations = new ValidateContinuationTypes(flow);
-//            errors.addAll(validateContinuations.validate());
-//        }
+        for (IFlowDefinition flow : fileFlows){
+            IValidator validateContinuations = new ValidateContinuationTypes(flow);
+            errors.addAll(validateContinuations.validate());
+        }
 
         if(errors.isEmpty()){
             validated = true;
