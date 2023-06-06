@@ -50,10 +50,7 @@ public class FlowsDefinitionController {
 
         flowsTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             this.setCurrentFlow(newValue);
-            if (newValue != null)
-                this.executeFlowButton.setDisable(false);
-            else
-                this.executeFlowButton.setDisable(true);
+            this.executeFlowButton.setDisable(newValue == null);
         });
 
         flowsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -69,13 +66,15 @@ public class FlowsDefinitionController {
 
     public void setCurrentFlow(IFlowDefinition currentFlow) {
         this.currentFlow = currentFlow;
-        this.selectedFlowTreeController.setCurrentFlow(currentFlow.information());
-        //this.selectedFlowTreeController.expandAll();
+        if (currentFlow != null)
+            selectedFlowTreeController.setCurrentFlow(currentFlow.information());
+        else
+            selectedFlowTreeController.setCurrentFlow(null);
     }
 
     public void updateFlows() {
         flowsTableView.setItems(FXCollections.observableArrayList(rootController.getEngine().getFlows()));
-        this.selectedFlowTreeController.setCurrentFlow(null);
+        selectedFlowTreeController.setCurrentFlow(null);
     }
 
     public void executeFlow() {
