@@ -61,7 +61,7 @@
                </content></Tab>
             <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">
                <content>
-                  <fx:include fx:id="flowExecutionHistory" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../reusable/flowrundetails/FlowRunDetails.fxml" />
+                  <fx:include fx:id="flowExecutionHistory" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/executionshistory/ExecutionHistoryScreen.fxml" />
                </content></Tab>
             <Tab fx:id="statisticsTab" closable="false" text="Statistics">
                <content>

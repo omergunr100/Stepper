@@ -3,6 +3,7 @@ package com.main.stepper.application.resources.fxml.root;
 import com.main.stepper.application.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.application.resources.fxml.reusable.flowrundetails.FlowRunDetailsController;
+import com.main.stepper.application.resources.fxml.tabs.executionshistory.ExecutionHistoryScreenController;
 import com.main.stepper.application.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.FlowExecutionController;
 import com.main.stepper.application.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
@@ -29,7 +30,7 @@ public class RootController {
     @FXML LoadCSSController loadCSSController;
     @FXML FlowsDefinitionController flowsDefinitionController;
     @FXML FlowExecutionController flowExecutionController;
-    @FXML FlowRunDetailsController flowExecutionHistoryController;
+    @FXML ExecutionHistoryScreenController flowExecutionHistoryController;
     @FXML StatisticsScreenController statisticsScreenController;
 
     public RootController() {

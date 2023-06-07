@@ -3,6 +3,7 @@ package com.main.stepper.application.resources.fxml.reusable.flowinput;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.io.api.IDataIO;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -18,12 +19,14 @@ public class FlowInputController {
     @FXML private Label necessityLabel;
     @FXML private Label typeLabel;
     @FXML private TextField valueField;
+    @FXML private CheckBox validityCheckbox;
 
     public FlowInputController() {
     }
 
     @FXML public void initialize(){
         root.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        setValid(false);
     }
 
     public void init(IDataIO input) {
@@ -63,5 +66,9 @@ public class FlowInputController {
 
     public void setVisible(boolean visible) {
         root.setVisible(visible);
+    }
+
+    public void setValid(boolean valid) {
+        validityCheckbox.setSelected(valid);
     }
 }

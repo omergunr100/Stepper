@@ -4,11 +4,15 @@ import com.main.stepper.application.resources.fxml.reusable.flowrundetails.FlowR
 import javafx.fxml.FXML;
 
 public class ExecutionHistoryScreenController {
-    @FXML private FlowRunDetailsController detailsTable;
+    @FXML private FlowRunDetailsController detailsTableController;
 
     public ExecutionHistoryScreenController() {
     }
 
     @FXML public void initialize() {
+    }
+
+    public void reset() {
+        detailsTableController.reset();
     }
 }

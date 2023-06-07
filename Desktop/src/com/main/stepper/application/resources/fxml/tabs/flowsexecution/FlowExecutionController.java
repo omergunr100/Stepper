@@ -83,6 +83,7 @@ public class FlowExecutionController {
                                 try {
                                     if(flowInputController.getValue().isEmpty()){
                                         executionUserInputs.readUserInput(flowInputController.input(), null);
+                                        flowInputController.setValid(false);
                                         throw new BadTypeException("Empty input");
                                     }
 
@@ -92,6 +93,7 @@ public class FlowExecutionController {
                                             "-fx-text-box-border: lightgreen ;\n" +
                                             "  -fx-focus-color: lightgreen ;"
                                     );
+                                    flowInputController.setValid(true);
                                 } catch (BadTypeException e) {
                                     if(flowInputController.input().getNecessity().equals(DataNecessity.OPTIONAL)){
                                         // input is optional and bad type: yellow
@@ -99,6 +101,7 @@ public class FlowExecutionController {
                                                 "-fx-text-box-border: yellow ;\n" +
                                                 "  -fx-focus-color: yellow ;"
                                         );
+                                        flowInputController.setValid(true);
                                     }
                                     else{
                                         // input is mandatory and bad type: red
@@ -106,6 +109,7 @@ public class FlowExecutionController {
                                                 "-fx-text-box-border: red ;\n" +
                                                 "  -fx-focus-color: red ;"
                                         );
+                                        flowInputController.setValid(false);
                                     }
                                 }
                             }
