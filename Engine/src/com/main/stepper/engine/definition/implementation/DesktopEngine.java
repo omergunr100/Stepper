@@ -204,8 +204,6 @@ public class DesktopEngine implements IEngine {
 
     @Override
     public StatManager getStatistics() {
-        if (!validated)
-            return null;
         return statistics;
     }
 

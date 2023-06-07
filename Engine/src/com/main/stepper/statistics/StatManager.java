@@ -118,7 +118,9 @@ public class StatManager implements Serializable {
 
     public void clear() {
         flowRunResults.clear();
+        flowStatDTOs.clear();
         stepRunResults.clear();
+        stepStatDTOs.clear();
     }
 
     public ObservableList<StatDTO> getStatistics(StatDTO.TYPE type) {

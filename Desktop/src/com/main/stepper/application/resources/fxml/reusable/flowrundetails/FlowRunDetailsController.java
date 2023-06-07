@@ -3,14 +3,12 @@ package com.main.stepper.application.resources.fxml.reusable.flowrundetails;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 
 public class FlowRunDetailsController {

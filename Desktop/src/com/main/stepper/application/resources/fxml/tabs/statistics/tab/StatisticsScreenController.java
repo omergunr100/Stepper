@@ -84,6 +84,17 @@ public class StatisticsScreenController {
         stepBarChart.setAnimated(false);
     }
 
+    public void reset() {
+        stepTable.getItems().clear();
+        flowTable.getItems().clear();
+        flowTimesRun.getData().clear();
+        flowAvgRunTime.getData().clear();
+        stepTimesRun.getData().clear();
+        stepAvgRunTime.getData().clear();
+        stepTable.refresh();
+        flowTable.refresh();
+    }
+
     public void bind(ObservableList<StatDTO> flowStats, ObservableList<StatDTO> stepStats) {
         // bind properties
         Bindings.bindContent(flowStatsProperty.getValue(), flowStats);

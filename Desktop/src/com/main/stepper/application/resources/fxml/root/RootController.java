@@ -10,7 +10,6 @@ import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.DesktopEngine;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.statistics.dto.StatDTO;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -43,6 +42,7 @@ public class RootController {
         this.loadCSSController.setRootController(this);
         this.flowsDefinitionController.setRootController(this);
         this.flowExecutionController.setRootController(this);
+        this.statisticsScreenController.bind(engine.getStatistics().getStatistics(StatDTO.TYPE.FLOW), engine.getStatistics().getStatistics(StatDTO.TYPE.STEP));
 
         // select initial window
         tabs.getSelectionModel().select(flowsDefinitionTab);
@@ -62,7 +62,6 @@ public class RootController {
 
     public void loadFlows() {
         root.setDisable(true);
-        Platform.runLater(() -> statisticsScreenController.bind(engine.getStatistics().getStatistics(StatDTO.TYPE.FLOW), engine.getStatistics().getStatistics(StatDTO.TYPE.STEP)));
         flowExecutionHistoryController.reset();
         flowExecutionController.reset();
         flowsDefinitionController.updateFlows();
