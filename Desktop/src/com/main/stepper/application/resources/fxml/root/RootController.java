@@ -44,22 +44,6 @@ public class RootController {
         this.flowsDefinitionController.setRootController(this);
         this.flowExecutionController.setRootController(this);
 
-        // initialize thread for updating flow run history
-        Thread updateFlowRunHistoryThread = new Thread(() -> {
-            while(true) {
-                // update table with history
-                Platform.runLater(() -> flowExecutionHistoryController.updateTable(engine.getFlowRuns()));
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        });
-        updateFlowRunHistoryThread.setName("Update Flow Run History Thread");
-        updateFlowRunHistoryThread.setDaemon(true);
-        updateFlowRunHistoryThread.start();
-
         // select initial window
         tabs.getSelectionModel().select(flowsDefinitionTab);
     }

@@ -95,7 +95,7 @@ public class DesktopEngine implements IEngine {
                     flow.addContinuation(continuation);
             }
         }
-        // todo: ensure validates correctly
+
         for (IFlowDefinition flow : fileFlows){
             IValidator validateContinuations = new ValidateContinuationTypes(flow);
             errors.addAll(validateContinuations.validate());

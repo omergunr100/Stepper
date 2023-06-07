@@ -11,12 +11,18 @@ import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
+import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
 public class FlowExecutor implements IFlowExecutor {
+    public static Property<IFlowRunResult> lastFlowResult = new SimpleObjectProperty<>();
+    public static Property<IStepRunResult> lastStepResult = new SimpleObjectProperty<>();
+
     public FlowExecutor() {
     }
 
@@ -43,13 +49,20 @@ public class FlowExecutor implements IFlowExecutor {
         FlowResult flag = FlowResult.SUCCESS;
 
         Map<IDataIO, Object> userInputs = new LinkedHashMap<>();
-        for(IDataIO dataIO : flow.userRequiredInputs()){
+        List<IDataIO> iterList;
+        synchronized (flow) {
+            iterList = new ArrayList<>(flow.userRequiredInputs());
+        }
+        for(IDataIO dataIO : iterList){
             Object value = context.getVariable(dataIO, dataIO.getDataDefinition().getType());
             if(value != null) {
                 userInputs.put(dataIO, value);
             }
         }
-        for(IDataIO dataIO : flow.userOptionalInputs()){
+        synchronized (flow) {
+            iterList = new ArrayList<>(flow.userOptionalInputs());
+        }
+        for(IDataIO dataIO : iterList){
             Object value = context.getVariable(dataIO, dataIO.getDataDefinition().getType());
             if(value != null) {
                 userInputs.put(dataIO, value);
@@ -57,7 +70,11 @@ public class FlowExecutor implements IFlowExecutor {
         }
 
         List<String> stepRunUUID = new ArrayList<>();
-        for(IStepUsageDeclaration step : flow.steps()){
+        List<IStepUsageDeclaration> stepIterList;
+        synchronized (flow) {
+            stepIterList = new ArrayList<>(flow.steps());
+        }
+        for(IStepUsageDeclaration step : stepIterList){
             IStepExecutionContext stepContext = context.getStepExecutionContext(step);
             IStepDefinition stepDef = null;
             try {
@@ -69,6 +86,7 @@ public class FlowExecutor implements IFlowExecutor {
             result.setAlias(step.name());
             stepRunUUID.add(result.runId());
             context.statistics().addRunResult(result);
+            Platform.runLater(() -> lastStepResult.setValue(result));
 
             if(result.result().equals(StepResult.WARNING)){
                 flag = FlowResult.WARNING;
@@ -102,6 +120,7 @@ public class FlowExecutor implements IFlowExecutor {
         Duration duration = Duration.between(startTime, Instant.now());
         FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs, stepRunUUID);
         context.statistics().addRunResult(flowRunResult);
+        Platform.runLater(() -> lastFlowResult.setValue(flowRunResult));
         return flowRunResult;
     }
 }

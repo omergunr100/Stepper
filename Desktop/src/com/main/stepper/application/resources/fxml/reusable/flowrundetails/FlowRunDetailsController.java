@@ -1,6 +1,7 @@
 package com.main.stepper.application.resources.fxml.reusable.flowrundetails;
 
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -53,6 +54,11 @@ public class FlowRunDetailsController {
 
         // set resize policy
         table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // add listener on finished flows
+        FlowExecutor.lastFlowResult.addListener((observable, oldValue, newValue) -> {
+            table.getItems().add(0, newValue);
+        });
     }
 
     private void setCurrentFlow(IFlowRunResult result){
@@ -61,10 +67,5 @@ public class FlowRunDetailsController {
 
     public IFlowRunResult getCurrentFlow(){
         return this.currentFlow;
-    }
-    public void updateTable(List<IFlowRunResult> results){
-        table.getItems().clear();
-        if(results != null)
-            table.getItems().addAll(FXCollections.observableArrayList(results));
     }
 }
