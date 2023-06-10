@@ -1,9 +1,13 @@
-package com.main.stepper.application.resources.fxml.tabs.flowsexecution;
+package com.main.stepper.application.resources.fxml.tabs.flowsexecution.tab;
 
 import com.main.stepper.application.resources.fxml.reusable.flowdetails.FlowTreeViewController;
 import com.main.stepper.application.resources.fxml.reusable.flowinput.FlowInputController;
 import com.main.stepper.application.resources.fxml.root.RootController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.FlowExecutionElementsController;
+import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
+import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.io.api.DataNecessity;
@@ -33,10 +37,10 @@ public class FlowExecutionController {
     @FXML SplitPane root;
     @FXML FlowPane inputsFlowPane;
     @FXML Button startButton;
-    @FXML FlowTreeViewController flowDetailsTreeController;
-    @FXML VBox executionDetailsVBoxController;
     @FXML CheckBox mandatoryBox;
     @FXML CheckBox optionalBox;
+    @FXML FlowContinuationsController continuationsController;
+    @FXML FlowExecutionElementsController executionElementsController;
 
     public FlowExecutionController() {
     }
@@ -45,6 +49,9 @@ public class FlowExecutionController {
         startButton.setOnAction(event -> startFlow());
         flowInputControllers = new ArrayList<>();
         flowInputComponents = new ArrayList<>();
+
+        continuationsController.setParent(this);
+        executionElementsController.setParent(this);
     }
 
     public void setRootController(RootController rootController) {
@@ -60,16 +67,24 @@ public class FlowExecutionController {
             validateInputsThread.interrupt();
         executionUserInputs = null;
         inputsFlowPane.getChildren().clear();
+
+        FlowExecutor.lastFlowResult.setValue(null);
+
         flowInputControllers.clear();
-        flowDetailsTreeController.setCurrentFlow(null);
+        executionElementsController.reset();
+        continuationsController.reset();
     }
 
-    public void setCurrentFlow(IFlowDefinition currentFlow) {
+    public void setCurrentFlow(IFlowDefinition currentFlow, IFlowRunResult context) {
         this.currentFlow = currentFlow;
-        flowDetailsTreeController.setCurrentFlow(currentFlow.information());
+        if (currentFlow == null){
+            reset();
+            return;
+        }
         executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+        executionElementsController.reset();
 
-        setInputs();
+        setInputs(context);
 
         // initialize validation thread
         if(validateInputsThread != null)
@@ -134,7 +149,7 @@ public class FlowExecutionController {
     }
 
     // initialize input components
-    private void setInputs() {
+    private void setInputs(IFlowRunResult context) {
         this.flowInputControllers.clear();
         this.flowInputComponents.clear();
         this.inputsFlowPane.getChildren().clear();
@@ -147,6 +162,19 @@ public class FlowExecutionController {
                 Parent inputComp = loader.load();
                 FlowInputController flowInputController = loader.getController();
                 flowInputController.init(dataIO);
+
+                // get value for continuation if there is one
+                // todo: add support for custom continuation mappings, note: maybe add IFlowDefinition to IFlowRunResult
+                if (context != null) {
+                    Object value = null;
+                    try {
+                        value = context.flowExecutionContext().getVariable(dataIO, dataIO.getDataDefinition().getType());
+                    } catch (ClassCastException ignored) {
+                    }
+                    if (value != null)
+                        flowInputController.setValue(value.toString());
+                }
+
                 flowInputControllers.add(flowInputController);
                 flowInputComponents.add(inputComp);
                 inputComp.setOpacity(0.0);
@@ -207,7 +235,7 @@ public class FlowExecutionController {
         }
     }
 
-    private void addExecutionData(Parent component) {
-
+    public void updateContinuations() {
+        continuationsController.setContinuations(currentFlow.continuations());
     }
 }

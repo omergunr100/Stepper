@@ -55,7 +55,7 @@
                <content>
                   <ScrollPane fitToHeight="true" fitToWidth="true">
                      <content>
-                        <fx:include fx:id="flowExecution" source="../tabs/flowsexecution/FlowExecution.fxml" />
+                        <fx:include fx:id="flowExecution" source="../tabs/flowsexecution/tab/FlowExecution.fxml" />
                      </content>
                   </ScrollPane>
                </content></Tab>

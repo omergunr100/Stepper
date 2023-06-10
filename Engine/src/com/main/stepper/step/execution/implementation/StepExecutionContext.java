@@ -55,4 +55,9 @@ public class StepExecutionContext implements IStepExecutionContext {
         IDataIO alias = mapping.get(name);
         variables.put(alias, value);
     }
+
+    @Override
+    public IDataIO getAliasedDataIO(IDataIO dataIO) {
+        return mapping.get(dataIO);
+    }
 }

@@ -117,16 +117,20 @@ public class StatisticsScreenController {
         flowTimesRun.getData().clear();
         flowAvgRunTime.getData().clear();
         if(!flowStatsProperty.getValue().isEmpty()) {
-            flowTimesRun.getData().addAll(flowStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
-            flowAvgRunTime.getData().addAll(flowStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
+            synchronized (flowStatsProperty.getValue()) {
+                flowTimesRun.getData().addAll(flowStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
+                flowAvgRunTime.getData().addAll(flowStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
+            }
         }
 
         // update step charts
         stepTimesRun.getData().clear();
         stepAvgRunTime.getData().clear();
         if(!stepStatsProperty.getValue().isEmpty()) {
-            stepTimesRun.getData().addAll(stepStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
-            stepAvgRunTime.getData().addAll(stepStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
+            synchronized (stepStatsProperty.getValue()) {
+                stepTimesRun.getData().addAll(stepStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
+                stepAvgRunTime.getData().addAll(stepStatsProperty.getValue().stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
+            }
         }
     }
 }

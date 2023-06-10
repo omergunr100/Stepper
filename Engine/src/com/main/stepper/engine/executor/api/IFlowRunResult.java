@@ -1,6 +1,7 @@
 package com.main.stepper.engine.executor.api;
 
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 
 import java.io.Serializable;
@@ -27,4 +28,20 @@ public interface IFlowRunResult extends Serializable {
     Map<IDataIO, Object> flowOutputs();
 
     List<String> stepRunUUID();
+
+    List<IStepRunResult> stepRunResults();
+
+    void setResult(FlowResult result);
+
+    void addInternalOutput(IDataIO dataIO, Object value);
+
+    void addFlowOutput(IDataIO dataIO, Object value);
+
+    void addStepRunUUID(String stepRunUUID);
+
+    void addStepRunResult(IStepRunResult stepRunResult);
+
+    void setDuration(Duration duration);
+
+    IFlowExecutionContext flowExecutionContext();
 }

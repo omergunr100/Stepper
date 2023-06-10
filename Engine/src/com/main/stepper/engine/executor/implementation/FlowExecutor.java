@@ -22,6 +22,7 @@ import java.util.*;
 public class FlowExecutor implements IFlowExecutor {
     public static Property<IFlowRunResult> lastFlowResult = new SimpleObjectProperty<>();
     public static Property<IStepRunResult> lastStepResult = new SimpleObjectProperty<>();
+    public static Property<IFlowRunResult> lastFinishedFlowResult = new SimpleObjectProperty<>();
 
     public FlowExecutor() {
     }
@@ -47,7 +48,6 @@ public class FlowExecutor implements IFlowExecutor {
         Instant startTime = Instant.now();
         // Default flag is success
         FlowResult flag = FlowResult.SUCCESS;
-
         Map<IDataIO, Object> userInputs = new LinkedHashMap<>();
         List<IDataIO> iterList;
         synchronized (flow) {
@@ -68,6 +68,8 @@ public class FlowExecutor implements IFlowExecutor {
                 userInputs.put(dataIO, value);
             }
         }
+        IFlowRunResult thisFlowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), startTime, userInputs, context);
+        Platform.runLater(() -> lastFlowResult.setValue(thisFlowRunResult));
 
         List<String> stepRunUUID = new ArrayList<>();
         List<IStepUsageDeclaration> stepIterList;
@@ -82,11 +84,17 @@ public class FlowExecutor implements IFlowExecutor {
             } catch (InstantiationException ignored) {
             } catch (IllegalAccessException ignored) {
             }
+
             IStepRunResult result = stepDef.execute(stepContext);
+            result.setContext(stepContext);
             result.setAlias(step.name());
-            stepRunUUID.add(result.runId());
+            thisFlowRunResult.addStepRunUUID(result.runId());
+            thisFlowRunResult.addStepRunResult(result);
+            synchronized (lastFlowResult) {
+                if (thisFlowRunResult.equals(lastFlowResult.getValue()))
+                    Platform.runLater(() -> lastStepResult.setValue(result));
+            }
             context.statistics().addRunResult(result);
-            Platform.runLater(() -> lastStepResult.setValue(result));
 
             if(result.result().equals(StepResult.WARNING)){
                 flag = FlowResult.WARNING;
@@ -103,24 +111,30 @@ public class FlowExecutor implements IFlowExecutor {
         }
 
         // Add all internal flow outputs
-        Map<IDataIO, Object> internalOutputs = new HashMap<>();
         context.variables().keySet().stream().filter(dataIO -> !userInputs.keySet().contains(dataIO)).forEach(dataIO -> {
-            internalOutputs.put(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
+            thisFlowRunResult.addInternalOutput(dataIO,context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
         });
 
         // Add all formal flow outputs
-        Map<IDataIO, Object> formalOutputs = new HashMap<>();
+        synchronized (flow) {
+            iterList = new ArrayList<>(flow.formalOutputs());
+        }
         if(flag != FlowResult.FAILURE) {
-            for (IDataIO dataIO : flow.formalOutputs()) {
+            for (IDataIO dataIO : iterList) {
                 if (dataIO != null) {
-                    formalOutputs.put(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
+                    thisFlowRunResult.addFlowOutput(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
                 }
             }
         }
+        thisFlowRunResult.setResult(flag);
         Duration duration = Duration.between(startTime, Instant.now());
-        FlowRunResult flowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), flag, startTime, duration, userInputs, internalOutputs, formalOutputs, stepRunUUID);
-        context.statistics().addRunResult(flowRunResult);
-        Platform.runLater(() -> lastFlowResult.setValue(flowRunResult));
-        return flowRunResult;
+        thisFlowRunResult.setDuration(duration);
+        context.statistics().addRunResult(thisFlowRunResult);
+        synchronized (lastFlowResult) {
+            if (thisFlowRunResult.equals(lastFlowResult.getValue()))
+                Platform.runLater(() -> lastFlowResult.setValue(thisFlowRunResult));
+        }
+        Platform.runLater(() -> lastFinishedFlowResult.setValue(thisFlowRunResult));
+        return thisFlowRunResult;
     }
 }

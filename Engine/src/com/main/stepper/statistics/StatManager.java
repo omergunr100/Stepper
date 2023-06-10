@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class StatManager implements Serializable {
     private final ObservableList<IFlowRunResult> flowRunResults;
     private final ObservableList<IStepRunResult> stepRunResults;
+    // todo: make functions for unique adding to flow and step statDTOs lists, synchronize on function level
     private final ObservableList<StatDTO> flowStatDTOs;
     private final ObservableList<StatDTO> stepStatDTOs;
 
@@ -37,25 +38,36 @@ public class StatManager implements Serializable {
         return stepRunResults;
     }
 
-    public void addRunResult(IFlowRunResult flowRunResult){
+    public void addRunResult(IFlowRunResult flowRunResult) {
         flowRunResults.add(0, flowRunResult);
-        if(flowRunResult.result().equals(FlowResult.FAILURE))
+        if (flowRunResult.result().equals(FlowResult.FAILURE))
             return;
         StatDTO dto = null;
-        if (flowStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(flowRunResult.name()))) {
+        boolean isNew;
+        synchronized (flowStatDTOs) {
+            isNew = flowStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(flowRunResult.name()));
+        }
+        if (isNew) {
             dto = new StatDTO(StatDTO.TYPE.FLOW, flowRunResult.name());
             dto.setRunCounter(getFlowRunCount(flowRunResult.name()));
             dto.setAvgRunTime(getFlowRunAverageTimeMS(flowRunResult.name()));
             final StatDTO finalDTO = dto;
-            Platform.runLater(() -> flowStatDTOs.add(finalDTO));
-        }
-        else {
-            synchronized (flowStatDTOs){
+            Platform.runLater(() -> {
+                synchronized (flowStatDTOs) {
+                    flowStatDTOs.add(finalDTO);
+                }
+            });
+        } else {
+            synchronized (flowStatDTOs) {
                 dto = flowStatDTOs.stream().filter(statDTO -> statDTO.getName().equals(flowRunResult.name())).findFirst().get();
                 dto.setRunCounter(getFlowRunCount(flowRunResult.name()));
                 dto.setAvgRunTime(getFlowRunAverageTimeMS(flowRunResult.name()));
                 final StatDTO finalDTO = dto;
-                Platform.runLater(() -> flowStatDTOs.set(flowStatDTOs.indexOf(finalDTO), finalDTO));
+                Platform.runLater(() -> {
+                    synchronized (flowStatDTOs) {
+                        flowStatDTOs.set(flowStatDTOs.indexOf(finalDTO), finalDTO);
+                    }
+                });
             }
         }
     }
@@ -65,13 +77,21 @@ public class StatManager implements Serializable {
         if(stepRunResult.result().equals(StepResult.FAILURE))
             return;
         StatDTO dto = null;
-        if (stepStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(stepRunResult.name()))) {
+        boolean isNew;
+        synchronized (stepStatDTOs) {
+            isNew = stepStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(stepRunResult.name()));
+        }
+        if (isNew) {
             dto = new StatDTO(StatDTO.TYPE.STEP, stepRunResult.name());
             synchronized (stepStatDTOs) {
                 dto.setRunCounter(getStepRunCount(stepRunResult.name()));
                 dto.setAvgRunTime(getStepRunAverageTimeMS(stepRunResult.name()));
                 final StatDTO finalDTO = dto;
-                Platform.runLater(() -> stepStatDTOs.add(finalDTO));
+                Platform.runLater(() -> {
+                    synchronized (stepStatDTOs) {
+                        stepStatDTOs.add(finalDTO);
+                    }
+                });
             }
         }
         else {
@@ -80,7 +100,11 @@ public class StatManager implements Serializable {
                 dto.setRunCounter(getStepRunCount(stepRunResult.name()));
                 dto.setAvgRunTime(getStepRunAverageTimeMS(stepRunResult.name()));
                 final StatDTO finalDTO = dto;
-                Platform.runLater(() -> stepStatDTOs.set(stepStatDTOs.indexOf(finalDTO), finalDTO));
+                Platform.runLater(() -> {
+                    synchronized (stepStatDTOs) {
+                        stepStatDTOs.set(stepStatDTOs.indexOf(finalDTO), finalDTO);
+                    }
+                });
             }
         }
     }

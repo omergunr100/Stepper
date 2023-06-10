@@ -2,6 +2,7 @@ package com.main.stepper.engine.executor.implementation;
 
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.step.definition.api.StepResult;
+import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
 
@@ -12,6 +13,7 @@ public class StepRunResult implements IStepRunResult {
     private final StepResult result;
     private final Duration duration;
     private final String summary;
+    private IStepExecutionContext context;
 
     public StepRunResult(String runId, String name, StepResult result, Duration duration, String summary) {
         this.runId = runId;
@@ -19,6 +21,7 @@ public class StepRunResult implements IStepRunResult {
         this.result = result;
         this.duration = duration;
         this.summary = summary;
+        this.context = null;
     }
 
     @Override
@@ -54,5 +57,15 @@ public class StepRunResult implements IStepRunResult {
     @Override
     public String summary() {
         return summary;
+    }
+
+    @Override
+    public void setContext(IStepExecutionContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public IStepExecutionContext context() {
+        return context;
     }
 }

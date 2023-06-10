@@ -2,10 +2,9 @@ package com.main.stepper.application.resources.fxml.root;
 
 import com.main.stepper.application.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.application.resources.fxml.header.loadfile.LoadFileController;
-import com.main.stepper.application.resources.fxml.reusable.flowrundetails.FlowRunDetailsController;
 import com.main.stepper.application.resources.fxml.tabs.executionshistory.ExecutionHistoryScreenController;
 import com.main.stepper.application.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
-import com.main.stepper.application.resources.fxml.tabs.flowsexecution.FlowExecutionController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.application.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.DesktopEngine;
@@ -71,7 +70,7 @@ public class RootController {
     }
 
     public void executeFlow(IFlowDefinition currentFlow) {
-        this.flowExecutionController.setCurrentFlow(currentFlow);
+        this.flowExecutionController.setCurrentFlow(currentFlow, null);
         this.tabs.getSelectionModel().select(flowsExecutionTab);
     }
 }

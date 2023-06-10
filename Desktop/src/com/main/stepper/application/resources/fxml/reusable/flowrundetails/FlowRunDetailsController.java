@@ -54,7 +54,7 @@ public class FlowRunDetailsController {
         table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
 
         // add listener on finished flows
-        FlowExecutor.lastFlowResult.addListener((observable, oldValue, newValue) -> {
+        FlowExecutor.lastFinishedFlowResult.addListener((observable, oldValue, newValue) -> {
             table.getItems().add(0, newValue);
         });
     }

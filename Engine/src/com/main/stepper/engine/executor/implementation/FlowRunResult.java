@@ -1,26 +1,29 @@
 package com.main.stepper.engine.executor.implementation;
 
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FlowRunResult implements IFlowRunResult {
     private final String runId;
     private final String name;
-    private final FlowResult result;
+    private FlowResult result;
     private final Instant startTime;
-    private final Duration duration;
+    private Duration duration;
     private final Map<IDataIO, Object> userInputs;
     private final Map<IDataIO, Object> internalOutputs;
     private final Map<IDataIO, Object> flowOutputs;
     private final List<String> stepRunUUID;
+    private final List<IStepRunResult> stepRunResults;
+    private IFlowExecutionContext flowExecutionContext;
 
-    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID) {
+    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID, List<IStepRunResult> stepRunResults, IFlowExecutionContext context) {
         this.runId = runId;
         this.name = name;
         this.result = result;
@@ -30,6 +33,23 @@ public class FlowRunResult implements IFlowRunResult {
         this.internalOutputs = internalOutputs;
         this.flowOutputs = flowOutputs;
         this.stepRunUUID = stepRunUUID;
+        this.stepRunResults = stepRunResults;
+        this.flowExecutionContext = context;
+    }
+
+    public FlowRunResult(String runId, String name, Instant startTime, Map<IDataIO, Object> userInputs, IFlowExecutionContext context) {
+        this.runId = runId;
+        this.name = name;
+        this.result = FlowResult.RUNNING;
+        this.startTime = startTime;
+        this.userInputs = userInputs;
+        this.flowExecutionContext = context;
+
+        this.duration = null;
+        this.internalOutputs = new HashMap<>();
+        this.flowOutputs = new HashMap<>();
+        this.stepRunUUID = new ArrayList<>();
+        this.stepRunResults = new ArrayList<>();
     }
 
     @Override
@@ -54,6 +74,8 @@ public class FlowRunResult implements IFlowRunResult {
 
     @Override
     public Duration duration() {
+        if (duration == null)
+            return Duration.between(startTime, Instant.now());
         return duration;
     }
 
@@ -75,5 +97,60 @@ public class FlowRunResult implements IFlowRunResult {
     @Override
     public List<String> stepRunUUID() {
         return stepRunUUID;
+    }
+
+    @Override
+    public List<IStepRunResult> stepRunResults() {
+        return stepRunResults;
+    }
+
+    @Override
+    public void setResult(FlowResult result) {
+        this.result = result;
+    }
+
+    @Override
+    public void addInternalOutput(IDataIO dataIO, Object value) {
+        internalOutputs.put(dataIO, value);
+    }
+
+    @Override
+    public void addFlowOutput(IDataIO dataIO, Object value) {
+        flowOutputs.put(dataIO, value);
+    }
+
+    @Override
+    public void addStepRunUUID(String stepRunUUID) {
+        this.stepRunUUID.add(stepRunUUID);
+    }
+
+    @Override
+    public void addStepRunResult(IStepRunResult stepRunResult) {
+        stepRunResults.add(stepRunResult);
+    }
+
+    @Override
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public IFlowExecutionContext flowExecutionContext() {
+        return flowExecutionContext;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FlowRunResult that = (FlowRunResult) o;
+
+        return Objects.equals(runId, that.runId);
+    }
+
+    @Override
+    public int hashCode() {
+        return runId != null ? runId.hashCode() : 0;
     }
 }
