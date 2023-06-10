@@ -11,8 +11,7 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 
 public class SpendSomeTimeStep extends AbstractStepDefinition {
@@ -29,7 +28,7 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
 
         List<IDataIO> inputs = getInputs();
         IDataIO timeToSpendIO = inputs.get(0);
@@ -38,8 +37,8 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         if(timeToSpend <= 0){
             context.log("Time to spend must be greater than 0!");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Time to spend must be greater than 0!");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Time to spend must be greater than 0!");
         }
 
         context.log("About to sleep for " + timeToSpend + " seconds...");
@@ -50,7 +49,7 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         }
         context.log("Done sleeping...");
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

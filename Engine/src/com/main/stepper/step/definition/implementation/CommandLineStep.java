@@ -14,8 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 
 public class CommandLineStep extends AbstractStepDefinition {
@@ -33,7 +32,7 @@ public class CommandLineStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
 
         // Read inputs and output
         List<IDataIO> inputs = getInputs();
@@ -69,7 +68,7 @@ public class CommandLineStep extends AbstractStepDefinition {
 
         context.setOutput(result, resultString);
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

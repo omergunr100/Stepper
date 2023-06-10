@@ -9,6 +9,7 @@ public interface ILogger extends Serializable {
     void log(String uuid, String message);
     void log(String message);
     List<Log> getLog(String uuid);
+    List<Log> getLog();
     ILogger getSubLogger(String uuid);
     void clear();
 }

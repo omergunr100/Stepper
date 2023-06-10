@@ -14,8 +14,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.io.File;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +35,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Get DataIOs
         List<IDataIO> inputs = getInputs();
         IDataIO filesToRenameIO = inputs.get(0);
@@ -62,8 +61,8 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         if(filesToRename.size() == 0){
             context.log("No files to rename.");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to rename.");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "No files to rename.");
         }
         // Else
         String failed = "";
@@ -87,11 +86,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
         // Failure to change at least 1
         if(!failed.equals("")){
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "Failed to rename the following files:\n" + failed);
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, startTime, duration, "Failed to rename the following files:\n" + failed);
         }
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

@@ -12,6 +12,7 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Get dataIOs
         List<IDataIO> inputs = getInputs();
         IDataIO sourceIO = inputs.get(0);
@@ -48,8 +49,8 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
             context.setOutput(resultIO, "");
             context.log("There is no data to export");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "There is no data to export");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, startTime, duration, "There is no data to export");
         }
 
         // Else
@@ -73,7 +74,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition{
         // Set output
         context.setOutput(resultIO, builder.toString());
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

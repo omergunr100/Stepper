@@ -87,6 +87,7 @@ public class FlowExecutor implements IFlowExecutor {
 
             IStepRunResult result = stepDef.execute(stepContext);
             result.setContext(stepContext);
+            result.setStepDefinition(step.step());
             result.setAlias(step.name());
             thisFlowRunResult.addStepRunUUID(result.runId());
             thisFlowRunResult.addStepRunResult(result);

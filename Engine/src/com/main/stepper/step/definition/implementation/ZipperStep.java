@@ -17,8 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -39,7 +38,7 @@ public class ZipperStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Read inputs and output
         List<IDataIO> inputs = getInputs();
         String source = (String) context.getInput(inputs.get(0), DDRegistry.STRING.getType());
@@ -55,20 +54,20 @@ public class ZipperStep extends AbstractStepDefinition {
         if(!srcFile.exists()) {
             context.log("Source file does not exist at: " + source);
             context.setOutput(result, "Source file does not exist at: " + source);
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Source file does not exist at: " + source);
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Source file does not exist at: " + source);
         }
         else if(!operation.getValue().isPresent()) {
             context.log("Operation is not specified");
             context.setOutput(result, "Operation is not specified");
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Operation is not specified");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Operation is not specified");
         }
         else if(op.equals("UNZIP") && !source.endsWith(".zip")) {
             context.log("Can't unzip file that is not a zip archive");
             context.setOutput(result, "Can't unzip file that is not a zip archive");
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Can't unzip file that is not a zip archive");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Can't unzip file that is not a zip archive");
         }
 
         // Perform operation
@@ -94,8 +93,8 @@ public class ZipperStep extends AbstractStepDefinition {
             }
         }
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 
     private static void zip(ZipOutputStream zos, File src, String parentDir){

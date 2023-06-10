@@ -1,27 +1,33 @@
 package com.main.stepper.engine.executor.implementation;
 
 import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
+import java.time.Instant;
 
 public class StepRunResult implements IStepRunResult {
     private final String runId;
     private final String name;
     private String alias;
     private final StepResult result;
+    private final Instant startTime;
     private final Duration duration;
     private final String summary;
     private IStepExecutionContext context;
+    private IStepDefinition stepDefinition;
 
-    public StepRunResult(String runId, String name, StepResult result, Duration duration, String summary) {
+    public StepRunResult(String runId, String name, StepResult result, Instant startTime, Duration duration, String summary) {
         this.runId = runId;
         this.name = name;
         this.result = result;
+        this.startTime = startTime;
         this.duration = duration;
         this.summary = summary;
         this.context = null;
+        this.stepDefinition = null;
     }
 
     @Override
@@ -50,6 +56,11 @@ public class StepRunResult implements IStepRunResult {
     }
 
     @Override
+    public Instant startTime() {
+        return startTime;
+    }
+
+    @Override
     public Duration duration() {
         return duration;
     }
@@ -67,5 +78,15 @@ public class StepRunResult implements IStepRunResult {
     @Override
     public IStepExecutionContext context() {
         return context;
+    }
+
+    @Override
+    public void setStepDefinition(IStepDefinition stepDefinition) {
+        this.stepDefinition = stepDefinition;
+    }
+
+    @Override
+    public IStepDefinition stepDefinition() {
+        return null;
     }
 }

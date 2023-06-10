@@ -14,8 +14,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.io.*;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Get the DataIOs
         List<IDataIO> inputs = getInputs();
         IDataIO filesListIO = inputs.get(0);
@@ -57,8 +56,8 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         if(filesToExtract.size() == 0){
             context.log("No files to extract");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to extract");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "No files to extract");
         }
         // Else
         for(Integer i = 1; i <= filesToExtract.size(); i++){
@@ -78,7 +77,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
             }
         }
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

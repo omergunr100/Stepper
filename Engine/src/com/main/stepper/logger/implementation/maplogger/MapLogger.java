@@ -39,6 +39,13 @@ public class MapLogger implements ILogger {
     }
 
     @Override
+    public List<Log> getLog() {
+        if (uuid == null)
+            return null;
+        return new ArrayList<>(logs.get(uuid));
+    }
+
+    @Override
     public ILogger getSubLogger(String uuid) {
         return new MapLogger(uuid, logs);
     }

@@ -15,8 +15,7 @@ import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 
 public class FilesDeleterStep extends AbstractStepDefinition {
@@ -34,7 +33,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Read inputs
         List<IDataIO> inputs = getInputs();
         IDataIO filesListIO = inputs.get(0);
@@ -54,8 +53,8 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         if(filesList.size() == 0){
             IntToIntPair deletionStats = new IntToIntPair(0, 0);
             context.setOutput(deletionStatsIO, deletionStats);
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "No files to delete");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "No files to delete");
         }
 
         // Try to delete each file
@@ -73,17 +72,17 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         if(failedToDelete.size() == filesList.size()){
             context.log("Failed to delete all files");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed to delete all files");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Failed to delete all files");
         }
         else if(failedToDelete.size() > 0){
             context.log("Failed to delete " + failedToDelete.size() + " files");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "Failed to delete " + failedToDelete.size() + " files");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, startTime, duration, "Failed to delete " + failedToDelete.size() + " files");
         }
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

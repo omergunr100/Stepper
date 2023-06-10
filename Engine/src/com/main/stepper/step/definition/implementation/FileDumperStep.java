@@ -14,8 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.List;
 
 public class FileDumperStep extends AbstractStepDefinition {
@@ -33,7 +32,7 @@ public class FileDumperStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Get dataIOs
         List<IDataIO> inputs = getInputs();
         IDataIO contentIO = inputs.get(0);
@@ -53,22 +52,22 @@ public class FileDumperStep extends AbstractStepDefinition {
                     context.log("No content to write");
                     context.setOutput(resultIO, "SUCCESS");
 
-                    Duration duration = Duration.between(startTime, LocalTime.now());
-                    return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "No content to write");
+                    Duration duration = Duration.between(startTime, Instant.now());
+                    return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, startTime, duration, "No content to write");
                 }
                 else{
                     try (FileWriter fileWriter = new FileWriter(file)) {
                         fileWriter.write(content);
                         context.setOutput(resultIO, "SUCCESS");
 
-                        Duration duration = Duration.between(startTime, LocalTime.now());
-                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+                        Duration duration = Duration.between(startTime, Instant.now());
+                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
                     } catch (IOException e) {
                         context.log("Failed in writing content to file: " + e.getMessage());
                         context.setOutput(resultIO, "Failed in writing content to file");
 
-                        Duration duration = Duration.between(startTime, LocalTime.now());
-                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed in writing content to file");
+                        Duration duration = Duration.between(startTime, Instant.now());
+                        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Failed in writing content to file");
                     }
                 }
             }
@@ -76,15 +75,15 @@ public class FileDumperStep extends AbstractStepDefinition {
                 context.log("File already exists");
                 context.setOutput(resultIO, "File already exists");
 
-                Duration duration = Duration.between(startTime, LocalTime.now());
-                return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "File already exists");
+                Duration duration = Duration.between(startTime, Instant.now());
+                return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "File already exists");
             }
         } catch (IOException e) {
             context.log("Failed in creation of new file: " + e.getMessage());
             context.setOutput(resultIO, "Failed in creation of new file");
 
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Failed in creation of new file");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Failed in creation of new file");
         }
     }
 }

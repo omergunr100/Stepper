@@ -159,6 +159,6 @@ public class FlowExecutionElementsController {
     }
 
     public void selectStep(IStepRunResult step) {
-        // todo: select the step run for additional information
+        parent.selectStepForDetails(step);
     }
 }

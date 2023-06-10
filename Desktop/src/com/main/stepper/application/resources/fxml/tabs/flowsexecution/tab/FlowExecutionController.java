@@ -5,7 +5,9 @@ import com.main.stepper.application.resources.fxml.reusable.flowinput.FlowInputC
 import com.main.stepper.application.resources.fxml.root.RootController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.FlowExecutionElementsController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails.StepDetailsController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.data.BadTypeException;
@@ -41,6 +43,7 @@ public class FlowExecutionController {
     @FXML CheckBox optionalBox;
     @FXML FlowContinuationsController continuationsController;
     @FXML FlowExecutionElementsController executionElementsController;
+    @FXML StepDetailsController stepDetailsController;
 
     public FlowExecutionController() {
     }
@@ -73,6 +76,7 @@ public class FlowExecutionController {
         flowInputControllers.clear();
         executionElementsController.reset();
         continuationsController.reset();
+        stepDetailsController.reset();
     }
 
     public void setCurrentFlow(IFlowDefinition currentFlow, IFlowRunResult context) {
@@ -237,5 +241,9 @@ public class FlowExecutionController {
 
     public void updateContinuations() {
         continuationsController.setContinuations(currentFlow.continuations());
+    }
+
+    public void selectStepForDetails(IStepRunResult stepResult) {
+        stepDetailsController.setStep(stepResult);
     }
 }

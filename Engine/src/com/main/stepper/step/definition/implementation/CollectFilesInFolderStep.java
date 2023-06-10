@@ -13,8 +13,7 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.io.File;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
     @Override
     public IStepRunResult execute(IStepExecutionContext context) {
-        Temporal startTime = LocalTime.now();
+        Instant startTime = Instant.now();
         // Read inputs
         List<IDataIO> inputs = getInputs();
         IDataIO folderNameIO = inputs.get(0);
@@ -53,16 +52,16 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
             IDataIO totalFoundIO = outputs.get(1);
             context.setOutput(totalFoundIO, files.size());
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Folder does not exist at: " + folderName);
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Folder does not exist at: " + folderName);
         }
         if(!folder.isDirectory()){
             context.log("Path is not a directory: " + folderName);
 
             IDataIO totalFoundIO = outputs.get(1);
             context.setOutput(totalFoundIO, files.size());
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, duration, "Path is not a directory: " + folderName);
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, duration, "Path is not a directory: " + folderName);
         }
         context.log("Reading folder " + folderName + " content with filter " + filter);
 
@@ -77,8 +76,8 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
             IDataIO totalFoundIO = outputs.get(1);
             context.setOutput(totalFoundIO, files.size());
-            Duration duration = Duration.between(startTime, LocalTime.now());
-            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, duration, "No files found in folder matching the filter");
+            Duration duration = Duration.between(startTime, Instant.now());
+            return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.WARNING, startTime, duration, "No files found in folder matching the filter");
         }
 
         context.log("Found " + files.size() + " files in folder matching the filter");
@@ -87,7 +86,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
         context.setOutput(totalFoundIO, files.size());
 
-        Duration duration = Duration.between(startTime, LocalTime.now());
-        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, duration, "Success");
+        Duration duration = Duration.between(startTime, Instant.now());
+        return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
 }

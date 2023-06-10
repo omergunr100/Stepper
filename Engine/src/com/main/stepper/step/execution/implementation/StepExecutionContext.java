@@ -2,8 +2,10 @@ package com.main.stepper.step.execution.implementation;
 
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,6 +31,11 @@ public class StepExecutionContext implements IStepExecutionContext {
     @Override
     public void log(String message) {
         logger.log(message);
+    }
+
+    @Override
+    public List<Log> getLogs() {
+        return logger.getLog();
     }
 
     @Override
