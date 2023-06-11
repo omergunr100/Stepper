@@ -58,18 +58,20 @@ public class StepDetailsController {
         List<IDataIO> inputs = step.getInputs();
         List<IDataIO> outputs = step.getOutputs();
 
-        for (IDataIO input : inputs) {
+        for (int i = 0; i < inputs.size(); i++) {
             // todo: make input presentation according to type
         }
-        for (IDataIO output : outputs) {
+        for (int i = 0; i < outputs.size(); i++) {
             // todo: make output presentation according to type
         }
 
         // update logs
         List<Log> logs = context.getLogs();
-        for (Log log : logs) {
+        for (int i = 0; i < logs.size(); i++) {
             // todo: present logs
         }
+
+        root.setVisible(true);
     }
 
     public void reset() {

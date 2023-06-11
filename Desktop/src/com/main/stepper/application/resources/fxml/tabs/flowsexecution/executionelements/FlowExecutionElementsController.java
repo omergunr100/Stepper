@@ -1,13 +1,12 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements;
 
-import com.main.stepper.application.resources.dynamic.errorpopup.ErrorPopup;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.element.ElementController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
-import com.main.stepper.engine.executor.implementation.StepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -16,7 +15,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +31,7 @@ public class FlowExecutionElementsController {
     private ElementController spacer;
     private List<ElementController> stepElementControllers;
     private List<Parent> stepElements;
+    private boolean runEnded;
 
     public FlowExecutionElementsController() {
     }
@@ -41,6 +40,8 @@ public class FlowExecutionElementsController {
         // initialize step element list
         stepElementControllers = new ArrayList<>();
         stepElements = new ArrayList<>();
+
+        runEnded = false;
 
         // setup bindings and listeners
         currentFlowResult = new SimpleObjectProperty<>();
@@ -51,23 +52,23 @@ public class FlowExecutionElementsController {
 
         currentFlowResult.addListener((observable, oldValue, newValue) -> {
             if(newValue != null){
-                if (!newValue.equals(oldValue)) {
-                    reset();
-                    updateHeader();
+                synchronized (newValue) {
+                    if (!newValue.equals(oldValue)) {
+                        reset();
+                        updateHeader();
+                    } else {
+                        updateHeader();
+                        updateElements();
+                    }
                 }
-                else {
-                    updateHeader();
-                    updateElements();
-                }
-            }
-            else {
-                reset();
             }
         });
         currentStepResult.addListener((observable, oldValue, newValue) -> {
-            if(newValue != null){
-                updateHeader();
-                updateElements();
+            if (newValue != null) {
+                synchronized (newValue) {
+                    updateHeader();
+                    updateElements();
+                }
             }
         });
     }
@@ -77,6 +78,7 @@ public class FlowExecutionElementsController {
     }
 
     public void reset() {
+        runEnded = false;
         root.getChildren().clear();
         stepElements.clear();
         stepElementControllers.clear();
@@ -91,7 +93,7 @@ public class FlowExecutionElementsController {
             Parent loaded = loader.load();
             currentFlowUUID = loader.getController();
             currentFlowUUID.setPropertyName("Run UUID:");
-            currentFlowUUID.setPropertyValue(currentFlowResult.getValue().runId());
+            Platform.runLater(() -> currentFlowUUID.setPropertyValue(currentFlowResult.getValue().runId()));
             currentFlowUUID.removeButton();
             root.getChildren().add(loaded);
             // Name
@@ -100,7 +102,7 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowName = loader.getController();
             currentFlowName.setPropertyName("Flow Name:");
-            currentFlowName.setPropertyValue(currentFlowResult.getValue().name());
+            Platform.runLater(() -> currentFlowName.setPropertyValue(currentFlowResult.getValue().name()));
             currentFlowName.removeButton();
             root.getChildren().add(loaded);
             // Status
@@ -109,7 +111,7 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowStatus = loader.getController();
             currentFlowStatus.setPropertyName("Status\\Result:");
-            currentFlowStatus.setPropertyValue(currentFlowResult.getValue().result().toString());
+            Platform.runLater(() -> currentFlowStatus.setPropertyValue(currentFlowResult.getValue().result().toString()));
             currentFlowStatus.removeButton();
             root.getChildren().add(loaded);
             // Duration
@@ -118,7 +120,7 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowDuration = loader.getController();
             currentFlowDuration.setPropertyName("Duration:");
-            currentFlowDuration.setPropertyValue(currentFlowResult.getValue().duration().toMillis() + " ms");
+            Platform.runLater(() -> currentFlowDuration.setPropertyValue(currentFlowResult.getValue().duration().toMillis() + " ms"));
             currentFlowDuration.removeButton();
             root.getChildren().add(loaded);
             // Spacing from step elements
@@ -143,10 +145,11 @@ public class FlowExecutionElementsController {
         try {
             Parent loaded = loader.load();
             ElementController currentStep = loader.getController();
-            IStepRunResult currentStepResultValue = currentStepResult.getValue();
+            final IStepRunResult currentStepResultValue = currentStepResult.getValue();
             currentStep.setPropertyName("Step:");
             currentStep.setPropertyValue(currentStepResultValue.name());
-            currentStep.setOnAction(() -> selectStep(currentStepResultValue));
+            currentStep.setContext(currentStepResultValue);
+            currentStep.setOnAction(this::selectStep);
             stepElementControllers.add(currentStep);
             stepElements.add(loaded);
             root.getChildren().addAll(stepElements);
@@ -155,7 +158,10 @@ public class FlowExecutionElementsController {
     }
 
     public void onRunEnded() {
-        parent.updateContinuations();
+        if (!runEnded) {
+            parent.updateContinuations();
+            runEnded = true;
+        }
     }
 
     public void selectStep(IStepRunResult step) {

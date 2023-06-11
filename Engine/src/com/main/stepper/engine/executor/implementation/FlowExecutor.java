@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.*;
 
 public class FlowExecutor implements IFlowExecutor {
+    public static IFlowRunResult lastFlowResultValue = null;
     public static Property<IFlowRunResult> lastFlowResult = new SimpleObjectProperty<>();
     public static Property<IStepRunResult> lastStepResult = new SimpleObjectProperty<>();
     public static Property<IFlowRunResult> lastFinishedFlowResult = new SimpleObjectProperty<>();
@@ -68,7 +69,14 @@ public class FlowExecutor implements IFlowExecutor {
                 userInputs.put(dataIO, value);
             }
         }
-        IFlowRunResult thisFlowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), startTime, userInputs, context);
+        IFlowRunResult thisFlowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), startTime, userInputs, context, flow);
+        if (lastFlowResultValue != null) {
+            synchronized (lastFlowResultValue) {
+                lastFlowResultValue = thisFlowRunResult;
+            }
+        }
+        else
+            lastFlowResultValue = thisFlowRunResult;
         Platform.runLater(() -> lastFlowResult.setValue(thisFlowRunResult));
 
         List<String> stepRunUUID = new ArrayList<>();
@@ -91,9 +99,16 @@ public class FlowExecutor implements IFlowExecutor {
             result.setAlias(step.name());
             thisFlowRunResult.addStepRunUUID(result.runId());
             thisFlowRunResult.addStepRunResult(result);
-            synchronized (lastFlowResult) {
-                if (thisFlowRunResult.equals(lastFlowResult.getValue()))
-                    Platform.runLater(() -> lastStepResult.setValue(result));
+            synchronized (lastFlowResultValue) {
+                if (thisFlowRunResult.equals(lastFlowResultValue)) {
+                    if (lastStepResult.getValue() == null)
+                        Platform.runLater(() -> lastStepResult.setValue(result));
+                    else {
+                        synchronized (lastStepResult.getValue()) {
+                            Platform.runLater(() -> lastStepResult.setValue(result));
+                        }
+                    }
+                }
             }
             context.statistics().addRunResult(result);
 
@@ -131,11 +146,12 @@ public class FlowExecutor implements IFlowExecutor {
         Duration duration = Duration.between(startTime, Instant.now());
         thisFlowRunResult.setDuration(duration);
         context.statistics().addRunResult(thisFlowRunResult);
-        synchronized (lastFlowResult) {
-            if (thisFlowRunResult.equals(lastFlowResult.getValue()))
-                Platform.runLater(() -> lastFlowResult.setValue(thisFlowRunResult));
+        synchronized (lastFlowResultValue) {
+            if (thisFlowRunResult.equals(lastFlowResultValue)) {
+                Platform.runLater(() -> lastFlowResult.setValue(lastFlowResultValue));
+                Platform.runLater(() -> lastFinishedFlowResult.setValue(lastFlowResultValue));
+            }
         }
-        Platform.runLater(() -> lastFinishedFlowResult.setValue(thisFlowRunResult));
         return thisFlowRunResult;
     }
 }

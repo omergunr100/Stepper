@@ -3,6 +3,7 @@ package com.main.stepper.engine.executor.implementation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 
@@ -22,8 +23,9 @@ public class FlowRunResult implements IFlowRunResult {
     private final List<String> stepRunUUID;
     private final List<IStepRunResult> stepRunResults;
     private IFlowExecutionContext flowExecutionContext;
+    private IFlowDefinition flowDefinition;
 
-    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID, List<IStepRunResult> stepRunResults, IFlowExecutionContext context) {
+    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID, List<IStepRunResult> stepRunResults, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
         this.runId = runId;
         this.name = name;
         this.result = result;
@@ -35,15 +37,17 @@ public class FlowRunResult implements IFlowRunResult {
         this.stepRunUUID = stepRunUUID;
         this.stepRunResults = stepRunResults;
         this.flowExecutionContext = context;
+        this.flowDefinition = flowDefinition;
     }
 
-    public FlowRunResult(String runId, String name, Instant startTime, Map<IDataIO, Object> userInputs, IFlowExecutionContext context) {
+    public FlowRunResult(String runId, String name, Instant startTime, Map<IDataIO, Object> userInputs, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
         this.runId = runId;
         this.name = name;
         this.result = FlowResult.RUNNING;
         this.startTime = startTime;
         this.userInputs = userInputs;
         this.flowExecutionContext = context;
+        this.flowDefinition = flowDefinition;
 
         this.duration = null;
         this.internalOutputs = new HashMap<>();
@@ -137,6 +141,11 @@ public class FlowRunResult implements IFlowRunResult {
     @Override
     public IFlowExecutionContext flowExecutionContext() {
         return flowExecutionContext;
+    }
+
+    @Override
+    public IFlowDefinition flowDefinition() {
+        return flowDefinition;
     }
 
     @Override

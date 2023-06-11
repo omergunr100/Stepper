@@ -15,6 +15,7 @@ import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +29,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FlowExecutionController {
     private RootController rootController;
@@ -71,8 +73,6 @@ public class FlowExecutionController {
         executionUserInputs = null;
         inputsFlowPane.getChildren().clear();
 
-        FlowExecutor.lastFlowResult.setValue(null);
-
         flowInputControllers.clear();
         executionElementsController.reset();
         continuationsController.reset();
@@ -82,123 +82,150 @@ public class FlowExecutionController {
     public void setCurrentFlow(IFlowDefinition currentFlow, IFlowRunResult context) {
         this.currentFlow = currentFlow;
         if (currentFlow == null){
+            validateInputsThread.interrupt();
             reset();
             return;
         }
-        executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+
+        if (executionUserInputs != null) {
+            synchronized (executionUserInputs) {
+                executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+                if (validateInputsThread != null)
+                    validateInputsThread.interrupt();
+            }
+        }
+        else {
+            executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+            if (validateInputsThread != null)
+                validateInputsThread.interrupt();
+        }
         executionElementsController.reset();
+        continuationsController.reset();
+        stepDetailsController.reset();
 
         setInputs(context);
 
         // initialize validation thread
-        if(validateInputsThread != null)
-            validateInputsThread.interrupt();
         validateInputsThread = new Thread(()->{
             while (true){
                 try{
+                    if (executionUserInputs == null)
+                        return;
                     synchronized (executionUserInputs) {
                         synchronized (flowInputControllers){
                             for(FlowInputController flowInputController : flowInputControllers) {
                                 try {
                                     if(flowInputController.getValue().isEmpty()){
                                         executionUserInputs.readUserInput(flowInputController.input(), null);
-                                        flowInputController.setValid(false);
+                                        Platform.runLater(() -> flowInputController.setValid(false));
                                         throw new BadTypeException("Empty input");
                                     }
 
                                     executionUserInputs.readUserInput(flowInputController.input(), flowInputController.getValue());
                                     // input is valid: green
-                                    flowInputController.setInputStyle(
-                                            "-fx-text-box-border: lightgreen ;\n" +
-                                            "  -fx-focus-color: lightgreen ;"
-                                    );
-                                    flowInputController.setValid(true);
+                                    Platform.runLater(() -> {
+                                        flowInputController.setInputStyle(
+                                                "-fx-text-box-border: lightgreen ;\n" +
+                                                "  -fx-focus-color: lightgreen ;"
+                                        );
+                                        flowInputController.setValid(true);
+                                    });
                                 } catch (BadTypeException e) {
                                     if(flowInputController.input().getNecessity().equals(DataNecessity.OPTIONAL)){
                                         // input is optional and bad type: yellow
-                                        flowInputController.setInputStyle(
-                                                "-fx-text-box-border: yellow ;\n" +
-                                                "  -fx-focus-color: yellow ;"
-                                        );
-                                        flowInputController.setValid(true);
+                                        Platform.runLater(() -> {
+                                            flowInputController.setInputStyle(
+                                                    "-fx-text-box-border: yellow ;\n" +
+                                                    "  -fx-focus-color: yellow ;"
+                                            );
+                                            flowInputController.setValid(true);
+                                        });
                                     }
                                     else{
                                         // input is mandatory and bad type: red
-                                        flowInputController.setInputStyle(
-                                                "-fx-text-box-border: red ;\n" +
-                                                "  -fx-focus-color: red ;"
-                                        );
-                                        flowInputController.setValid(false);
+                                        Platform.runLater(() -> {
+                                            flowInputController.setInputStyle(
+                                                    "-fx-text-box-border: red ;\n" +
+                                                    "  -fx-focus-color: red ;"
+                                            );
+                                            flowInputController.setValid(false);
+                                        });
                                     }
                                 }
                             }
                         }
 
                         if (executionUserInputs.validateUserInputs())
-                            startButton.setDisable(false);
+                            Platform.runLater(() -> startButton.setDisable(false));
                         else
-                            startButton.setDisable(true);
+                            Platform.runLater(() -> startButton.setDisable(true));
                     }
                     Thread.sleep(150);
                 }catch (InterruptedException e) {
-                    break;
+                    return;
                 }
             }
         });
         validateInputsThread.setName("Validate Inputs Thread");
         validateInputsThread.setDaemon(true);
         validateInputsThread.start();
+
         mandatoryBox.setDisable(false);
         optionalBox.setDisable(false);
     }
 
     // initialize input components
-    private void setInputs(IFlowRunResult context) {
+    private void setInputs(IFlowRunResult runResult) {
         this.flowInputControllers.clear();
         this.flowInputComponents.clear();
         this.inputsFlowPane.getChildren().clear();
         List<FadeTransition> animations = new ArrayList<>();
-        for(IDataIO dataIO : executionUserInputs.getOpenUserInputs()) {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(FlowInputController.class.getResource("FlowInput.fxml"));
-            try {
-                // load fxml file
-                Parent inputComp = loader.load();
-                FlowInputController flowInputController = loader.getController();
-                flowInputController.init(dataIO);
+        synchronized (executionUserInputs) {
+            for (IDataIO dataIO : executionUserInputs.getOpenUserInputs()) {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(FlowInputController.class.getResource("FlowInput.fxml"));
+                try {
+                    // load fxml file
+                    Parent inputComp = loader.load();
+                    FlowInputController flowInputController = loader.getController();
+                    flowInputController.init(dataIO);
 
-                // get value for continuation if there is one
-                // todo: add support for custom continuation mappings, note: maybe add IFlowDefinition to IFlowRunResult
-                if (context != null) {
-                    Object value = null;
-                    try {
-                        value = context.flowExecutionContext().getVariable(dataIO, dataIO.getDataDefinition().getType());
-                    } catch (ClassCastException ignored) {
+                    // get value for continuation if there is one
+                    if (runResult != null) {
+                        Map<IDataIO, IDataIO> customContinuationMappings = runResult.flowDefinition().continuationMapping(currentFlow);
+                        Object value = null;
+                        IDataIO key = customContinuationMappings.get(dataIO);
+                        if (key != null)
+                            value = runResult.flowExecutionContext().getVariable(key, key.getDataDefinition().getType());
+                        if (value != null)
+                            flowInputController.setValue(value.toString());
                     }
-                    if (value != null)
-                        flowInputController.setValue(value.toString());
-                }
 
-                flowInputControllers.add(flowInputController);
-                flowInputComponents.add(inputComp);
-                inputComp.setOpacity(0.0);
-                inputsFlowPane.getChildren().add(inputComp);
-                // animate fade in
-                FadeTransition ft = new FadeTransition(Duration.millis(250), inputComp);
-                ft.setFromValue(0.0);
-                ft.setToValue(1.0);
-                animations.add(ft);
-            } catch (IOException ignored) {
+                    flowInputControllers.add(flowInputController);
+                    flowInputComponents.add(inputComp);
+                    inputComp.setOpacity(0.0);
+                    inputsFlowPane.getChildren().add(inputComp);
+                    // animate fade in
+                    FadeTransition ft = new FadeTransition(Duration.millis(250), inputComp);
+                    ft.setFromValue(0.0);
+                    ft.setToValue(1.0);
+                    animations.add(ft);
+                } catch (IOException ignored) {
+                }
             }
+            for (int i = 0; i < animations.size() - 1; i++) {
+                final FadeTransition next = animations.get(i + 1);
+                animations.get(i).setOnFinished(event -> next.play());
+            }
+            animations.get(0).play();
         }
-        for(int i = 0; i < animations.size() - 1; i++){
-            final FadeTransition next = animations.get(i + 1);
-            animations.get(i).setOnFinished(event -> next.play());
-        }
-        animations.get(0).play();
     }
 
     @FXML private void startFlow() {
+        continuationsController.reset();
+        stepDetailsController.reset();
+        executionElementsController.reset();
+
         rootController.getEngine().runFlow(currentFlow.name(), executionUserInputs);
         executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
     }
@@ -240,7 +267,8 @@ public class FlowExecutionController {
     }
 
     public void updateContinuations() {
-        continuationsController.setContinuations(currentFlow.continuations());
+        if (currentFlow != null)
+            continuationsController.setContinuations(currentFlow.continuations());
     }
 
     public void selectStepForDetails(IStepRunResult stepResult) {

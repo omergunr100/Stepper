@@ -3,6 +3,7 @@ package com.main.stepper.application.resources.fxml.tabs.flowsexecution.continua
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -43,8 +44,11 @@ public class FlowContinuationsController {
         continuationsTable.getColumns().addAll(nameColumn, descriptionColumn, numberOfStepsColumn, numberOfFreeInputsColumn, numberOfContinuationsColumn);
 
         continuationsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            parent.setCurrentFlow(newValue, FlowExecutor.lastFinishedFlowResult.getValue());
-            reset();
+            if (newValue != null) {
+                parent.setCurrentFlow(newValue, FlowExecutor.lastFinishedFlowResult.getValue());
+                continuationsTable.getSelectionModel().clearSelection();
+            }
+            continuationsTable.setVisible(false);
         });
 
         continuationsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -56,7 +60,10 @@ public class FlowContinuationsController {
 
     public void setContinuations(List<IFlowDefinition> continuations) {
         reset();
-        continuationsTable.getItems().addAll(continuations);
+        if (!continuations.isEmpty()) {
+            continuationsTable.getItems().addAll(continuations);
+            continuationsTable.setVisible(true);
+        }
     }
 
     public void reset() {
