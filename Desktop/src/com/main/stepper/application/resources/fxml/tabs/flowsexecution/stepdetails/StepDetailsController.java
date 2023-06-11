@@ -8,6 +8,7 @@ import com.main.stepper.data.implementation.list.datatype.GenericList;
 import com.main.stepper.data.implementation.mapping.api.PairData;
 import com.main.stepper.data.implementation.relation.Relation;
 import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.step.definition.api.IStepDefinition;
@@ -135,6 +136,16 @@ public class StepDetailsController {
         dataTypeValue.setText(aliasedDataIO.getDataDefinition().getName());
         dataTypeBox.getChildren().addAll(dataType, dataTypeValue);
         dataView.getChildren().add(dataTypeBox);
+
+        // dataRequirement
+        HBox dataRequirementBox = new HBox();
+        dataRequirementBox.setSpacing(10);
+        Label dataRequirement = new Label("Data requirement: ");
+        TextField dataRequirementValue = new TextField();
+        dataRequirementValue.setEditable(false);
+        dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output - non applicable" : data.getNecessity().toString());
+        dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementBox);
+        dataView.getChildren().add(dataRequirementBox);
 
         // dataValue
         HBox dataValueBox = new HBox();
