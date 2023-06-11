@@ -144,7 +144,7 @@ public class StepDetailsController {
         TextField dataRequirementValue = new TextField();
         dataRequirementValue.setEditable(false);
         dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output - non applicable" : data.getNecessity().toString());
-        dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementBox);
+        dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementValue);
         dataView.getChildren().add(dataRequirementBox);
 
         // dataValue
