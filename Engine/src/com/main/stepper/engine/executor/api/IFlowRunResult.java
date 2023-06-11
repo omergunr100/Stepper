@@ -1,6 +1,7 @@
 package com.main.stepper.engine.executor.api;
 
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 
@@ -44,4 +45,6 @@ public interface IFlowRunResult extends Serializable {
     void setDuration(Duration duration);
 
     IFlowExecutionContext flowExecutionContext();
+
+    IFlowDefinition flowDefinition();
 }

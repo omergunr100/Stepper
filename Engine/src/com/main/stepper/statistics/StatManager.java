@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class StatManager implements Serializable {
     private final ObservableList<IFlowRunResult> flowRunResults;
     private final ObservableList<IStepRunResult> stepRunResults;
-    // todo: make functions for unique adding to flow and step statDTOs lists, synchronize on function level
     private final ObservableList<StatDTO> flowStatDTOs;
     private final ObservableList<StatDTO> stepStatDTOs;
 
@@ -28,6 +27,29 @@ public class StatManager implements Serializable {
         stepRunResults = FXCollections.observableList(new LinkedList<>());
         flowStatDTOs = FXCollections.observableArrayList(new ArrayList<>());
         stepStatDTOs = FXCollections.observableArrayList(new ArrayList<>());
+    }
+
+    public void addFlowStatDTO(final StatDTO statDTO){
+        synchronized (flowStatDTOs) {
+            if (flowStatDTOs.contains(statDTO)) {
+                Platform.runLater(() -> {
+                    flowStatDTOs.set(flowStatDTOs.indexOf(statDTO), statDTO);
+                });
+                flowStatDTOs.set(flowStatDTOs.indexOf(statDTO), statDTO);
+            } else {
+                flowStatDTOs.add(statDTO);
+            }
+        }
+    }
+
+    public void addStepStatDTO(final StatDTO statDTO){
+        synchronized (stepStatDTOs) {
+            if (stepStatDTOs.contains(statDTO)) {
+                stepStatDTOs.set(stepStatDTOs.indexOf(statDTO), statDTO);
+            } else {
+                stepStatDTOs.add(statDTO);
+            }
+        }
     }
 
     public List<IFlowRunResult> getFlowRuns(){
@@ -42,71 +64,22 @@ public class StatManager implements Serializable {
         flowRunResults.add(0, flowRunResult);
         if (flowRunResult.result().equals(FlowResult.FAILURE))
             return;
-        StatDTO dto = null;
-        boolean isNew;
-        synchronized (flowStatDTOs) {
-            isNew = flowStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(flowRunResult.name()));
-        }
-        if (isNew) {
-            dto = new StatDTO(StatDTO.TYPE.FLOW, flowRunResult.name());
-            dto.setRunCounter(getFlowRunCount(flowRunResult.name()));
-            dto.setAvgRunTime(getFlowRunAverageTimeMS(flowRunResult.name()));
-            final StatDTO finalDTO = dto;
-            Platform.runLater(() -> {
-                synchronized (flowStatDTOs) {
-                    flowStatDTOs.add(finalDTO);
-                }
-            });
-        } else {
-            synchronized (flowStatDTOs) {
-                dto = flowStatDTOs.stream().filter(statDTO -> statDTO.getName().equals(flowRunResult.name())).findFirst().get();
-                dto.setRunCounter(getFlowRunCount(flowRunResult.name()));
-                dto.setAvgRunTime(getFlowRunAverageTimeMS(flowRunResult.name()));
-                final StatDTO finalDTO = dto;
-                Platform.runLater(() -> {
-                    synchronized (flowStatDTOs) {
-                        flowStatDTOs.set(flowStatDTOs.indexOf(finalDTO), finalDTO);
-                    }
-                });
-            }
-        }
+        StatDTO dto = new StatDTO(StatDTO.TYPE.FLOW, flowRunResult.name());;
+        dto.setRunCounter(getFlowRunCount(flowRunResult.name()));
+        dto.setAvgRunTime(getFlowRunAverageTimeMS(flowRunResult.name()));
+        final StatDTO finalDTO = dto;
+        Platform.runLater(() -> addFlowStatDTO(finalDTO));
     }
 
     public void addRunResult(IStepRunResult stepRunResult){
         stepRunResults.add(0, stepRunResult);
         if(stepRunResult.result().equals(StepResult.FAILURE))
             return;
-        StatDTO dto = null;
-        boolean isNew;
-        synchronized (stepStatDTOs) {
-            isNew = stepStatDTOs.stream().noneMatch(statDTO -> statDTO.getName().equals(stepRunResult.name()));
-        }
-        if (isNew) {
-            dto = new StatDTO(StatDTO.TYPE.STEP, stepRunResult.name());
-            synchronized (stepStatDTOs) {
-                dto.setRunCounter(getStepRunCount(stepRunResult.name()));
-                dto.setAvgRunTime(getStepRunAverageTimeMS(stepRunResult.name()));
-                final StatDTO finalDTO = dto;
-                Platform.runLater(() -> {
-                    synchronized (stepStatDTOs) {
-                        stepStatDTOs.add(finalDTO);
-                    }
-                });
-            }
-        }
-        else {
-            synchronized (stepStatDTOs) {
-                dto = stepStatDTOs.stream().filter(statDTO -> statDTO.getName().equals(stepRunResult.name())).findFirst().get();
-                dto.setRunCounter(getStepRunCount(stepRunResult.name()));
-                dto.setAvgRunTime(getStepRunAverageTimeMS(stepRunResult.name()));
-                final StatDTO finalDTO = dto;
-                Platform.runLater(() -> {
-                    synchronized (stepStatDTOs) {
-                        stepStatDTOs.set(stepStatDTOs.indexOf(finalDTO), finalDTO);
-                    }
-                });
-            }
-        }
+        StatDTO dto = new StatDTO(StatDTO.TYPE.STEP, stepRunResult.name());
+        dto.setRunCounter(getStepRunCount(stepRunResult.name()));
+        dto.setAvgRunTime(getStepRunAverageTimeMS(stepRunResult.name()));
+        final StatDTO finalDTO = dto;
+        Platform.runLater(() -> addStepStatDTO(finalDTO));
     }
 
     public IFlowRunResult getFlowRunResult(String uuid){

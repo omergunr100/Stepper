@@ -64,9 +64,9 @@
             </TitledPane>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
               <items>
-                  <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Execution details">
+                  <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" text="Execution details">
                      <content>
-                        <fx:include fx:id="stepDetails" source="../stepdetails/StepDetails.fxml" />
+                        <fx:include fx:id="stepDetails" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../stepdetails/StepDetails.fxml" />
                      </content></TitledPane>
                   <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Continuation data">
                      <content>

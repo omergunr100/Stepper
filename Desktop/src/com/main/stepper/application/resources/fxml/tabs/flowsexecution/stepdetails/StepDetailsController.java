@@ -1,5 +1,10 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails;
 
+import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
+import com.main.stepper.data.implementation.file.FileData;
+import com.main.stepper.data.implementation.list.datatype.GenericList;
+import com.main.stepper.data.implementation.mapping.api.PairData;
+import com.main.stepper.data.implementation.relation.Relation;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
@@ -8,10 +13,11 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,6 +33,8 @@ public class StepDetailsController {
     @FXML private Label startTimeLabel;
     @FXML private Label endTimeLabel;
     @FXML private Label durationLabel;
+    @FXML private VBox logBox;
+    @FXML private VBox dataBox;
 
     public StepDetailsController() {
     }
@@ -46,6 +54,9 @@ public class StepDetailsController {
     }
 
     private void update() {
+        // clear previous data
+        dataBox.getChildren().clear();
+        logBox.getChildren().clear();
         // update header
         nameLabel.setText(currentStepResult.name());
         resultLabel.setText(currentStepResult.result().toString());
@@ -58,22 +69,103 @@ public class StepDetailsController {
         List<IDataIO> inputs = step.getInputs();
         List<IDataIO> outputs = step.getOutputs();
 
-        for (IDataIO input : inputs) {
-            // todo: make input presentation according to type
+        for (int i = 0; i < inputs.size(); i++) {
+            dataBox.getChildren().add(makeDataView(inputs.get(i)));
+            Label spacer = new Label();
+            spacer.setMinHeight(10);
+            dataBox.getChildren().add(spacer);
         }
-        for (IDataIO output : outputs) {
-            // todo: make output presentation according to type
+        for (int i = 0; i < outputs.size(); i++) {
+            dataBox.getChildren().add(makeDataView(outputs.get(i)));
+            Label spacer = new Label();
+            spacer.setMinHeight(10);
+            dataBox.getChildren().add(spacer);
         }
 
         // update logs
         List<Log> logs = context.getLogs();
-        for (Log log : logs) {
-            // todo: present logs
+        for (int i = 0; i < logs.size(); i++) {
+            HBox logView = new HBox();
+            Label log = new Label(logs.get(i).toString());
+            logView.getChildren().add(log);
+            logBox.getChildren().add(logView);
         }
+
+        root.setVisible(true);
     }
 
     public void reset() {
         currentStepResult = null;
         root.setVisible(false);
+    }
+
+    private Parent makeDataView(IDataIO data) {
+        if (data == null)
+            return null;
+        IDataIO aliasedDataIO = currentStepResult.context().getAliasedDataIO(data);
+        VBox dataView = new VBox();
+        dataView.setSpacing(10);
+        // dataName
+        HBox dataNameBox = new HBox();
+        dataNameBox.setSpacing(10);
+        Label dataName = new Label("Data name: ");
+        TextField dataNameValue = new TextField();
+        dataNameValue.setEditable(false);
+        dataNameValue.setText(aliasedDataIO.getName());
+        dataNameBox.getChildren().addAll(dataName, dataNameValue);
+        dataView.getChildren().add(dataNameBox);
+
+        // dataType
+        HBox dataTypeBox = new HBox();
+        dataTypeBox.setSpacing(10);
+        Label dataType = new Label("Data type: ");
+        TextField dataTypeValue = new TextField();
+        dataTypeValue.setEditable(false);
+        dataTypeValue.setText(aliasedDataIO.getDataDefinition().getName());
+        dataTypeBox.getChildren().addAll(dataType, dataTypeValue);
+        dataView.getChildren().add(dataTypeBox);
+
+        // dataValue
+        HBox dataValueBox = new HBox();
+        dataValueBox.setSpacing(10);
+        Label dataValue = new Label("Data value: ");
+        dataView.getChildren().add(dataValue);
+        Parent dataValueView = null;
+        if (
+                String.class.isAssignableFrom(data.getDataDefinition().getType())
+                || Double.class.isAssignableFrom(data.getDataDefinition().getType())
+                || Integer.class.isAssignableFrom(data.getDataDefinition().getType())
+                || PairData.class.isAssignableFrom(data.getDataDefinition().getType())
+                || FileData.class.isAssignableFrom(data.getDataDefinition().getType())
+                || ZipperEnumData.class.isAssignableFrom(data.getDataDefinition().getType())
+        ) {
+            HBox valueBox = new HBox();
+            valueBox.setSpacing(10);
+            TextField dataValueField = new TextField();
+            dataValueField.setEditable(false);
+            Object blob = currentStepResult.context().getInput(data, data.getDataDefinition().getType());
+            if (blob == null){
+                blob = "Data not available";
+            }
+            else
+                dataValueField.setText(blob.toString());
+            dataValueView = dataValueField;
+        }
+        else if (
+                GenericList.class.isAssignableFrom(data.getDataDefinition().getType())
+        ) {
+            // todo: change to custom view component to show list
+            dataValueView = new TextField();
+        }
+        else if (
+                Relation.class.isAssignableFrom(data.getDataDefinition().getType())
+        ) {
+            // todo: change to custom view component to show relation
+            dataValueView = new TextField();
+        }
+        dataValueBox.getChildren().addAll(dataValue, dataValueView);
+        dataView.getChildren().add(dataValueBox);
+        // return generated component
+        return dataView;
     }
 }

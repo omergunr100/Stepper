@@ -87,6 +87,6 @@ public class StepRunResult implements IStepRunResult {
 
     @Override
     public IStepDefinition stepDefinition() {
-        return null;
+        return stepDefinition;
     }
 }
