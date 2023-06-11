@@ -28,6 +28,6 @@ public class ZipperEnumData {
 
     @Override
     public String toString() {
-        return "Value: " + value;
+        return value;
     }
 }

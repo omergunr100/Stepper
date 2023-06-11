@@ -6,6 +6,7 @@ import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.generated.ex2.STContinuation;
 import com.main.stepper.xml.generated.ex2.STFlow;
+import com.main.stepper.xml.generated.ex2.STInitialInputValue;
 import com.main.stepper.xml.parsing.api.IParser;
 
 import java.util.*;
@@ -29,6 +30,13 @@ public class FlowParser implements IParser {
     public List<String> parse(){
         // Get flow properties and mapping
         flow = new Flow(stflow.getName(), stflow.getSTFlowDescription());
+        // Get flow initial values (raw)
+        if (stflow.getSTInitialInputValues() != null) {
+            for (STInitialInputValue value : stflow.getSTInitialInputValues().getSTInitialInputValue()) {
+                flow.addInitialValueRaw(value.getInputName(), value.getInitialValue());
+            }
+        }
+
         // Get flow continuation names and custom mappings
         if(stflow.getSTContinuations() != null) {
             for (STContinuation continuation : stflow.getSTContinuations().getSTContinuation()) {

@@ -182,6 +182,10 @@ public class DesktopEngine implements IEngine {
                 context.setVariable(input, inputs.getUserInputs().get(input));
             }
 
+            for (Map.Entry<IDataIO, Object> entry : requested.initialValues().entrySet()) {
+                context.setVariable(entry.getKey(), entry.getValue());
+            }
+
         }
         IFlowExecutor executor = new FlowExecutor();
         this.executor.execute(()->executor.executeFlow(requested, context));

@@ -32,4 +32,8 @@ public interface IFlowDefinition extends Serializable {
     List<String> validateFlowStructure();
     IFlowInformation information();
     IStepUsageDeclaration stepRequiringMandatoryInput(IDataIO dataIO);
+    void addInitialValueRaw(String inputName, String value);
+    Map<String, String> initialValuesRaw();
+    void addInitialValue(IDataIO input, Object value);
+    Map<IDataIO, Object> initialValues();
 }

@@ -7,10 +7,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.xml.validators.api.IValidator;
-import com.main.stepper.xml.validators.implementation.flow.ValidateInputOutputOrderAndType;
-import com.main.stepper.xml.validators.implementation.flow.ValidateNoDuplicateOutputNames;
-import com.main.stepper.xml.validators.implementation.flow.ValidateNoMultipleMandatoryInputsOfDifferentType;
-import com.main.stepper.xml.validators.implementation.flow.ValidateNoUnUserFriendlyMandatoryInputs;
+import com.main.stepper.xml.validators.implementation.flow.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,6 +29,8 @@ public class Flow implements IFlowDefinition {
     private final Map<IDataIO, IStepUsageDeclaration> dataToMandatoryStep; // Post-alias -> Step, keeps track of which step needs the dataIO as mandatory input (first)
     private final Map<IDataIO, IStepUsageDeclaration> dataToProducer; // Post-alias -> Step, keeps track of which step produces which dataIO
     private final Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer; // Post-alias -> Step, keeps track of which steps consume which dataIO
+    private final Map<String, String> initialValuesRaw;
+    private final Map<IDataIO, Object> initialValues;
 
     public Flow(String name, String description) {
         this.name = name;
@@ -50,6 +49,8 @@ public class Flow implements IFlowDefinition {
         this.dataToMandatoryStep = new HashMap<>();
         this.dataToProducer = new HashMap<>();
         this.dataToConsumer = new HashMap<>();
+        initialValuesRaw = new HashMap<>();
+        initialValues = new HashMap<>();
     }
 
     @Override
@@ -202,6 +203,12 @@ public class Flow implements IFlowDefinition {
         if(readOnly == null)
             readOnly = true;
 
+        // validate initial values
+        IValidator validateNoIllegalInitialValues = new ValidateInitialValues(this);
+        errors.addAll(validateNoIllegalInitialValues.validate());
+        if (!errors.isEmpty())
+            return errors;
+
         // validate no duplicate outputs (4.1)
         IValidator validateNoDuplicateOutputNames = new ValidateNoDuplicateOutputNames(this);
         errors.addAll(validateNoDuplicateOutputNames.validate());
@@ -258,6 +265,26 @@ public class Flow implements IFlowDefinition {
         if(step == null)
             step = dataToConsumer.get(dataIO).get(0);
         return step;
+    }
+
+    @Override
+    public void addInitialValueRaw(String inputName, String value) {
+        initialValuesRaw.put(inputName, value);
+    }
+
+    @Override
+    public Map<String, String> initialValuesRaw() {
+        return initialValuesRaw;
+    }
+
+    @Override
+    public void addInitialValue(IDataIO input, Object value) {
+        initialValues.put(input, value);
+    }
+
+    @Override
+    public Map<IDataIO, Object> initialValues() {
+        return initialValues;
     }
 
     @Override
