@@ -6,7 +6,7 @@ import com.main.stepper.exceptions.data.EnumValueMissingException;
 
 public class ZipperEnumDef extends AbstractDataDef {
     public ZipperEnumDef() {
-        super("Enumerator", true, ZipperEnumData.class);
+        super("ZIP Enumerator", true, ZipperEnumData.class);
     }
 
     @Override
