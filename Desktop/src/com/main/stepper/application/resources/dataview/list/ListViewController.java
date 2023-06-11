@@ -2,8 +2,10 @@ package com.main.stepper.application.resources.dataview.list;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class ListViewController {
     }
 
     @FXML public void initialize(){
+        table.setPlaceholder(new Label("No data to display"));
         table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
@@ -28,8 +31,13 @@ public class ListViewController {
             TableColumn<List, String> column = new TableColumn<>(i.toString());
             final Integer j = i - 1;
             column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+            TextField field = new TextField();
+            field.setText(list.get(j).toString());
+            column.setMinWidth(field.getLayoutBounds().getWidth());
             table.getColumns().add(column);
         }
         table.getItems().add(list);
+        table.fixedCellSizeProperty().set(35);
+        table.prefHeightProperty().bind(table.fixedCellSizeProperty().multiply(table.getItems().size()).add(30));
     }
 }

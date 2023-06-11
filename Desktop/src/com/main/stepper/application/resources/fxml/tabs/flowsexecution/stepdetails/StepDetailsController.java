@@ -1,5 +1,6 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails;
 
+import com.main.stepper.application.resources.dataview.list.ListViewController;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.GenericList;
@@ -11,6 +12,7 @@ import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -131,6 +134,7 @@ public class StepDetailsController {
         Label dataValue = new Label("Data value: ");
         dataView.getChildren().add(dataValue);
         Parent dataValueView = null;
+        Object blob = currentStepResult.context().getInput(data, data.getDataDefinition().getType());
         if (
                 String.class.isAssignableFrom(data.getDataDefinition().getType())
                 || Double.class.isAssignableFrom(data.getDataDefinition().getType())
@@ -143,7 +147,6 @@ public class StepDetailsController {
             valueBox.setSpacing(10);
             TextField dataValueField = new TextField();
             dataValueField.setEditable(false);
-            Object blob = currentStepResult.context().getInput(data, data.getDataDefinition().getType());
             if (blob == null){
                 blob = "Data not available";
             }
@@ -155,7 +158,24 @@ public class StepDetailsController {
                 GenericList.class.isAssignableFrom(data.getDataDefinition().getType())
         ) {
             // todo: change to custom view component to show list
-            dataValueView = new TextField();
+            if (blob == null) {
+                TextField dataValueField = new TextField();
+                dataValueField.setEditable(false);
+                dataValueField.setText("Data not available");
+                dataValueView = dataValueField;
+            }
+            else {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(ListViewController.class.getResource("ListView.fxml"));
+                Parent listView = null;
+                try {
+                    listView = loader.load();
+                    ListViewController controller = loader.getController();
+                    controller.loadList((GenericList) blob);
+                } catch (IOException ignored) {
+                }
+                dataValueView = listView;
+            }
         }
         else if (
                 Relation.class.isAssignableFrom(data.getDataDefinition().getType())
