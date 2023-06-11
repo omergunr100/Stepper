@@ -1,5 +1,6 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements;
 
+import com.main.stepper.application.resources.fxml.tabs.executionshistory.ExecutionHistoryScreenController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.element.ElementController;
 import com.main.stepper.application.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
@@ -21,7 +22,8 @@ import java.util.List;
 public class FlowExecutionElementsController {
     private Property<IFlowRunResult> currentFlowResult;
     private Property<IStepRunResult> currentStepResult;
-    private FlowExecutionController parent;
+    private FlowExecutionController flowExecutionController;
+    private ExecutionHistoryScreenController executionHistoryScreenController;
     @FXML private VBox root;
     // header elements
     private ElementController currentFlowUUID;
@@ -46,7 +48,9 @@ public class FlowExecutionElementsController {
         // setup bindings and listeners
         currentFlowResult = new SimpleObjectProperty<>();
         currentStepResult = new SimpleObjectProperty<>();
+    }
 
+    public void autoUpdate() {
         currentFlowResult.bind(FlowExecutor.lastFlowResult);
         currentStepResult.bind(FlowExecutor.lastStepResult);
 
@@ -73,8 +77,14 @@ public class FlowExecutionElementsController {
         });
     }
 
-    public void setParent(FlowExecutionController parent) {
-        this.parent = parent;
+    public void setFlowExecutionController(FlowExecutionController flowExecutionController) {
+        this.flowExecutionController = flowExecutionController;
+        this.executionHistoryScreenController = null;
+    }
+
+    public void setExecutionHistoryScreenController(ExecutionHistoryScreenController executionHistoryScreenController) {
+        this.executionHistoryScreenController = executionHistoryScreenController;
+        this.flowExecutionController = null;
     }
 
     public void reset() {
@@ -157,14 +167,27 @@ public class FlowExecutionElementsController {
         }
     }
 
+    public void forceLoadAllElementsFrom(IFlowRunResult flowRunResult) {
+        reset();
+        currentFlowResult.setValue(flowRunResult);
+        for (int i = 0; i < flowRunResult.stepRunResults().size(); i++) {
+            updateHeader();
+            currentStepResult.setValue(flowRunResult.stepRunResults().get(i));
+            updateElements();
+        }
+    }
+
     public void onRunEnded() {
-        if (!runEnded) {
-            parent.updateContinuations();
+        if (flowExecutionController != null && !runEnded) {
+            flowExecutionController.updateContinuations();
             runEnded = true;
         }
     }
 
     public void selectStep(IStepRunResult step) {
-        parent.selectStepForDetails(step);
+        if (flowExecutionController != null)
+            flowExecutionController.selectStepForDetails(step);
+        else if (executionHistoryScreenController != null)
+            executionHistoryScreenController.selectStepRunDetails(step);
     }
 }

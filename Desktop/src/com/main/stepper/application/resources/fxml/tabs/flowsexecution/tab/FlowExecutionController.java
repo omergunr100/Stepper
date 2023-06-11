@@ -56,7 +56,8 @@ public class FlowExecutionController {
         flowInputComponents = new ArrayList<>();
 
         continuationsController.setParent(this);
-        executionElementsController.setParent(this);
+        executionElementsController.setFlowExecutionController(this);
+        executionElementsController.autoUpdate();
     }
 
     public void setRootController(RootController rootController) {

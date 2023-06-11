@@ -1,5 +1,8 @@
 package com.main.stepper.application.resources.fxml.reusable.flowrundetails;
 
+import com.main.stepper.application.resources.fxml.tabs.executionshistory.ExecutionHistoryScreenController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.FlowExecutionElementsController;
+import com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails.StepDetailsController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +18,7 @@ public class FlowRunDetailsController {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());
     private IFlowRunResult currentFlow;
     @FXML TableView<IFlowRunResult> table;
+    private ExecutionHistoryScreenController parent;
 
     public FlowRunDetailsController() {
     }
@@ -22,6 +26,10 @@ public class FlowRunDetailsController {
     public void reset() {
         currentFlow = null;
         table.getItems().clear();
+    }
+
+    public void setParent(ExecutionHistoryScreenController parent) {
+        this.parent = parent;
     }
 
     @FXML public void initialize(){
@@ -42,12 +50,8 @@ public class FlowRunDetailsController {
 
         table.getColumns().addAll(nameColumn, timeColumn, resultColumn);
 
-        // todo: set on row selection listener
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             this.setCurrentFlow(newValue);
-            if (newValue != null){
-                // todo: update selection view
-            }
         });
 
         // set resize policy
@@ -60,7 +64,9 @@ public class FlowRunDetailsController {
     }
 
     private void setCurrentFlow(IFlowRunResult result){
-        this.currentFlow = result;
+        currentFlow = result;
+        if (result != null)
+            parent.selectFlowRunDetails(result);
     }
 
     public IFlowRunResult getCurrentFlow(){

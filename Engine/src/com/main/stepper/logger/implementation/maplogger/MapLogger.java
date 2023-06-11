@@ -42,6 +42,8 @@ public class MapLogger implements ILogger {
     public List<Log> getLog() {
         if (uuid == null)
             return null;
+        if (logs.get(uuid) == null)
+            return new ArrayList<>();
         return new ArrayList<>(logs.get(uuid));
     }
 
