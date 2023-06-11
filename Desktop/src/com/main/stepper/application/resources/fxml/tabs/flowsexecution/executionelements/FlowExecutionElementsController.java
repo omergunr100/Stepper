@@ -147,7 +147,7 @@ public class FlowExecutionElementsController {
             ElementController currentStep = loader.getController();
             final IStepRunResult currentStepResultValue = currentStepResult.getValue();
             currentStep.setPropertyName("Step:");
-            currentStep.setPropertyValue(currentStepResultValue.name());
+            currentStep.setPropertyValue(currentStepResultValue.alias() == null ? currentStepResultValue.name() : currentStepResultValue.alias());
             currentStep.setContext(currentStepResultValue);
             currentStep.setOnAction(this::selectStep);
             stepElementControllers.add(currentStep);

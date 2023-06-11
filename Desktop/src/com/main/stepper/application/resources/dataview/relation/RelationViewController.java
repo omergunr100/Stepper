@@ -3,6 +3,7 @@ package com.main.stepper.application.resources.dataview.relation;
 import com.main.stepper.data.implementation.relation.Relation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -14,6 +15,7 @@ public class RelationViewController {
     }
 
     @FXML public void initialize() {
+        table.setPlaceholder(new Label("No data to display"));
         table.setColumnResizePolicy(javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY);
     }
 

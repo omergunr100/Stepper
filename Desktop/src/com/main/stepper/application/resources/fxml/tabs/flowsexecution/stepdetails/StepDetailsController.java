@@ -1,6 +1,7 @@
 package com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails;
 
 import com.main.stepper.application.resources.dataview.list.ListViewController;
+import com.main.stepper.application.resources.dataview.relation.RelationViewController;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.GenericList;
@@ -14,11 +15,16 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -77,12 +83,14 @@ public class StepDetailsController {
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
+            dataBox.getChildren().add(new Separator());
         }
         for (int i = 0; i < outputs.size(); i++) {
             dataBox.getChildren().add(makeDataView(outputs.get(i)));
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
+            dataBox.getChildren().add(new Separator());
         }
 
         // update logs
@@ -157,7 +165,6 @@ public class StepDetailsController {
         else if (
                 GenericList.class.isAssignableFrom(data.getDataDefinition().getType())
         ) {
-            // todo: change to custom view component to show list
             if (blob == null) {
                 TextField dataValueField = new TextField();
                 dataValueField.setEditable(false);
@@ -180,8 +187,32 @@ public class StepDetailsController {
         else if (
                 Relation.class.isAssignableFrom(data.getDataDefinition().getType())
         ) {
-            // todo: change to custom view component to show relation
-            dataValueView = new TextField();
+            if (blob == null) {
+                TextField dataValueField = new TextField();
+                dataValueField.setEditable(false);
+                dataValueField.setText("Data not available");
+                dataValueView = dataValueField;
+            }
+            else {
+                Button openButton = new Button("Show data");
+                final Object finalBlob = blob;
+                openButton.setOnAction(event -> {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(RelationViewController.class.getResource("RelationView.fxml"));
+                    try {
+                        Parent relationView = loader.load();
+                        RelationViewController controller = loader.getController();
+                        controller.updateTable((Relation) finalBlob);
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Relation view");
+                        stage.setScene(new Scene(relationView));
+                        stage.show();
+                    } catch (IOException ignored) {
+                    }
+                });
+                dataValueView = openButton;
+            }
         }
         dataValueBox.getChildren().addAll(dataValue, dataValueView);
         dataView.getChildren().add(dataValueBox);

@@ -93,6 +93,7 @@ public class ZipperStep extends AbstractStepDefinition {
             }
         }
 
+        context.setOutput(result, "Success");
         Duration duration = Duration.between(startTime, Instant.now());
         return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.SUCCESS, startTime, duration, "Success");
     }
