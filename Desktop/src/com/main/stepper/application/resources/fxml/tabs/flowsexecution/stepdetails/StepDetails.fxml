@@ -52,6 +52,12 @@
             </HBox>
             <HBox fillHeight="false" spacing="10.0">
                <children>
+                  <Label text="Step summary:" />
+                  <Label fx:id="summaryLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
                   <Label text="Logs:" />
                </children>
             </HBox>

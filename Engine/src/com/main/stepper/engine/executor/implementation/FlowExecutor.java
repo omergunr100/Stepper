@@ -135,11 +135,9 @@ public class FlowExecutor implements IFlowExecutor {
         synchronized (flow) {
             iterList = new ArrayList<>(flow.formalOutputs());
         }
-        if(flag != FlowResult.FAILURE) {
-            for (IDataIO dataIO : iterList) {
-                if (dataIO != null) {
-                    thisFlowRunResult.addFlowOutput(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
-                }
+        for (IDataIO dataIO : iterList) {
+            if (dataIO != null) {
+                thisFlowRunResult.addFlowOutput(dataIO, context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
             }
         }
         thisFlowRunResult.setResult(flag);

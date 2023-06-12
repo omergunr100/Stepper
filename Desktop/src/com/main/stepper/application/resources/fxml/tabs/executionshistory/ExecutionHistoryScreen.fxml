@@ -35,12 +35,12 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <ScrollPane minHeight="400.0" minWidth="500.0" GridPane.rowIndex="2">
+      <ScrollPane maxHeight="400.0" minHeight="400.0" minWidth="500.0" GridPane.rowIndex="2">
          <content>
             <fx:include fx:id="stepDetails" source="../flowsexecution/executionelements/FlowExecutionElements.fxml" />
          </content>
       </ScrollPane>
-      <ScrollPane minHeight="400.0" minWidth="500.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+      <ScrollPane maxHeight="400.0" minHeight="400.0" minWidth="500.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <content>
             <fx:include fx:id="flowExecutionSteps" source="../flowsexecution/stepdetails/StepDetails.fxml" />
          </content>

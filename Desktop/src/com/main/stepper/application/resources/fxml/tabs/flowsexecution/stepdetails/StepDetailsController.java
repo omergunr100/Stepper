@@ -43,6 +43,7 @@ public class StepDetailsController {
     @FXML private Label startTimeLabel;
     @FXML private Label endTimeLabel;
     @FXML private Label durationLabel;
+    @FXML private Label summaryLabel;
     @FXML private VBox logBox;
     @FXML private VBox dataBox;
 
@@ -73,6 +74,7 @@ public class StepDetailsController {
         startTimeLabel.setText(dateTimeFormatter.format(currentStepResult.startTime()));
         endTimeLabel.setText(dateTimeFormatter.format(currentStepResult.startTime().plusMillis(currentStepResult.duration().toMillis())));
         durationLabel.setText(String.valueOf(currentStepResult.duration().toMillis()));
+        summaryLabel.setText(currentStepResult.summary());
         // update inputs and outputs
         IStepDefinition step = currentStepResult.stepDefinition();
         IStepExecutionContext context = currentStepResult.context();
@@ -80,14 +82,14 @@ public class StepDetailsController {
         List<IDataIO> outputs = step.getOutputs();
 
         for (int i = 0; i < inputs.size(); i++) {
-            dataBox.getChildren().add(makeDataView(inputs.get(i)));
+            dataBox.getChildren().add(makeDataView(inputs.get(i), currentStepResult.context()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
             dataBox.getChildren().add(new Separator());
         }
         for (int i = 0; i < outputs.size(); i++) {
-            dataBox.getChildren().add(makeDataView(outputs.get(i)));
+            dataBox.getChildren().add(makeDataView(outputs.get(i), currentStepResult.context()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
@@ -111,10 +113,10 @@ public class StepDetailsController {
         root.setVisible(false);
     }
 
-    private Parent makeDataView(IDataIO data) {
+    private static Parent makeDataView(IDataIO data, IStepExecutionContext context) {
         if (data == null)
             return null;
-        IDataIO aliasedDataIO = currentStepResult.context().getAliasedDataIO(data);
+        IDataIO aliasedDataIO = context.getAliasedDataIO(data);
         VBox dataView = new VBox();
         dataView.setSpacing(10);
         // dataName
@@ -143,7 +145,7 @@ public class StepDetailsController {
         Label dataRequirement = new Label("Data requirement: ");
         TextField dataRequirementValue = new TextField();
         dataRequirementValue.setEditable(false);
-        dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output - non applicable" : data.getNecessity().toString());
+        dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output" : data.getNecessity().toString());
         dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementValue);
         dataView.getChildren().add(dataRequirementBox);
 
@@ -153,7 +155,7 @@ public class StepDetailsController {
         Label dataValue = new Label("Data value: ");
         dataView.getChildren().add(dataValue);
         Parent dataValueView = null;
-        Object blob = currentStepResult.context().getInput(data, data.getDataDefinition().getType());
+        Object blob = context.getInput(data, data.getDataDefinition().getType());
         if (
                 String.class.isAssignableFrom(data.getDataDefinition().getType())
                 || Double.class.isAssignableFrom(data.getDataDefinition().getType())
@@ -167,10 +169,9 @@ public class StepDetailsController {
             TextField dataValueField = new TextField();
             dataValueField.setEditable(false);
             if (blob == null){
-                blob = "Data not available";
+                blob = "Not created due to failure in flow";
             }
-            else
-                dataValueField.setText(blob.toString());
+            dataValueField.setText(blob.toString());
             dataValueView = dataValueField;
         }
         else if (
@@ -179,7 +180,7 @@ public class StepDetailsController {
             if (blob == null) {
                 TextField dataValueField = new TextField();
                 dataValueField.setEditable(false);
-                dataValueField.setText("Data not available");
+                dataValueField.setText("Not created due to failure in flow");
                 dataValueView = dataValueField;
             }
             else {
@@ -201,7 +202,7 @@ public class StepDetailsController {
             if (blob == null) {
                 TextField dataValueField = new TextField();
                 dataValueField.setEditable(false);
-                dataValueField.setText("Data not available");
+                dataValueField.setText("Not created due to failure in flow");
                 dataValueView = dataValueField;
             }
             else {

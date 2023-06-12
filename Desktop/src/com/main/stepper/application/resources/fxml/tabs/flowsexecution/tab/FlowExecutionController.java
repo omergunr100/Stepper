@@ -117,9 +117,8 @@ public class FlowExecutionController {
                             for(FlowInputController flowInputController : flowInputControllers) {
                                 try {
                                     if(flowInputController.getValue().isEmpty()){
-                                        executionUserInputs.readUserInput(flowInputController.input(), null);
+                                        executionUserInputs.readUserInput(flowInputController.input(), "");
                                         Platform.runLater(() -> flowInputController.setValid(false));
-                                        throw new BadTypeException("Empty input");
                                     }
 
                                     executionUserInputs.readUserInput(flowInputController.input(), flowInputController.getValue());

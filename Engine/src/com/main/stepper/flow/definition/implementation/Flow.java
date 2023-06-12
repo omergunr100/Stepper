@@ -288,6 +288,15 @@ public class Flow implements IFlowDefinition {
     }
 
     @Override
+    public IStepUsageDeclaration reverseMapDataIO(IDataIO dataIO) {
+        for (Map.Entry<IStepUsageDeclaration, Map<IDataIO, IDataIO>> entry : mappings.entrySet()) {
+            if(entry.getValue().containsValue(dataIO))
+                return entry.getKey();
+        }
+        return null;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

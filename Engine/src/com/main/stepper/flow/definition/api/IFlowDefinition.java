@@ -36,4 +36,5 @@ public interface IFlowDefinition extends Serializable {
     Map<String, String> initialValuesRaw();
     void addInitialValue(IDataIO input, Object value);
     Map<IDataIO, Object> initialValues();
+    IStepUsageDeclaration reverseMapDataIO(IDataIO dataIO);
 }

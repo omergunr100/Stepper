@@ -46,6 +46,8 @@ public class FlowExecutionContext implements IFlowExecutionContext {
 
     @Override
     public <T> T getVariable(IDataIO name, Class<T> type) {
+        if (variables.get(name) == null)
+            return null;
         return type.cast(variables.get(name));
     }
 
