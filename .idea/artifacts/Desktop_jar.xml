@@ -1,8 +1,8 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="UI:jar">
+  <artifact type="jar" name="Desktop:jar">
     <output-path>$PROJECT_DIR$/submition</output-path>
-    <root id="archive" name="UI.jar">
-      <element id="module-output" name="UI" />
+    <root id="archive" name="Desktop.jar">
+      <element id="module-output" name="Desktop" />
       <element id="module-output" name="Engine" />
     </root>
   </artifact>

@@ -26,7 +26,7 @@ public class DesktopApplication extends Application {
         primaryStage.setTitle("Stepper");
 
         FXMLLoader loader = new FXMLLoader();
-        URL resource = getClass().getResource("../resources/fxml/root/Root.fxml");
+        URL resource = RootController.class.getResource("Root.fxml");
         loader.setLocation(resource);
         Parent root = loader.load();
         this.rootController = loader.getController();
@@ -34,6 +34,7 @@ public class DesktopApplication extends Application {
 
         Scene scene = new Scene(root, 840, 520);
         scene.getStylesheets().add(CSSRegistry.class.getResource(CSSRegistry.DEFAULT.getFile().getPath()).toExternalForm());
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
         primaryStage.setScene(scene);
         primaryStage.show();
     }
