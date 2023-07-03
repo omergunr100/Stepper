@@ -15,10 +15,20 @@ import java.util.List;
 
 @WebServlet(name="RolesServlet", urlPatterns = "/roles")
 public class RolesServlet extends HttpServlet {
+    private boolean privilegeCheck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (req.getHeader("isAdmin") == null || !req.getHeader("isAdmin").equals("true")) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
-        gson.toJson(RoleManager.getRoles(), new TypeToken<List<Role>>(){}.getType(), resp.getWriter());
+        if (privilegeCheck(req, resp)) {
+            Gson gson = new Gson();
+            gson.toJson(RoleManager.getRoles(), new TypeToken<List<Role>>(){}.getType(), resp.getWriter());
+        }
     }
 
     /**
@@ -27,14 +37,15 @@ public class RolesServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
-        Role newRole = gson.fromJson(req.getReader(), Role.class);
-        boolean result = RoleManager.addRole(newRole);
-        if (result) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-        }
-        else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (privilegeCheck(req, resp)) {
+            Gson gson = new Gson();
+            Role newRole = gson.fromJson(req.getReader(), Role.class);
+            boolean result = RoleManager.addRole(newRole);
+            if (result) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
     }
 
@@ -43,13 +54,14 @@ public class RolesServlet extends HttpServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getReader().readLine();
-        boolean result = RoleManager.removeRole(name);
-        if (result) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-        }
-        else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (privilegeCheck(req, resp)) {
+            String name = req.getReader().readLine();
+            boolean result = RoleManager.removeRole(name);
+            if (result) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
     }
 }
