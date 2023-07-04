@@ -1,4 +1,4 @@
-package com.main.stepper.server.servlets.roles;
+package com.main.stepper.server.servlets.roles.manager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

@@ -19,6 +19,10 @@ public class RoleManager {
         return instance.pGetRoles();
     }
 
+    public static Optional<Role> getRole(String name) {
+        return instance.pGetRole(name);
+    }
+
     public static boolean addRole(Role role) {
         return instance.pAddRole(role);
     }
@@ -32,9 +36,11 @@ public class RoleManager {
     public static List<String> uniqueUnionGroup(List<Role> roles) {
         List<String> unionGroup = new ArrayList<>();
         for (Role role : roles) {
-            for (String flow : role.allowedFlows()) {
-                if (!unionGroup.contains(flow)) {
-                    unionGroup.add(flow);
+            synchronized (role.allowedFlows()) {
+                for (String flow : role.allowedFlows()) {
+                    if (!unionGroup.contains(flow)) {
+                        unionGroup.add(flow);
+                    }
                 }
             }
         }
@@ -50,6 +56,12 @@ public class RoleManager {
     private List<Role> pGetRoles() {
         synchronized (roleList) {
             return new ArrayList<>(roleList);
+        }
+    }
+
+    private Optional<Role> pGetRole(String name) {
+        synchronized (roleList) {
+            return roleList.stream().filter(r -> r.name().equals(name)).findFirst();
         }
     }
 

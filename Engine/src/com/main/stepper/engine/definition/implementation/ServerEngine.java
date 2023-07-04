@@ -19,6 +19,11 @@ public class ServerEngine implements IEngine {
     }
 
     @Override
+    public List<String> readSystemFromXMLString(String xmlFileContent) throws XMLException {
+        return null;
+    }
+
+    @Override
     public List<String> readSystemFromXML(String path) throws XMLException {
         return null;
     }

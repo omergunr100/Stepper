@@ -47,6 +47,11 @@ public final class ConsoleEngine implements IEngine {
     }
 
     @Override
+    public List<String> readSystemFromXMLString(String xmlFileContent) throws XMLException {
+        return null;
+    }
+
+    @Override
     public List<String> readSystemFromXML(String path) throws XMLException {
         // Read xml file
         IValidator pipelineValidator = new Validator(path);

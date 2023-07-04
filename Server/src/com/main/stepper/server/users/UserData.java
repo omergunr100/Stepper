@@ -31,11 +31,35 @@ public class UserData {
     }
 
     public List<Role> roles() {
-        return roles;
+        synchronized (roles) {
+            return new ArrayList<>(roles);
+        }
+    }
+
+    public boolean addRole(Role role) {
+        synchronized (roles) {
+            if (roles.contains(role)) {
+                return false;
+            }
+            roles.add(role);
+            return true;
+        }
+    }
+
+    public boolean removeRole(Role role) {
+        synchronized (roles) {
+            if (!roles.contains(role)) {
+                return false;
+            }
+            roles.remove(role);
+            return true;
+        }
     }
 
     public List<UUID> flowExecutionHistory() {
-        return flowExecutionHistory;
+        synchronized (flowExecutionHistory) {
+            return new ArrayList<>(flowExecutionHistory);
+        }
     }
 
     public void addFlowToHistory(UUID flowId) {
@@ -45,7 +69,9 @@ public class UserData {
     }
 
     public List<UUID> stepExecutionHistory() {
-        return stepExecutionHistory;
+        synchronized (stepExecutionHistory) {
+            return new ArrayList<>(stepExecutionHistory);
+        }
     }
 
     public void addStepToHistory(UUID stepId) {

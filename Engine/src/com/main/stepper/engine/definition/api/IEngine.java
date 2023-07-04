@@ -14,6 +14,14 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface IEngine extends Serializable {
+
+    /**
+     * @param xmlFileContent - xml file content
+     * @return - list of errors, if there were no errors, the list will be empty
+     * @throws XMLException
+     */
+    List<String> readSystemFromXMLString(String xmlFileContent) throws XMLException;
+
     /**
      * @param path - path to the xml file
      * @return - list of errors, if there were no errors, the list will be empty
