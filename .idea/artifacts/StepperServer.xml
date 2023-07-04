@@ -7,6 +7,7 @@
         <element id="directory" name="classes">
           <element id="module-output" name="Server" />
           <element id="module-output" name="Shared" />
+          <element id="module-output" name="Engine" />
         </element>
         <element id="directory" name="lib">
           <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8/gson-2.8.8.jar" />
