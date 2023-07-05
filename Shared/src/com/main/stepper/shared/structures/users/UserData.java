@@ -12,14 +12,12 @@ public class UserData {
     private boolean isManager;
     private final List<Role> roles;
     private final List<UUID> flowExecutionHistory;
-    private final List<UUID> stepExecutionHistory;
 
     public UserData(String name) {
         this.name = name;
         this.isManager = false;
         roles = new ArrayList<>();
         flowExecutionHistory = new ArrayList<>();
-        stepExecutionHistory = new ArrayList<>();
     }
 
     public String name() {
@@ -64,19 +62,7 @@ public class UserData {
 
     public void addFlowToHistory(UUID flowId) {
         synchronized (flowExecutionHistory) {
-            flowExecutionHistory.add(flowId);
-        }
-    }
-
-    public List<UUID> stepExecutionHistory() {
-        synchronized (stepExecutionHistory) {
-            return new ArrayList<>(stepExecutionHistory);
-        }
-    }
-
-    public void addStepToHistory(UUID stepId) {
-        synchronized (stepExecutionHistory) {
-            stepExecutionHistory.add(stepId);
+            flowExecutionHistory.add(0, flowId);
         }
     }
 

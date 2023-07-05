@@ -108,6 +108,7 @@ public class RunFlowServlet extends HttpServlet {
             else {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 gson.toJson(uuid, resp.getWriter());
+                user.get().addFlowToHistory(uuid);
             }
         }
         else {
