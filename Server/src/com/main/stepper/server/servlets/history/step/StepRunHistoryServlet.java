@@ -6,6 +6,7 @@ import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.FlowRunResult;
 import com.main.stepper.server.constants.ServletAttributes;
+import com.main.stepper.shared.structures.users.UserData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -53,8 +54,22 @@ public class StepRunHistoryServlet extends HttpServlet {
         // initialize return list
         List<IStepRunResult> results;
         if (cookie.isPresent()) {
+            // check if manager or not
+            List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
+            Optional<UserData> user = userDataList.stream().filter(u -> u.name().equals(cookie.get().getValue())).findFirst();
             resp.setStatus(HttpServletResponse.SC_OK);
-            results = getClient(uuids, cookie.get().getValue());
+            if (user.isPresent()) {
+                // check if manager -> if so treat as if admin on this servlet
+                if (user.get().isManager()) {
+                    results = getAdmin(uuids);
+                }
+                else {
+                    results = getClient(uuids, cookie.get().getValue());
+                }
+            }
+            else {
+                results = new ArrayList<>();
+            }
         }
         else {
             // check if admin
