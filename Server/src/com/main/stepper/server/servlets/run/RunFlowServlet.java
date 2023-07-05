@@ -22,6 +22,53 @@ import java.util.UUID;
 @WebServlet(name="RunFlowServlet", urlPatterns = "/run/flow")
 public class RunFlowServlet extends HttpServlet {
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // get user cookie
+        Cookie[] cookies = req.getCookies();
+        Optional<Cookie> name = Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
+        // get flow name parameter
+        String flowName = req.getParameter("flowName");
+        // check if flow name is null
+        if (flowName == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        // check if username cookie exists
+        if (!name.isPresent()) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        // check if user exists
+        List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
+        Optional<UserData> user = userDataList.stream().filter(u -> u.name().equals(name.get().getValue())).findFirst();
+        if (user.isPresent()) {
+            // check if user has permission to run flow
+            if (!user.get().isManager() && !RoleManager.uniqueUnionGroup(user.get().roles()).contains(flowName)) {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+            else {
+                // if the user has the permission give him the required inputs for this flow
+                resp.setStatus(HttpServletResponse.SC_OK);
+                IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
+                ExecutionUserInputs executionUserInputs = engine.getExecutionUserInputs(flowName);
+                // check if the call is valid
+                if (executionUserInputs == null) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+                // if it's ok send it to the user
+                resp.setStatus(HttpServletResponse.SC_OK);
+                Gson gson = new Gson();
+                gson.toJson(executionUserInputs, resp.getWriter());
+            }
+        }
+        else {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // get user cookie
         Cookie[] cookies = req.getCookies();
@@ -41,7 +88,7 @@ public class RunFlowServlet extends HttpServlet {
         if (name.isPresent()) {
             // get user data
             List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
-            Optional<UserData> user = userDataList.stream().filter(u -> u.name().equals(name)).findFirst();
+            Optional<UserData> user = userDataList.stream().filter(u -> u.name().equals(name.get().getValue())).findFirst();
             // check if user exists
             if (!user.isPresent()) {
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
