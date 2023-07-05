@@ -20,27 +20,8 @@ import java.time.Instant;
 import java.util.*;
 
 public class FlowExecutor implements IFlowExecutor {
-    public static IFlowRunResult lastFlowResultValue = null;
-    public static Property<IFlowRunResult> lastFlowResult = new SimpleObjectProperty<>();
-    public static Property<IStepRunResult> lastStepResult = new SimpleObjectProperty<>();
-    public static Property<IFlowRunResult> lastFinishedFlowResult = new SimpleObjectProperty<>();
 
     public FlowExecutor() {
-    }
-
-    @Override
-    public List<IDataIO> userMandatoryInputs() {
-        return null;
-    }
-
-    @Override
-    public List<IDataIO> userOptionalInputs() {
-        return null;
-    }
-
-    @Override
-    public Boolean isReadyToExecute() {
-        return null;
     }
 
     @Override
@@ -69,15 +50,9 @@ public class FlowExecutor implements IFlowExecutor {
                 userInputs.put(dataIO, value);
             }
         }
-        IFlowRunResult thisFlowRunResult = new FlowRunResult(null, context.getUniqueRunId(), flow.name(), startTime, userInputs, context, flow);
-        if (lastFlowResultValue != null) {
-            synchronized (lastFlowResultValue) {
-                lastFlowResultValue = thisFlowRunResult;
-            }
-        }
-        else
-            lastFlowResultValue = thisFlowRunResult;
-        Platform.runLater(() -> lastFlowResult.setValue(thisFlowRunResult));
+        // generate a run history object and store it in the context
+        IFlowRunResult thisFlowRunResult = new FlowRunResult(context.getUserCookie(), context.getUniqueRunId(), flow.name(), startTime, userInputs, context, flow);
+        context.addFlowRunResult(thisFlowRunResult);
 
         List<String> stepRunUUID = new ArrayList<>();
         List<IStepUsageDeclaration> stepIterList;
@@ -94,22 +69,13 @@ public class FlowExecutor implements IFlowExecutor {
             }
 
             IStepRunResult result = stepDef.execute(stepContext);
+            result.setUser(context.getUserCookie());
             result.setContext(stepContext);
             result.setStepDefinition(step.step());
             result.setAlias(step.name());
             thisFlowRunResult.addStepRunUUID(result.runId());
             thisFlowRunResult.addStepRunResult(result);
-            synchronized (lastFlowResultValue) {
-                if (thisFlowRunResult.equals(lastFlowResultValue)) {
-                    if (lastStepResult.getValue() == null)
-                        Platform.runLater(() -> lastStepResult.setValue(result));
-                    else {
-                        synchronized (lastStepResult.getValue()) {
-                            Platform.runLater(() -> lastStepResult.setValue(result));
-                        }
-                    }
-                }
-            }
+            // store the step run result in the context
             context.addStepRunResult(result);
 
             if(result.result().equals(StepResult.WARNING)){
@@ -143,13 +109,7 @@ public class FlowExecutor implements IFlowExecutor {
         thisFlowRunResult.setResult(flag);
         Duration duration = Duration.between(startTime, Instant.now());
         thisFlowRunResult.setDuration(duration);
-        context.addFlowRunResult(thisFlowRunResult);
-        synchronized (lastFlowResultValue) {
-            if (thisFlowRunResult.equals(lastFlowResultValue)) {
-                Platform.runLater(() -> lastFlowResult.setValue(lastFlowResultValue));
-                Platform.runLater(() -> lastFinishedFlowResult.setValue(lastFlowResultValue));
-            }
-        }
+        
         return thisFlowRunResult;
     }
 }

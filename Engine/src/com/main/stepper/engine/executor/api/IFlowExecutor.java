@@ -7,8 +7,5 @@ import com.main.stepper.io.api.IDataIO;
 import java.util.List;
 
 public interface IFlowExecutor {
-     List<IDataIO> userMandatoryInputs();
-     List<IDataIO> userOptionalInputs();
-     Boolean isReadyToExecute();
      IFlowRunResult executeFlow(IFlowDefinition flow, IFlowExecutionContext context);
 }

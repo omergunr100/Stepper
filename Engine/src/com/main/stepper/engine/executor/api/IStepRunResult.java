@@ -36,5 +36,7 @@ public interface IStepRunResult extends Serializable {
 
     IStepDefinition stepDefinition();
 
+    void setUser(String user);
+
     String user();
 }

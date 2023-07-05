@@ -30,6 +30,7 @@ public class StepRunResult implements IStepRunResult {
         this.summary = summary;
         this.context = null;
         this.stepDefinition = null;
+        user = null;
     }
 
     @Override
@@ -90,6 +91,11 @@ public class StepRunResult implements IStepRunResult {
     @Override
     public IStepDefinition stepDefinition() {
         return stepDefinition;
+    }
+
+    @Override
+    public void setUser(String user) {
+        this.user = user;
     }
 
     @Override
