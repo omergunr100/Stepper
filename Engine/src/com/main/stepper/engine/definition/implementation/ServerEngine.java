@@ -174,10 +174,10 @@ public class ServerEngine implements IEngine {
     }
 
     @Override
-    public UUID runFlow(String name, ExecutionUserInputs inputs) {
+    public UUID runFlow(String userCookie, String flowName, ExecutionUserInputs inputs) {
         if (!validated)
             return null;
-        Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(name)).findFirst();
+        Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst();
         if(!maybeFlow.isPresent()){
             return null;
         }
@@ -186,6 +186,7 @@ public class ServerEngine implements IEngine {
         IFlowExecutionContext context;
         synchronized (requested){
             context = new ServerFlowExecutionContext(
+                    userCookie,
                     requested.mappings(),
                     logger,
                     flowRunResults,

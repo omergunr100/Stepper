@@ -19,8 +19,10 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
     private final List<IStepRunResult> stepRunResults;
     private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
     private final Map<IDataIO, Object> variables;
+    private String userCookie;
 
-    public ServerFlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger, List<IFlowRunResult> flowRunResults, List<IStepRunResult> stepRunResults) {
+    public ServerFlowExecutionContext(String userCookie, Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger, List<IFlowRunResult> flowRunResults, List<IStepRunResult> stepRunResults) {
+        this.userCookie = userCookie;
         uniqueRunId = UUID.randomUUID();
         this.logger = logger.getSubLogger(uniqueRunId.toString());
         this.mappings = mappings;
@@ -80,5 +82,15 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
         synchronized (flowRunResults) {
             flowRunResults.add(flowRunResult);
         }
+    }
+
+    @Override
+    public String getUserCookie() {
+        return userCookie;
+    }
+
+    @Override
+    public void setUserCookie(String userCookie) {
+        this.userCookie = userCookie;
     }
 }

@@ -20,4 +20,6 @@ public interface IFlowExecutionContext {
     Map<IDataIO, Object> variables();
     void addStepRunResult(IStepRunResult stepRunResult);
     void addFlowRunResult(IFlowRunResult flowRunResult);
+    String getUserCookie();
+    void setUserCookie(String userCookie);
 }

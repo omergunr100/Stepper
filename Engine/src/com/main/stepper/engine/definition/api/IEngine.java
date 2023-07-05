@@ -53,10 +53,11 @@ public interface IEngine extends Serializable {
     ExecutionUserInputs getExecutionUserInputs(String flowName);
 
     /**
-     * @param name - name of the flow
+     * @param userCookie - user cookie
+     * @param flowName - name of the flow
      * @return - run result object
      */
-    UUID runFlow(String name, ExecutionUserInputs inputs);
+    UUID runFlow(String userCookie, String flowName, ExecutionUserInputs inputs);
 
     /**
      * @return - list of flow runs
