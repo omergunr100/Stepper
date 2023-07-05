@@ -18,6 +18,7 @@ public class StepRunResult implements IStepRunResult {
     private final String summary;
     private IStepExecutionContext context;
     private IStepDefinition stepDefinition;
+    private String user;
 
     public StepRunResult(String runId, String name, StepResult result, Instant startTime, Duration duration, String summary) {
         this.runId = runId;
@@ -88,5 +89,10 @@ public class StepRunResult implements IStepRunResult {
     @Override
     public IStepDefinition stepDefinition() {
         return stepDefinition;
+    }
+
+    @Override
+    public String user() {
+        return user;
     }
 }

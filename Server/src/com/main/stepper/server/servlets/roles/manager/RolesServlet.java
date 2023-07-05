@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.server.constants.ServletAttributes;
 import com.main.stepper.server.roles.RoleManager;
-import com.main.stepper.server.users.UserData;
+import com.main.stepper.shared.structures.users.UserData;
 import com.main.stepper.shared.structures.roles.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

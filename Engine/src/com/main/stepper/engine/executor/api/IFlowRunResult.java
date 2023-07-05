@@ -4,15 +4,17 @@ import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.users.UserData;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface IFlowRunResult extends Serializable {
-    String runId();
+    UUID runId();
 
     String name();
 
@@ -28,7 +30,7 @@ public interface IFlowRunResult extends Serializable {
 
     Map<IDataIO, Object> flowOutputs();
 
-    List<String> stepRunUUID();
+    List<UUID> stepRunUUID();
 
     List<IStepRunResult> stepRunResults();
 
@@ -38,7 +40,7 @@ public interface IFlowRunResult extends Serializable {
 
     void addFlowOutput(IDataIO dataIO, Object value);
 
-    void addStepRunUUID(String stepRunUUID);
+    void addStepRunUUID(UUID stepRunUUID);
 
     void addStepRunResult(IStepRunResult stepRunResult);
 
@@ -47,4 +49,6 @@ public interface IFlowRunResult extends Serializable {
     IFlowExecutionContext flowExecutionContext();
 
     IFlowDefinition flowDefinition();
+
+    String user();
 }

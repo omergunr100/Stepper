@@ -1,7 +1,7 @@
 package com.main.stepper.server.servlets.users.sign;
 
 import com.main.stepper.server.constants.ServletAttributes;
-import com.main.stepper.server.users.UserData;
+import com.main.stepper.shared.structures.users.UserData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;

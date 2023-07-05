@@ -2,12 +2,11 @@ package com.main.stepper.server.servlets.context;
 
 import com.main.stepper.engine.definition.implementation.ServerEngine;
 import com.main.stepper.server.constants.ServletAttributes;
-import com.main.stepper.server.users.UserData;
+import com.main.stepper.shared.structures.users.UserData;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

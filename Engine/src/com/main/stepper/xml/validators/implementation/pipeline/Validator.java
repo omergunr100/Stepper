@@ -13,38 +13,56 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public final class Validator implements IValidator {
-    private String path;
+    public enum Type {
+        FILE,
+        STRING
+    }
+    private String string;
+    private Type type;
     private STStepper stepper;
 
-    public Validator(String path){
-        this.path = path;
+    public Validator(String string, Type type){
+        this.string = string;
     }
 
     public List<String> validate(){
         List<String> errors = new ArrayList<>();
 
-        // Check for errors in the file
-        IValidator fileValidator = new ValidateFile(path);
-        errors.addAll(fileValidator.validate());
-        if(!errors.isEmpty())
-            return errors;
+        if (type.equals(Type.FILE)) {
+            // Check for errors in the file
+            IValidator fileValidator = new ValidateFile(string);
+            errors.addAll(fileValidator.validate());
+            if (!errors.isEmpty())
+                return errors;
 
-        // Get file from validator
-        File file = (File) fileValidator.getAdditional().get();
+            // Get file from validator
+            File file = (File) fileValidator.getAdditional().get();
 
-        // Unmarshal file
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            stepper = (STStepper) unmarshaller.unmarshal(file);
-        } catch (JAXBException e) {
-            errors.add("JAXB error, not supposed to ever happen: " + e.getMessage());
-            return errors;
+            // Unmarshal file
+            try {
+                JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                stepper = (STStepper) unmarshaller.unmarshal(file);
+            } catch (JAXBException e) {
+                errors.add("JAXB error, not supposed to ever happen: " + e.getMessage());
+                return errors;
+            }
+        } else if (type.equals(Type.STRING)) {
+            try {
+                JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                StringReader reader = new StringReader(string);
+                stepper = (STStepper) unmarshaller.unmarshal(reader);
+            } catch (JAXBException e) {
+                errors.add("JAXB error, not supposed to ever happen: " + e.getMessage());
+                return errors;
+            }
         }
 
         // Check for duplicate flow names

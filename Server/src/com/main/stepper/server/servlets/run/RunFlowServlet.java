@@ -13,6 +13,5 @@ public class RunFlowServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // todo: implement this
-        super.doPost(req, resp);
     }
 }

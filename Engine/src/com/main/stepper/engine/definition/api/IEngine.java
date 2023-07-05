@@ -2,6 +2,7 @@ package com.main.stepper.engine.definition.api;
 
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
@@ -12,6 +13,7 @@ import com.main.stepper.statistics.StatManager;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 public interface IEngine extends Serializable {
 
@@ -54,7 +56,7 @@ public interface IEngine extends Serializable {
      * @param name - name of the flow
      * @return - run result object
      */
-    IFlowRunResult runFlow(String name, ExecutionUserInputs inputs);
+    UUID runFlow(String name, ExecutionUserInputs inputs);
 
     /**
      * @return - list of flow runs
@@ -66,11 +68,6 @@ public interface IEngine extends Serializable {
      * @return - flow run result object
      */
     IFlowRunResult getFlowRunInfo(String runId);
-
-    /**
-     * @return - statistics manager used by the engine
-     */
-    StatManager getStatistics();
 
     /**
      * @param uuid - the step run uuid
@@ -88,4 +85,8 @@ public interface IEngine extends Serializable {
      * @return - true if successful, false if failed
      */
     Boolean readSystemFromFile(String path) throws NotAFileException, IOException;
+
+    List<IFlowRunResult> getFlowRunsFromList(List<UUID> uuids);
+
+    List<IStepRunResult> getStepRunsFromList(List<UUID> uuids);
 }

@@ -3,7 +3,7 @@ package com.main.stepper.server.servlets.roles.assignment;
 import com.google.gson.Gson;
 import com.main.stepper.server.constants.ServletAttributes;
 import com.main.stepper.server.roles.RoleManager;
-import com.main.stepper.server.users.UserData;
+import com.main.stepper.shared.structures.users.UserData;
 import com.main.stepper.shared.structures.roles.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -60,7 +60,7 @@ public class RolesAssignmentServlet extends HttpServlet {
         Gson gson = new Gson();
         String[] strings = gson.fromJson(req.getReader(), String[].class);
         // check if assignment is valid
-        if (strings.length != 2 || !(strings[0] instanceof String) || !(strings[1] instanceof String)) {
+        if (strings.length != 2 || strings[0] == null || strings[1] == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }

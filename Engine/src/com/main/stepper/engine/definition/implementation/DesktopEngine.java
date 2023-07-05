@@ -4,6 +4,7 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.engine.NotAFileException;
@@ -55,7 +56,7 @@ public class DesktopEngine implements IEngine {
     @Override
     public synchronized List<String> readSystemFromXML(String path) throws XMLException {
         // Read xml file
-        IValidator pipelineValidator = new Validator(path);
+        IValidator pipelineValidator = new Validator(path, Validator.Type.FILE);
         List<String> errors = pipelineValidator.validate();
         List<IFlowDefinition> fileFlows = new ArrayList<>();
 
@@ -166,7 +167,7 @@ public class DesktopEngine implements IEngine {
     }
 
     @Override
-    public IFlowRunResult runFlow(String name, ExecutionUserInputs inputs) {
+    public UUID runFlow(String name, ExecutionUserInputs inputs) {
         if (!validated)
             return null;
         Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(name)).findFirst();
@@ -194,7 +195,7 @@ public class DesktopEngine implements IEngine {
         }
         IFlowExecutor executor = new FlowExecutor();
         this.executor.execute(()->executor.executeFlow(requested, context));
-        return null;
+        return context.getUniqueRunId();
     }
 
     @Override
@@ -209,11 +210,6 @@ public class DesktopEngine implements IEngine {
         if (!validated)
             return null;
         return statistics.getFlowRunResult(runId);
-    }
-
-    @Override
-    public StatManager getStatistics() {
-        return statistics;
     }
 
     @Override
@@ -233,6 +229,16 @@ public class DesktopEngine implements IEngine {
     public Boolean readSystemFromFile(String path) throws NotAFileException, IOException {
         if (!validated)
             return null;
+        return null;
+    }
+
+    @Override
+    public List<IFlowRunResult> getFlowRunsFromList(List<UUID> uuids) {
+        return null;
+    }
+
+    @Override
+    public List<IStepRunResult> getStepRunsFromList(List<UUID> uuids) {
         return null;
     }
 }

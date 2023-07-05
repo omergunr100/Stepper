@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.*;
 
 public class FlowRunResult implements IFlowRunResult {
-    private final String runId;
+    private final UUID runId;
     private final String name;
     private FlowResult result;
     private final Instant startTime;
@@ -20,12 +20,14 @@ public class FlowRunResult implements IFlowRunResult {
     private final Map<IDataIO, Object> userInputs;
     private final Map<IDataIO, Object> internalOutputs;
     private final Map<IDataIO, Object> flowOutputs;
-    private final List<String> stepRunUUID;
+    private final List<UUID> stepRunUUID;
     private final List<IStepRunResult> stepRunResults;
     private IFlowExecutionContext flowExecutionContext;
     private IFlowDefinition flowDefinition;
+    private String user;
 
-    public FlowRunResult(String runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<String> stepRunUUID, List<IStepRunResult> stepRunResults, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
+    public FlowRunResult(String user, UUID runId, String name, FlowResult result, Instant startTime, Duration duration, Map<IDataIO, Object> userInputs, Map<IDataIO, Object> internalOutputs, Map<IDataIO, Object> flowOutputs, List<UUID> stepRunUUID, List<IStepRunResult> stepRunResults, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
+        this.user = user;
         this.runId = runId;
         this.name = name;
         this.result = result;
@@ -40,7 +42,8 @@ public class FlowRunResult implements IFlowRunResult {
         this.flowDefinition = flowDefinition;
     }
 
-    public FlowRunResult(String runId, String name, Instant startTime, Map<IDataIO, Object> userInputs, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
+    public FlowRunResult(String user, UUID runId, String name, Instant startTime, Map<IDataIO, Object> userInputs, IFlowExecutionContext context, IFlowDefinition flowDefinition) {
+        this.user = user;
         this.runId = runId;
         this.name = name;
         this.result = FlowResult.RUNNING;
@@ -57,7 +60,7 @@ public class FlowRunResult implements IFlowRunResult {
     }
 
     @Override
-    public String runId() {
+    public UUID runId() {
         return runId;
     }
 
@@ -99,7 +102,7 @@ public class FlowRunResult implements IFlowRunResult {
     }
 
     @Override
-    public List<String> stepRunUUID() {
+    public List<UUID> stepRunUUID() {
         return stepRunUUID;
     }
 
@@ -124,7 +127,7 @@ public class FlowRunResult implements IFlowRunResult {
     }
 
     @Override
-    public void addStepRunUUID(String stepRunUUID) {
+    public void addStepRunUUID(UUID stepRunUUID) {
         this.stepRunUUID.add(stepRunUUID);
     }
 
@@ -146,6 +149,11 @@ public class FlowRunResult implements IFlowRunResult {
     @Override
     public IFlowDefinition flowDefinition() {
         return flowDefinition;
+    }
+
+    @Override
+    public String user() {
+        return user;
     }
 
     @Override

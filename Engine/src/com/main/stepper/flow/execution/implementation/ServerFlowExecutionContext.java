@@ -12,26 +12,27 @@ import com.main.stepper.step.execution.implementation.StepExecutionContext;
 
 import java.util.*;
 
-public class FlowExecutionContext implements IFlowExecutionContext {
+public class ServerFlowExecutionContext implements IFlowExecutionContext {
     private final UUID uniqueRunId;
     private final ILogger logger;
-    private final StatManager statistics;
+    private final List<IFlowRunResult> flowRunResults;
+    private final List<IStepRunResult> stepRunResults;
     private final Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings;
     private final Map<IDataIO, Object> variables;
-    private final List<IStepRunResult> stepRunResults;
 
-    public FlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger, StatManager statistics) {
+    public ServerFlowExecutionContext(Map<IStepUsageDeclaration, Map<IDataIO, IDataIO>> mappings, ILogger logger, List<IFlowRunResult> flowRunResults, List<IStepRunResult> stepRunResults) {
         uniqueRunId = UUID.randomUUID();
         this.logger = logger.getSubLogger(uniqueRunId.toString());
         this.mappings = mappings;
         variables = new HashMap<>();
-        this.statistics = statistics;
+        this.flowRunResults = flowRunResults;
+        this.stepRunResults = stepRunResults;
         stepRunResults = new ArrayList<>();
     }
 
     @Override
-    public String getUniqueRunId() {
-        return uniqueRunId.toString();
+    public UUID getUniqueRunId() {
+        return uniqueRunId;
     }
 
     @Override
@@ -69,11 +70,15 @@ public class FlowExecutionContext implements IFlowExecutionContext {
 
     @Override
     public void addStepRunResult(IStepRunResult stepRunResult) {
-        statistics.addRunResult(stepRunResult);
+        synchronized (stepRunResults) {
+            stepRunResults.add(stepRunResult);
+        }
     }
 
     @Override
     public void addFlowRunResult(IFlowRunResult flowRunResult) {
-        statistics.addRunResult(flowRunResult);
+        synchronized (flowRunResults) {
+            flowRunResults.add(flowRunResult);
+        }
     }
 }

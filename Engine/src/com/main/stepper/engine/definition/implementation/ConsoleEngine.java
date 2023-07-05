@@ -4,6 +4,7 @@ import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowExecutor;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
+import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.engine.NotAFileException;
@@ -128,7 +129,7 @@ public final class ConsoleEngine implements IEngine {
     }
 
     @Override
-    public IFlowRunResult runFlow(String name, ExecutionUserInputs inputs) {
+    public UUID runFlow(String name, ExecutionUserInputs inputs) {
         Optional<IFlowDefinition> maybeFlow = flows.stream().filter(f->f.name().equals(name)).findFirst();
         if(!maybeFlow.isPresent())
             return null;
@@ -146,7 +147,7 @@ public final class ConsoleEngine implements IEngine {
 
         IFlowExecutor executor = new FlowExecutor();
         IFlowRunResult result = executor.executeFlow(flow, context);
-        return result;
+        return context.getUniqueRunId();
     }
 
     @Override
@@ -161,11 +162,6 @@ public final class ConsoleEngine implements IEngine {
                 .filter(result->result.runId().equals(runId))
                 .findFirst()
                 .orElse(null);
-    }
-
-    @Override
-    public StatManager getStatistics() {
-        return statistics;
     }
 
     @Override
@@ -226,5 +222,15 @@ public final class ConsoleEngine implements IEngine {
         }
 
         return true;
+    }
+
+    @Override
+    public List<IFlowRunResult> getFlowRunsFromList(List<UUID> uuids) {
+        return null;
+    }
+
+    @Override
+    public List<IStepRunResult> getStepRunsFromList(List<UUID> uuids) {
+        return null;
     }
 }

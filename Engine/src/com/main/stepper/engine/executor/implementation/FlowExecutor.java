@@ -69,7 +69,7 @@ public class FlowExecutor implements IFlowExecutor {
                 userInputs.put(dataIO, value);
             }
         }
-        IFlowRunResult thisFlowRunResult = new FlowRunResult(context.getUniqueRunId(), flow.name(), startTime, userInputs, context, flow);
+        IFlowRunResult thisFlowRunResult = new FlowRunResult(null, context.getUniqueRunId(), flow.name(), startTime, userInputs, context, flow);
         if (lastFlowResultValue != null) {
             synchronized (lastFlowResultValue) {
                 lastFlowResultValue = thisFlowRunResult;
@@ -110,7 +110,7 @@ public class FlowExecutor implements IFlowExecutor {
                     }
                 }
             }
-            context.statistics().addRunResult(result);
+            context.addStepRunResult(result);
 
             if(result.result().equals(StepResult.WARNING)){
                 flag = FlowResult.WARNING;
@@ -143,7 +143,7 @@ public class FlowExecutor implements IFlowExecutor {
         thisFlowRunResult.setResult(flag);
         Duration duration = Duration.between(startTime, Instant.now());
         thisFlowRunResult.setDuration(duration);
-        context.statistics().addRunResult(thisFlowRunResult);
+        context.addFlowRunResult(thisFlowRunResult);
         synchronized (lastFlowResultValue) {
             if (thisFlowRunResult.equals(lastFlowResultValue)) {
                 Platform.runLater(() -> lastFlowResult.setValue(lastFlowResultValue));

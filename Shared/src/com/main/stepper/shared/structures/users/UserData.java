@@ -1,4 +1,4 @@
-package com.main.stepper.server.users;
+package com.main.stepper.shared.structures.users;
 
 import com.main.stepper.shared.structures.roles.Role;
 
