@@ -7,9 +7,10 @@ import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
 public class StepRunResult implements IStepRunResult {
-    private final String runId;
+    private final UUID runId;
     private final String name;
     private String alias;
     private final StepResult result;
@@ -20,7 +21,7 @@ public class StepRunResult implements IStepRunResult {
     private IStepDefinition stepDefinition;
     private String user;
 
-    public StepRunResult(String runId, String name, StepResult result, Instant startTime, Duration duration, String summary) {
+    public StepRunResult(UUID runId, String name, StepResult result, Instant startTime, Duration duration, String summary) {
         this.runId = runId;
         this.name = name;
         this.result = result;
@@ -32,7 +33,7 @@ public class StepRunResult implements IStepRunResult {
     }
 
     @Override
-    public String runId() {
+    public UUID runId() {
         return runId;
     }
 

@@ -3,6 +3,8 @@
   <component name="CompilerConfiguration">
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/Engine/src/com/mta/java/stepper/deprecated" includeSubdirectories="true" />
+      <file url="file://$PROJECT_DIR$/Engine/src/com/main/stepper/engine/definition/implementation/ConsoleEngine.java" />
+      <file url="file://$PROJECT_DIR$/Engine/src/com/main/stepper/engine/definition/implementation/DesktopEngine.java" />
     </excludeFromCompile>
   </component>
 </project>

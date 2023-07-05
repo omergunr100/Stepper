@@ -24,8 +24,8 @@ public class StepExecutionContext implements IStepExecutionContext {
     }
 
     @Override
-    public String getUniqueRunId() {
-        return runId.toString();
+    public UUID getUniqueRunId() {
+        return runId;
     }
 
     @Override

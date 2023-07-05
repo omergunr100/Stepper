@@ -30,8 +30,8 @@ public class FlowExecutionContext implements IFlowExecutionContext {
     }
 
     @Override
-    public String getUniqueRunId() {
-        return uniqueRunId.toString();
+    public UUID getUniqueRunId() {
+        return uniqueRunId;
     }
 
     @Override
@@ -75,5 +75,15 @@ public class FlowExecutionContext implements IFlowExecutionContext {
     @Override
     public void addFlowRunResult(IFlowRunResult flowRunResult) {
         statistics.addRunResult(flowRunResult);
+    }
+
+    @Override
+    public String getUserCookie() {
+        return null;
+    }
+
+    @Override
+    public void setUserCookie(String userCookie) {
+
     }
 }
