@@ -11,10 +11,9 @@ import javafx.stage.Stage;
 
 public class RootController {
     private Stage primaryStage;
-    @FXML GridPane root;
     @FXML TabPane tabs;
-    @FXML Tab usersManagementTab;
-    @FXML Tab rolesManagementTab;
+    @FXML Tab flowsDefinitionTab;
+    @FXML Tab flowsExecutionTab;
     @FXML Tab executionsHistoryTab;
     @FXML Tab statisticsTab;
     @FXML LoadCSSController loadCSSController;
@@ -28,7 +27,7 @@ public class RootController {
         // set root controller
         loadCSSController.setRootController(this);
         // select initial window
-        tabs.getSelectionModel().select(usersManagementTab);
+        tabs.getSelectionModel().select(flowsDefinitionTab);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
