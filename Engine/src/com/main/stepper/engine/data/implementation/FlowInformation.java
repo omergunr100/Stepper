@@ -3,10 +3,12 @@ package com.main.stepper.engine.data.implementation;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.flow.FlowInfoDTO;
+import com.main.stepper.shared.structures.step.StepDTO;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FlowInformation implements IFlowInformation {
     private String name;
@@ -18,8 +20,9 @@ public class FlowInformation implements IFlowInformation {
     private List<IDataIO> internalOutputs;
     private final Map<IDataIO, IStepUsageDeclaration> dataToProducer;
     private final Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer;
+    private final List<String> continuations;
 
-    public FlowInformation(String name, String description, List<IDataIO> formalOutputs, Boolean isReadOnly, List<IStepUsageDeclaration> steps, List<IDataIO> openUserInputs, List<IDataIO> internalOutputs, Map<IDataIO, IStepUsageDeclaration> dataToProducer, Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer) {
+    public FlowInformation(String name, String description, List<IDataIO> formalOutputs, Boolean isReadOnly, List<IStepUsageDeclaration> steps, List<IDataIO> openUserInputs, List<IDataIO> internalOutputs, Map<IDataIO, IStepUsageDeclaration> dataToProducer, Map<IDataIO, List<IStepUsageDeclaration>> dataToConsumer, List<String> continuations) {
         this.name = name;
         this.description = description;
         this.formalOutputs = formalOutputs;
@@ -29,6 +32,7 @@ public class FlowInformation implements IFlowInformation {
         this.internalOutputs = internalOutputs;
         this.dataToProducer = dataToProducer;
         this.dataToConsumer = dataToConsumer;
+        this.continuations = continuations;
     }
 
     @Override
@@ -74,6 +78,33 @@ public class FlowInformation implements IFlowInformation {
     @Override
     public IStepUsageDeclaration producer(IDataIO dataIO) {
         return dataToProducer.get(dataIO);
+    }
+
+    @Override
+    public List<String> continuations() {
+        return continuations;
+    }
+
+    @Override
+    public FlowInfoDTO toDTO() {
+        HashMap<DataIODTO, List<StepDTO>> newDataToConsumer = new HashMap<>();
+        for (Map.Entry<IDataIO, List<IStepUsageDeclaration>> entry : dataToConsumer.entrySet())
+            newDataToConsumer.put(entry.getKey().toDTO(), entry.getValue().stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()));
+        HashMap<DataIODTO, StepDTO> newDataToProducer = new HashMap<>();
+        for (Map.Entry<IDataIO, IStepUsageDeclaration> entry : dataToProducer.entrySet())
+            newDataToProducer.put(entry.getKey().toDTO(), entry.getValue().toDTO());
+        return new FlowInfoDTO(
+                name,
+                description,
+                steps.stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()),
+                openUserInputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                continuations,
+                isReadOnly,
+                formalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                newDataToConsumer,
+                newDataToProducer,
+                internalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList())
+        );
     }
 
     @Override

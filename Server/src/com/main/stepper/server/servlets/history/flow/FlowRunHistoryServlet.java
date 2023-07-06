@@ -69,6 +69,6 @@ public class FlowRunHistoryServlet extends HttpServlet {
             }
         }
         Gson gson = new Gson();
-        gson.toJson(results, new TypeToken<List<FlowRunResult>>() {}.getType(), resp.getWriter());
+        gson.toJson(results, new TypeToken<ArrayList<FlowRunResult>>() {}.getType(), resp.getWriter());
     }
 }

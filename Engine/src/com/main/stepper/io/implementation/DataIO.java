@@ -1,8 +1,12 @@
 package com.main.stepper.io.implementation;
 
+import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.api.IDataDefinition;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+
+import java.util.Arrays;
 
 public class DataIO implements IDataIO {
     private final String name;
@@ -39,6 +43,17 @@ public class DataIO implements IDataIO {
     @Override
     public DataNecessity getNecessity() {
         return necessity;
+    }
+
+    @Override
+    public DataIODTO toDTO() {
+        return new DataIODTO(
+                name,
+                userString,
+                Arrays.stream(DDRegistry.values()).filter(dd -> dd.getType().equals(dataDefinition.getType())).findFirst().get(),
+                necessity,
+                null
+        );
     }
 
     @Override

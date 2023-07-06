@@ -1,12 +1,15 @@
 package com.main.stepper.client.application;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.data.implementation.FlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.shared.structures.flow.FlowInfoDTO;
+import com.main.stepper.shared.structures.gson.builder.GsonBuilderInterfaces;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.application.Platform;
@@ -39,7 +42,7 @@ public class UpdatePropertiesThread extends Thread{
         while (true) {
             try {
                 updateProperties();
-                sleep(500);
+                sleep(2000);
             } catch (InterruptedException ignored) {
             }
         }
@@ -147,9 +150,11 @@ public class UpdatePropertiesThread extends Thread{
                 flows.addAll(role.allowedFlows());
             }
         }
+        if (flows.isEmpty())
+            return;
 
         Gson gson = new Gson();
-        RequestBody body = RequestBody.create(gson.toJson(flows, new TypeToken<Set<String>>() {}.getType()), MediaType.parse("application/json"));
+        RequestBody body = RequestBody.create(gson.toJson(flows, new TypeToken<HashSet<String>>() {}.getType()), MediaType.parse("application/json"));
         Request request = new Request.Builder()
                 .url(URLManager.FLOW_INFORMATION)
                 .post(body)
@@ -165,8 +170,10 @@ public class UpdatePropertiesThread extends Thread{
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() == 200) {
-                        Gson gson = new Gson();
-                        List<IFlowInformation> informations = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowInformation>>(){}.getType());
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.enableComplexMapKeySerialization().create();
+                        String responseBody = response.body().string();
+                        final List<FlowInfoDTO> informations = gson.fromJson(responseBody, new TypeToken<ArrayList<FlowInfoDTO>>(){}.getType());
                         Platform.runLater(() -> {
                             synchronized (flowInformationList) {
                                 // if received an empty list exit
@@ -177,7 +184,7 @@ public class UpdatePropertiesThread extends Thread{
                                     flowInformationList.addAll(informations);
                                 else {
                                     // else add new information
-                                    List<IFlowInformation> newInfoList = informations.stream()
+                                    List<FlowInfoDTO> newInfoList = informations.stream()
                                             .filter(information -> flowInformationList.contains(information))
                                             .collect(Collectors.toList());
                                     flowInformationList.addAll(newInfoList);

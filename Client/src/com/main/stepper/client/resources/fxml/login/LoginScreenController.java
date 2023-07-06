@@ -68,7 +68,6 @@ public class LoginScreenController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
                     if (response.isSuccessful()) {
                         Gson gson = new Gson();
                         UserData userData = gson.fromJson(response.body().string(), UserData.class);
@@ -96,6 +95,7 @@ public class LoginScreenController {
                                 primaryStage.setScene(scene);
                                 primaryStage.show();
                             } catch (IOException ignored) {
+                                ignored.printStackTrace();
                             }
                         });
 

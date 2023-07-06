@@ -125,8 +125,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<String> getFlowNames() {
-        if (!validated)
-            return null;
         synchronized (flows) {
             return flows.stream().map(IFlowDefinition::name).collect(Collectors.toList());
         }
@@ -134,8 +132,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<IFlowDefinition> getFlows() {
-        if (!validated)
-            return null;
         synchronized (flows) {
             return new ArrayList<>(flows);
         }
@@ -143,8 +139,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public IFlowInformation getFlowInfo(String name) {
-        if (!validated)
-            return null;
         synchronized (flows) {
             Optional<IFlowDefinition> match = flows.stream().filter(f -> f.name().equals(name)).findFirst();
             if (match.isPresent())
@@ -156,8 +150,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public ExecutionUserInputs getExecutionUserInputs(String flowName) {
-        if (!validated)
-            return null;
         IFlowDefinition requested = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst().orElse(null);
         if(requested == null)
             return null;
@@ -175,8 +167,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public UUID runFlow(String userCookie, String flowName, ExecutionUserInputs inputs) {
-        if (!validated)
-            return null;
         Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst();
         if(!maybeFlow.isPresent()){
             return null;
@@ -209,8 +199,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<IFlowRunResult> getFlowRuns() {
-        if (!validated)
-            return null;
         synchronized (flowRunResults){
             return new ArrayList<>(flowRunResults);
         }
@@ -218,8 +206,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public IFlowRunResult getFlowRunInfo(String runId) {
-        if (!validated)
-            return null;
         synchronized (flowRunResults) {
             Optional<IFlowRunResult> match = flowRunResults.stream().filter(r -> r.runId().equals(runId)).findFirst();
             if (match.isPresent())
@@ -231,8 +217,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<Log> getLogs(String uuid) {
-        if (!validated)
-            return null;
         synchronized (logger) {
             return logger.getLog(uuid);
         }
@@ -240,8 +224,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<IFlowRunResult> getFlowRunsFromList(List<UUID> uuids) {
-        if (!validated)
-            return null;
         synchronized (flowRunResults) {
             return flowRunResults.stream().filter(r -> uuids.contains(r.runId())).collect(Collectors.toList());
         }
@@ -249,8 +231,6 @@ public class ServerEngine implements IEngine {
 
     @Override
     public List<IStepRunResult> getStepRunsFromList(List<UUID> uuids) {
-        if (!validated)
-            return null;
         synchronized (stepRunResults) {
             return stepRunResults.stream().filter(r -> uuids.contains(r.runId())).collect(Collectors.toList());
         }

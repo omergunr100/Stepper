@@ -83,6 +83,6 @@ public class StepRunHistoryServlet extends HttpServlet {
                 results = new ArrayList<>();
             }
         }
-        gson.toJson(results, new TypeToken<List<FlowRunResult>>() {}.getType(), resp.getWriter());
+        gson.toJson(results, new TypeToken<ArrayList<FlowRunResult>>() {}.getType(), resp.getWriter());
     }
 }

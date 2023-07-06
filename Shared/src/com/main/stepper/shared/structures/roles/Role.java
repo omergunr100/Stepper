@@ -1,5 +1,6 @@
 package com.main.stepper.shared.structures.roles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,15 @@ public class Role {
     }
 
     public List<String> allowedFlows() {
-        return allowedFlows;
+        synchronized (allowedFlows) {
+            return new ArrayList<>(allowedFlows);
+        }
+    }
+    public void setAllowedFlows(List<String> allowedFlows) {
+        synchronized (allowedFlows) {
+            this.allowedFlows.clear();
+            this.allowedFlows.addAll(allowedFlows);
+        }
     }
 
     public boolean update(Role role) {
@@ -37,7 +46,7 @@ public class Role {
             description = role.description;
         }
         if (role.allowedFlows != null) {
-            allowedFlows = role.allowedFlows;
+            setAllowedFlows(role.allowedFlows);
         }
         return true;
     }

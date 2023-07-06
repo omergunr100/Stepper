@@ -248,7 +248,8 @@ public class Flow implements IFlowDefinition {
                 openInputs,
                 allOutputs,
                 dataToProducer,
-                dataToConsumer);
+                dataToConsumer,
+                continuationNames);
     }
 
     @Override

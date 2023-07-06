@@ -52,7 +52,14 @@
             </VBox>
             <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
               <tabs>
-                <Tab fx:id="flowsDefinitionTab" text="Flows Definition" />
+                <Tab fx:id="flowsDefinitionTab" text="Flows Definition">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <fx:include fx:id="flowsDefinition" source="../tabs/flowsdefinition/FlowsDefinition.fxml" />
+                           </content>
+                        </ScrollPane>
+                     </content></Tab>
                 <Tab fx:id="flowsExecutionTab" text="Flows Execution" />
                   <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">
                      <content>

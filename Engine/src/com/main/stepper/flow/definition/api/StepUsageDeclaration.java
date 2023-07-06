@@ -1,6 +1,10 @@
 package com.main.stepper.flow.definition.api;
 
+import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.step.StepDTO;
 import com.main.stepper.step.definition.api.IStepDefinition;
+
+import java.util.stream.Collectors;
 
 public class StepUsageDeclaration implements IStepUsageDeclaration, Comparable<String>{
     private final String name;
@@ -35,6 +39,19 @@ public class StepUsageDeclaration implements IStepUsageDeclaration, Comparable<S
     @Override
     public Boolean skipIfFailed() {
         return skipIfFailed;
+    }
+
+    @Override
+    public StepDTO toDTO() {
+        return new StepDTO(
+                name,
+                step.getName(),
+                name,
+                step.isReadOnly(),
+                skipIfFailed,
+                step.getInputs().stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                step.getOutputs().stream().map(IDataIO::toDTO).collect(Collectors.toList())
+        );
     }
 
     @Override

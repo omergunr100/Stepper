@@ -1,17 +1,21 @@
 package com.main.stepper.server.roles;
 
+import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.shared.structures.roles.Role;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RoleManager {
     // This class is a singleton
-    private static RoleManager instance = new RoleManager();
     // default roles
-    public static final String ALL_FLOWS = "All Flows";
-    public static final String READ_ONLY_FLOWS = "Read Only Flows";
+    private static final String ALL_FLOWS = "All Flows";
+    private static final String READ_ONLY_FLOWS = "Read Only Flows";
+    private static final Role ALL_FLOWS_ROLE = new Role(ALL_FLOWS, "Can call any flow", new ArrayList<>());
+    private static final Role READ_ONLY_FLOWS_ROLE = new Role(READ_ONLY_FLOWS, "Can call only flows that are marked as read only", new ArrayList<>());
+    private static RoleManager instance = new RoleManager();
 
     private final List<Role> roleList;
 
@@ -47,10 +51,14 @@ public class RoleManager {
         return unionGroup;
     }
 
+    public static void updateDefaultRoles(List<IFlowDefinition> flows) {
+        instance.pUpdateDefaultRoles(flows);
+    }
+
     private RoleManager() {
         roleList = new ArrayList<>();
-        roleList.add(new Role(ALL_FLOWS, "Can call any flow", new ArrayList<>()));
-        roleList.add(new Role(READ_ONLY_FLOWS, "Can call only flows that are marked as read only", new ArrayList<>()));
+        roleList.add(ALL_FLOWS_ROLE);
+        roleList.add(READ_ONLY_FLOWS_ROLE);
     }
 
     private List<Role> pGetRoles() {
@@ -82,6 +90,21 @@ public class RoleManager {
                 }
             }
             return false;
+        }
+    }
+
+    private void pUpdateDefaultRoles(List<IFlowDefinition> flows) {
+        synchronized (roleList) {
+            synchronized (READ_ONLY_FLOWS_ROLE) {
+                READ_ONLY_FLOWS_ROLE.setAllowedFlows(
+                        flows.stream().filter(f -> f.isReadOnly()).map(IFlowDefinition::name).collect(Collectors.toList())
+                );
+            }
+            synchronized (ALL_FLOWS_ROLE) {
+                ALL_FLOWS_ROLE.setAllowedFlows(
+                        flows.stream().map(IFlowDefinition::name).collect(Collectors.toList())
+                );
+            }
         }
     }
 }
