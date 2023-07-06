@@ -35,6 +35,7 @@ public class UserDataServlet extends HttpServlet {
                     Optional<UserData> match = userDataList.stream().filter(userData -> userData.name().equals(name.get().getValue())).findFirst();
                     if (match.isPresent()) {
                         // found matching user
+                        resp.setStatus(HttpServletResponse.SC_OK);
                         Gson gson = new Gson();
                         gson.toJson(match.get(), resp.getWriter());
                     }
@@ -55,6 +56,7 @@ public class UserDataServlet extends HttpServlet {
         }
         else {
             // is admin
+            resp.setStatus(HttpServletResponse.SC_OK);
             List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
             Gson gson = new Gson();
             gson.toJson(userDataList, new TypeToken<List<UserData>>(){}.getType(), resp.getWriter());

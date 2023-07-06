@@ -29,6 +29,7 @@ public final class Validator implements IValidator {
 
     public Validator(String string, Type type){
         this.string = string;
+        this.type = type;
     }
 
     public List<String> validate(){

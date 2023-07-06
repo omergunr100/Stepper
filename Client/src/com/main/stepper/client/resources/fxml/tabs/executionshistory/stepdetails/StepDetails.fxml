@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.client.resources.fxml.tabs.executionshistory.stepdetails.StepDetailsController">
+  <columnConstraints>
+    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
+    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <VBox spacing="10.0">
+         <children>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step name:" />
+                  <Label fx:id="nameLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step result:" />
+                  <Label fx:id="resultLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step start-time:" />
+                  <Label fx:id="startTimeLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step end-time:" />
+                  <Label fx:id="endTimeLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step duration (ms):" />
+                  <Label fx:id="durationLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Step summary:" />
+                  <Label fx:id="summaryLabel" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label text="Logs:" />
+               </children>
+            </HBox>
+            <VBox fx:id="logBox" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+      <ScrollPane GridPane.columnIndex="1">
+         <content>
+            <VBox fx:id="dataBox">
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</GridPane>

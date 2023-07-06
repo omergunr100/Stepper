@@ -56,13 +56,17 @@ public class StatDTO {
         StatDTO dto = (StatDTO) o;
 
         if (type != dto.type) return false;
-        return Objects.equals(name, dto.name);
+        if (!Objects.equals(name, dto.name)) return false;
+        if (!Objects.equals(runCounter, dto.runCounter)) return false;
+        return Objects.equals(avgRunTime, dto.avgRunTime);
     }
 
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (runCounter != null ? runCounter.hashCode() : 0);
+        result = 31 * result + (avgRunTime != null ? avgRunTime.hashCode() : 0);
         return result;
     }
 }

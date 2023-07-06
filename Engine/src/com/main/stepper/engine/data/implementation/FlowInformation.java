@@ -6,6 +6,7 @@ import com.main.stepper.io.api.IDataIO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class FlowInformation implements IFlowInformation {
     private String name;
@@ -73,5 +74,20 @@ public class FlowInformation implements IFlowInformation {
     @Override
     public IStepUsageDeclaration producer(IDataIO dataIO) {
         return dataToProducer.get(dataIO);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FlowInformation that = (FlowInformation) o;
+
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

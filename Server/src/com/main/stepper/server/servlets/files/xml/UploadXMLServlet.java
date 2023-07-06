@@ -6,6 +6,7 @@ import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.server.constants.ServletAttributes;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,10 @@ import java.util.List;
 import java.util.Scanner;
 
 @WebServlet(name="UploadXMLServlet", urlPatterns = "/files/xml/")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10 MB
+        maxFileSize = 1024 * 1024 * 50, // 50 MB
+        maxRequestSize = 1024 * 1024 * 100 // 100 MB
+)
 public class UploadXMLServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,7 +36,7 @@ public class UploadXMLServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Collection<Part> parts = req.getParts();
-        if (parts.isEmpty()) {
+        if (parts == null || parts.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }

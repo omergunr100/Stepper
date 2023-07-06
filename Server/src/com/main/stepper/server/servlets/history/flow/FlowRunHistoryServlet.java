@@ -20,34 +20,19 @@ import java.util.stream.Collectors;
 
 @WebServlet(name="FlowRunHistoryServlet", urlPatterns = "/history/flow")
 public class FlowRunHistoryServlet extends HttpServlet {
-    private List<IFlowRunResult> getClient(List<UUID> uuids, String cookie) {
-        // check if empty
-        if (uuids.isEmpty()) {
-            return new ArrayList<>();
-        }
-        else {
-            IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
-            List<IFlowRunResult> flowRunsFromList = engine.getFlowRunsFromList(uuids);
-            return flowRunsFromList.stream().filter(f -> f.user().equals(cookie)).collect(Collectors.toList());
-        }
+    private List<IFlowRunResult> getClient(String cookie) {
+        IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
+        List<IFlowRunResult> flowRunsFromList = engine.getFlowRuns();
+        return flowRunsFromList.stream().filter(f -> f.user().equals(cookie)).collect(Collectors.toList());
     }
 
-    private List<IFlowRunResult> getAdmin(List<UUID> uuids) {
-        // check if empty
-        if (uuids.isEmpty()) {
-            return new ArrayList<>();
-        }
-        else {
-            IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
-            return engine.getFlowRunsFromList(uuids);
-        }
+    private List<IFlowRunResult> getAdmin() {
+        IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
+        return engine.getFlowRuns();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // get requested uuids
-        Gson gson = new Gson();
-        List<UUID> uuids = gson.fromJson(req.getReader(), new TypeToken<List<UUID>>() {}.getType());
         // get user cookie
         Cookie[] cookies = req.getCookies();
         Optional<Cookie> cookie = Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
@@ -61,10 +46,10 @@ public class FlowRunHistoryServlet extends HttpServlet {
             if (user.isPresent()) {
                 // check if manager -> if so treat as if admin on this servlet
                 if (user.get().isManager()) {
-                    results = getAdmin(uuids);
+                    results = getAdmin();
                 }
                 else {
-                    results = getClient(uuids, cookie.get().getValue());
+                    results = getClient(cookie.get().getValue());
                 }
             }
             else {
@@ -76,13 +61,14 @@ public class FlowRunHistoryServlet extends HttpServlet {
             String isAdmin = req.getHeader("isAdmin");
             if (isAdmin != null && isAdmin.equals("true")) {
                 resp.setStatus(HttpServletResponse.SC_OK);
-                results = getAdmin(uuids);
+                results = getAdmin();
             }
             else {
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 results = new ArrayList<>();
             }
         }
+        Gson gson = new Gson();
         gson.toJson(results, new TypeToken<List<FlowRunResult>>() {}.getType(), resp.getWriter());
     }
 }

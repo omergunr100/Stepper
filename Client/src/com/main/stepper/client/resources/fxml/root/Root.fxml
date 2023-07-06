@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.client.resources.fxml.root.RootController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0" vgrow="ALWAYS" />
+   </rowConstraints>
+   <children>
+      <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" vbarPolicy="NEVER" vmax="2.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <GridPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets bottom="25.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <content>
+            <SplitPane focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="800.0">
+              <items>
+                  <fx:include fx:id="loadCSS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../header/loadcss/LoadCSS.fxml" GridPane.columnIndex="2" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES" />
+              </items>
+               <opaqueInsets>
+                  <Insets bottom="10.0" />
+               </opaqueInsets>
+            </SplitPane>
+         </content>
+      </ScrollPane>
+      <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+        <tabs>
+          <Tab fx:id="usersManagementTab" closable="false" text="Users Management">
+               <content>
+                   <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                   </ScrollPane>
+               </content>
+            </Tab>
+          <Tab fx:id="rolesManagementTab" closable="false" text="Roles Management">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                  </ScrollPane>
+               </content></Tab>
+            <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">
+               <content>
+                  <fx:include fx:id="flowExecutionHistory" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/executionshistory/tab/ExecutionHistoryScreen.fxml" />
+               </content></Tab>
+            <Tab fx:id="statisticsTab" closable="false" text="Statistics">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <fx:include fx:id="statisticsScreen" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/statistics/tab/StatisticsScreen.fxml" />
+                     </content>
+                  </ScrollPane>
+               </content></Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</GridPane>

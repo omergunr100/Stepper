@@ -1,0 +1,101 @@
+.root {
+    -fx-background-color: black;
+}
+
+.button {
+    -fx-background-color: darkred;
+    -fx-text-fill: white;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, red, 10, 0, 0, 0);
+}
+
+.text-field {
+    -fx-background-color: darkgray;
+    -fx-text-fill: white;
+    -fx-font-size: 12pt;
+    -fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);
+}
+
+.label {
+    -fx-text-fill: red;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 0);
+}
+
+.checkbox {
+    -fx-background-color: black;
+    -fx-text-fill: red;
+    -fx-font-size: 12pt;
+    -fx-effect: dropshadow(gaussian, red, 5, 0, 0, 0);
+}
+
+.table-view {
+    -fx-background-color: darkgray;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: darkred;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header,
+.table-cell {
+    -fx-text-fill: white;
+    -fx-font-size: 12pt;
+    -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 0);
+}
+
+.tree-view {
+    -fx-background-color: black;
+}
+
+.tree-cell {
+    -fx-text-fill: red;
+    -fx-font-size: 12pt;
+    -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 0);
+}
+
+.dark-element {
+    -fx-background-color: darkgray;
+    -fx-text-fill: red;
+    -fx-font-size: 12pt;
+    -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 0);
+}
+
+.vbox,
+.hbox,
+.stack-pane,
+.border-pane,
+.flow-pane,
+.tile-pane,
+.grid-pane,
+.anchor-pane {
+    -fx-background-color: darkgray;
+    -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 0);
+}
+
+.tab-pane {
+    -fx-background-color: darkgray;
+    -fx-tab-min-height: 30px;
+}
+
+.tab-pane .tab-header-area {
+    -fx-background-color: darkred;
+}
+
+.tab-pane .tab-header-area .tab {
+    -fx-text-fill: white;
+    -fx-font-size: 12pt;
+}
+
+.tab-pane .tab-header-area .tab:selected {
+    -fx-background-color: darkred;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-content-area {
+    -fx-background-color: darkgray;
+}
