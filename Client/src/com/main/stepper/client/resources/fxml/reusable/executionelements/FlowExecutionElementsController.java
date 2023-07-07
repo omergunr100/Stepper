@@ -30,6 +30,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +54,8 @@ public class FlowExecutionElementsController {
     }
 
     public void setBindings(SimpleObjectProperty<FlowRunResultDTO> flowRunResultProperty, SimpleObjectProperty<StepRunResultDTO> stepRunResultProperty) {
-        selectedFlowResult.bind(flowRunResultProperty);
-        currentStepResult.bind(stepRunResultProperty);
+        selectedFlowResult = flowRunResultProperty;
+        currentStepResult = stepRunResultProperty;
         selectedFlowResult.addListener((observable, oldValue, newValue) -> onSelectedFlowChange());
     }
 
@@ -110,7 +112,12 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowDuration = loader.getController();
             currentFlowDuration.setPropertyName("Duration:");
-            Platform.runLater(() -> currentFlowDuration.setPropertyValue(selectedFlowResult.getValue().duration().toMillis() + " ms"));
+            Platform.runLater(() -> {
+                if (selectedFlowResult.getValue().duration() == null)
+                    currentFlowDuration.setPropertyValue(Duration.between(selectedFlowResult.getValue().startTime(), Instant.now()).toMillis() + " ms");
+                else
+                    currentFlowDuration.setPropertyValue(selectedFlowResult.getValue().duration().toMillis() + " ms");
+            });
             currentFlowDuration.removeButton();
             root.getChildren().add(loaded);
             // Spacing from step elements
@@ -203,7 +210,7 @@ public class FlowExecutionElementsController {
     }
 
     public void selectStep(StepRunResultDTO step) {
-        PropertiesManager.executionHistorySelectedStep.set(step);
+        currentStepResult.set(step);
     }
 
     private Parent makeDataView(DataIODTO data, Object blob) {

@@ -57,18 +57,18 @@
       </TitledPane>
       <SplitPane dividerPositions="0.5">
          <items>
-            <TitledPane collapsible="false" maxHeight="1000.0" text="Flow details">
+            <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="1000.0" text="Flow details">
                <content>
                   <fx:include fx:id="executionElements" source="../../../reusable/executionelements/FlowExecutionElements.fxml" />
                </content>
             </TitledPane>
             <SplitPane dividerPositions="0.5" maxHeight="700.0" orientation="VERTICAL">
               <items>
-                  <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" text="Execution details">
+                  <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" text="Execution details">
                      <content>
-                        <fx:include fx:id="stepDetails" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../../../reusable/stepdetails/StepDetails.fxml" />
+                        <fx:include fx:id="stepExecutionDetails" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../../../reusable/stepdetails/StepDetails.fxml" />
                      </content></TitledPane>
-                  <TitledPane collapsible="false" maxHeight="300.0" maxWidth="1.7976931348623157E308" text="Continuation data">
+                  <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="300.0" maxWidth="1.7976931348623157E308" text="Continuation data">
                      <content>
                         <fx:include fx:id="continuations" source="../continuations/FlowContinuations.fxml" />
                      </content></TitledPane>

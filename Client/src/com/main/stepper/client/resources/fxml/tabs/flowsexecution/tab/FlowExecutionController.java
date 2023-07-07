@@ -50,7 +50,7 @@ public class FlowExecutionController {
     @FXML CheckBox optionalBox;
     @FXML FlowContinuationsController continuationsController;
     @FXML FlowExecutionElementsController executionElementsController;
-    @FXML StepDetailsController stepDetailsController;
+    @FXML StepDetailsController stepExecutionDetailsController;
 
     public FlowExecutionController() {
     }
@@ -65,7 +65,7 @@ public class FlowExecutionController {
 
         // setup sub-controllers
         executionElementsController.setBindings(executionRunningFlow, executionSelectedStep);
-        stepDetailsController.setBinding(executionSelectedStep);
+        stepExecutionDetailsController.setBinding(executionSelectedStep);
     }
 
     public void reset() {
@@ -79,7 +79,7 @@ public class FlowExecutionController {
         flowInputControllers.clear();
         executionElementsController.reset();
         continuationsController.reset();
-        stepDetailsController.reset();
+        stepExecutionDetailsController.reset();
     }
 
     private void onCurrentFlowChange() {
@@ -107,7 +107,7 @@ public class FlowExecutionController {
 
         executionElementsController.reset();
         continuationsController.reset();
-        stepDetailsController.reset();
+        stepExecutionDetailsController.reset();
 
         mandatoryBox.setDisable(false);
         optionalBox.setDisable(false);
@@ -164,7 +164,7 @@ public class FlowExecutionController {
 
     @FXML private void startFlow() {
         continuationsController.reset();
-        stepDetailsController.reset();
+        stepExecutionDetailsController.reset();
         executionElementsController.reset();
 
         requestExecuteFlow();
@@ -204,10 +204,6 @@ public class FlowExecutionController {
                 }
             }
         }
-    }
-
-    public void selectStepForDetails(StepRunResultDTO stepResult) {
-        PropertiesManager.executionSelectedStep.set(stepResult);
     }
 
     private void requestExecutionUserInputs() {

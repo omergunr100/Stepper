@@ -2,6 +2,7 @@ package com.main.stepper.shared.structures.flow;
 
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.gson.FixerUtility;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 
 import java.time.Duration;
@@ -92,6 +93,13 @@ public class FlowRunResultDTO {
 
     public String user() {
         return user;
+    }
+
+    public FlowRunResultDTO fix() {
+        FixerUtility.fixMap(userInputs);
+        FixerUtility.fixMap(internalOutputs);
+        FixerUtility.fixMap(flowOutputs);
+        return this;
     }
 
     @Override

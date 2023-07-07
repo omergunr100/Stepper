@@ -78,20 +78,7 @@ public class RunFlowServlet extends HttpServlet {
         String flowName = req.getParameter("flowName");
         // get execution user inputs
         Gson gson = new Gson();
-        ExecutionUserInputsDTO executionUserInputs = gson.fromJson(req.getReader(), ExecutionUserInputsDTO.class);
-        // fix numbers because of json parsing as double
-        Map<DataIODTO, Object> userInputs = executionUserInputs.getUserInputs();
-        List<DataIODTO> keysToFix = new ArrayList<>();
-        List<DataIODTO> keys = userInputs.keySet().stream().collect(Collectors.toList());
-        for (int i = 0; i < keys.size(); i++) {
-            if (keys.get(i).type().equals(DDRegistry.NUMBER)) {
-                keysToFix.add(keys.get(i));
-            }
-        }
-        for (DataIODTO key : keysToFix) {
-            Double value = (Double) userInputs.get(key);
-            userInputs.put(key, value.intValue());
-        }
+        ExecutionUserInputsDTO executionUserInputs = gson.fromJson(req.getReader(), ExecutionUserInputsDTO.class).fix();
 
         if (flowName == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

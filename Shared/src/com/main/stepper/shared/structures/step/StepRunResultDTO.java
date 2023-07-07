@@ -70,6 +70,11 @@ public class StepRunResultDTO {
         return user;
     }
 
+    public StepRunResultDTO fix() {
+        context.fix();
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

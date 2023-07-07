@@ -118,7 +118,6 @@ public class StepDetailsController {
     }
 
     public void reset() {
-        currentStepResult = null;
         root.setVisible(false);
     }
 

@@ -4,6 +4,7 @@ import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.gson.FixerUtility;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
 
 import java.util.ArrayList;
@@ -58,5 +59,10 @@ public class ExecutionUserInputsDTO {
                 return false;
         }
         return true;
+    }
+
+    public ExecutionUserInputsDTO fix() {
+        FixerUtility.fixMap(userInputs);
+        return this;
     }
 }

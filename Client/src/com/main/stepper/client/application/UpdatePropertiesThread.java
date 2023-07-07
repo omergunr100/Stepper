@@ -3,7 +3,6 @@ package com.main.stepper.client.application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
@@ -66,7 +65,8 @@ public class UpdatePropertiesThread extends Thread{
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.code() == 200) {
                         Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-                        List<FlowRunResultDTO> flowRunResultList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
+                        List<FlowRunResultDTO> temp = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
+                        final List<FlowRunResultDTO> flowRunResultList = temp.stream().map(FlowRunResultDTO::fix).collect(Collectors.toList());
                         Platform.runLater(() -> {
                             synchronized (flowRunResults) {
                                 // if received an empty list exit
@@ -83,7 +83,7 @@ public class UpdatePropertiesThread extends Thread{
                                         i++;
                                     }
                                     // for the rest check for status change and if so update
-                                    for (; i < flowRunResultList.size(); i++) {
+                                    for (; i < flowRunResultList.size() && i < flowRunResults.size(); i++) {
                                         if (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
                                             flowRunResults.set(i, flowRunResultList.get(i));
                                         }
@@ -104,7 +104,7 @@ public class UpdatePropertiesThread extends Thread{
         List<StepRunResultDTO> stepRunResultList = new ArrayList<>();
         synchronized (stepRunResults) {
             for (FlowRunResultDTO result : flowRunResults) {
-                stepRunResultList.addAll(result.stepRunResults());
+                stepRunResultList.addAll(result.stepRunResults().stream().map(StepRunResultDTO::fix).collect(Collectors.toList()));
             }
         }
         if (stepRunResultList.isEmpty())

@@ -5,6 +5,7 @@ import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.gson.FixerUtility;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,11 @@ public class StepExecutionContextDTO {
             return null;
         }
         return type.cast(variables.get(alias));
+    }
+
+    public StepExecutionContextDTO fix() {
+        FixerUtility.fixMap(variables);
+        return this;
     }
 
 }

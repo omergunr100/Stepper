@@ -23,11 +23,7 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // initialize the user data list
-        // todo: remove debug user
-        List<UserData> userDataList = Arrays.stream(new UserData[]{
-                new UserData("test")
-        }).collect(Collectors.toList());
-        sce.getServletContext().setAttribute(ServletAttributes.USER_DATA_LIST, userDataList);
+        sce.getServletContext().setAttribute(ServletAttributes.USER_DATA_LIST, new ArrayList<UserData>());
         // initialize the engine
         sce.getServletContext().setAttribute(ServletAttributes.ENGINE, new ServerEngine());
     }
