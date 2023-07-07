@@ -1,9 +1,11 @@
 package com.main.stepper.step.definition.api;
 
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.step.StepDefinitionDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractStepDefinition implements IStepDefinition{
     private final String name;
@@ -48,6 +50,16 @@ public abstract class AbstractStepDefinition implements IStepDefinition{
         synchronized (outputs) {
             return new ArrayList<>(outputs);
         }
+    }
+
+    @Override
+    public StepDefinitionDTO toDTO() {
+        return new StepDefinitionDTO(
+                name,
+                readOnly,
+                inputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                outputs.stream().map(IDataIO::toDTO).collect(Collectors.toList())
+        );
     }
 
     @Override

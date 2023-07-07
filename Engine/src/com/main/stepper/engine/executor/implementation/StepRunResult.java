@@ -1,6 +1,7 @@
 package com.main.stepper.engine.executor.implementation;
 
 import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
@@ -101,5 +102,20 @@ public class StepRunResult implements IStepRunResult {
     @Override
     public String user() {
         return user;
+    }
+
+    @Override
+    public StepRunResultDTO toDTO() {
+        return new StepRunResultDTO(
+                runId,
+                alias,
+                stepDefinition.toDTO(),
+                result,
+                startTime,
+                duration,
+                summary,
+                context.toDTO(),
+                user
+        );
     }
 }

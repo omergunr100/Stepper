@@ -5,6 +5,7 @@ import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.shared.structures.flow.FlowExecutionContextDTO;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.util.Map;
@@ -22,4 +23,5 @@ public interface IFlowExecutionContext {
     void addFlowRunResult(IFlowRunResult flowRunResult);
     String getUserCookie();
     void setUserCookie(String userCookie);
+    FlowExecutionContextDTO toDTO();
 }

@@ -5,7 +5,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
-import com.main.stepper.shared.structures.step.StepDTO;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,10 +87,10 @@ public class FlowInformation implements IFlowInformation {
 
     @Override
     public FlowInfoDTO toDTO() {
-        HashMap<DataIODTO, List<StepDTO>> newDataToConsumer = new HashMap<>();
+        HashMap<DataIODTO, List<StepUsageDTO>> newDataToConsumer = new HashMap<>();
         for (Map.Entry<IDataIO, List<IStepUsageDeclaration>> entry : dataToConsumer.entrySet())
             newDataToConsumer.put(entry.getKey().toDTO(), entry.getValue().stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()));
-        HashMap<DataIODTO, StepDTO> newDataToProducer = new HashMap<>();
+        HashMap<DataIODTO, StepUsageDTO> newDataToProducer = new HashMap<>();
         for (Map.Entry<IDataIO, IStepUsageDeclaration> entry : dataToProducer.entrySet())
             newDataToProducer.put(entry.getKey().toDTO(), entry.getValue().toDTO());
         return new FlowInfoDTO(

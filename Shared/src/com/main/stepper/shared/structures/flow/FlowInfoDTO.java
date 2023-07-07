@@ -1,26 +1,23 @@
 package com.main.stepper.shared.structures.flow;
 
 import com.main.stepper.shared.structures.dataio.DataIODTO;
-import com.main.stepper.shared.structures.step.StepDTO;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FlowInfoDTO {
     private String name;
     private String description;
-    private ArrayList<StepDTO> steps;
+    private ArrayList<StepUsageDTO> steps;
     private ArrayList<DataIODTO> openUserInputs;
     private ArrayList<String> continuations;
     private Boolean isReadOnly;
     private ArrayList<DataIODTO> formalOutputs;
-    private HashMap<DataIODTO, ArrayList<StepDTO>> dataToConsumer;
-    private HashMap<DataIODTO, StepDTO> dataToProducer;
+    private HashMap<DataIODTO, ArrayList<StepUsageDTO>> dataToConsumer;
+    private HashMap<DataIODTO, StepUsageDTO> dataToProducer;
     private ArrayList<DataIODTO> internalOutputs;
 
-    public FlowInfoDTO(String name, String description, List<StepDTO> steps, List<DataIODTO> openUserInputs, List<String> continuations, Boolean isReadOnly, List<DataIODTO> formalOutputs, Map<DataIODTO, List<StepDTO>> dataToConsumer, Map<DataIODTO, StepDTO> dataToProducer, List<DataIODTO> internalOutputs) {
+    public FlowInfoDTO(String name, String description, List<StepUsageDTO> steps, List<DataIODTO> openUserInputs, List<String> continuations, Boolean isReadOnly, List<DataIODTO> formalOutputs, Map<DataIODTO, List<StepUsageDTO>> dataToConsumer, Map<DataIODTO, StepUsageDTO> dataToProducer, List<DataIODTO> internalOutputs) {
         this.name = name;
         this.description = description;
         this.steps = new ArrayList<>(steps);
@@ -44,7 +41,7 @@ public class FlowInfoDTO {
         return description;
     }
 
-    public ArrayList<StepDTO> steps() {
+    public ArrayList<StepUsageDTO> steps() {
         return steps;
     }
 
@@ -64,15 +61,30 @@ public class FlowInfoDTO {
         return formalOutputs;
     }
 
-    public ArrayList<StepDTO> linkedSteps(DataIODTO dataIODTO) {
+    public ArrayList<StepUsageDTO> linkedSteps(DataIODTO dataIODTO) {
         return dataToConsumer.get(dataIODTO);
     }
 
-    public StepDTO producerStep(DataIODTO dataIODTO) {
+    public StepUsageDTO producerStep(DataIODTO dataIODTO) {
         return dataToProducer.get(dataIODTO);
     }
 
     public ArrayList<DataIODTO> internalOutputs() {
         return internalOutputs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FlowInfoDTO that = (FlowInfoDTO) o;
+
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

@@ -3,11 +3,13 @@ package com.main.stepper.step.execution.implementation;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
+import com.main.stepper.shared.structures.step.StepExecutionContextDTO;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class StepExecutionContext implements IStepExecutionContext {
     private UUID runId;
@@ -66,5 +68,15 @@ public class StepExecutionContext implements IStepExecutionContext {
     @Override
     public IDataIO getAliasedDataIO(IDataIO dataIO) {
         return mapping.get(dataIO);
+    }
+
+    @Override
+    public StepExecutionContextDTO toDTO() {
+        return new StepExecutionContextDTO(
+                runId,
+                mapping.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue().toDTO())),
+                variables.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), Map.Entry::getValue)),
+                logger
+        );
     }
 }

@@ -1,19 +1,19 @@
 package com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab;
 
-import com.main.stepper.application.resources.fxml.reusable.flowdetails.FlowTreeViewController;
-import com.main.stepper.application.resources.fxml.reusable.flowinput.FlowInputController;
-import com.main.stepper.application.resources.fxml.root.RootController;
-import com.main.stepper.application.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
-import com.main.stepper.application.resources.fxml.tabs.flowsexecution.executionelements.FlowExecutionElementsController;
-import com.main.stepper.application.resources.fxml.tabs.flowsexecution.stepdetails.StepDetailsController;
+import com.main.stepper.client.resources.data.PropertiesManager;
+import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
+import com.main.stepper.client.resources.fxml.reusable.flowinput.FlowInputController;
+import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
+import com.main.stepper.client.resources.fxml.root.RootController;
+import com.main.stepper.client.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
-import com.main.stepper.engine.executor.implementation.FlowExecutor;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -23,7 +23,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -31,10 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.main.stepper.client.resources.data.PropertiesManager.currentFlowExecutionUserInputs;
+
 public class FlowExecutionController {
-    private RootController rootController;
-    private IFlowDefinition currentFlow = null;
-    private volatile ExecutionUserInputs executionUserInputs = null;
     private Thread validateInputsThread = null;
     private List<FlowInputController> flowInputControllers;
     private List<Parent> flowInputComponents = new ArrayList<>();
@@ -54,24 +52,14 @@ public class FlowExecutionController {
         startButton.setOnAction(event -> startFlow());
         flowInputControllers = new ArrayList<>();
         flowInputComponents = new ArrayList<>();
-
-        continuationsController.setParent(this);
-        executionElementsController.setFlowExecutionController(this);
-        executionElementsController.autoUpdate();
-    }
-
-    public void setRootController(RootController rootController) {
-        this.rootController = rootController;
     }
 
     public void reset() {
         startButton.setDisable(true);
         optionalBox.setDisable(true);
         mandatoryBox.setDisable(true);
-        currentFlow = null;
         if (validateInputsThread != null)
             validateInputsThread.interrupt();
-        executionUserInputs = null;
         inputsFlowPane.getChildren().clear();
 
         flowInputControllers.clear();
@@ -110,18 +98,18 @@ public class FlowExecutionController {
         validateInputsThread = new Thread(()->{
             while (true){
                 try{
-                    if (executionUserInputs == null)
+                    if (currentFlowExecutionUserInputs.isNull().getValue())
                         return;
-                    synchronized (executionUserInputs) {
+                    synchronized (currentFlowExecutionUserInputs.get()) {
                         synchronized (flowInputControllers){
                             for(FlowInputController flowInputController : flowInputControllers) {
                                 try {
                                     if(flowInputController.getValue().isEmpty()){
-                                        executionUserInputs.readUserInput(flowInputController.input(), "");
+                                        currentFlowExecutionUserInputs.get().readUserInput(flowInputController.input(), "");
                                         Platform.runLater(() -> flowInputController.setValid(false));
                                     }
 
-                                    executionUserInputs.readUserInput(flowInputController.input(), flowInputController.getValue());
+                                    currentFlowExecutionUserInputs.get().readUserInput(flowInputController.input(), flowInputController.getValue());
                                     // input is valid: green
                                     Platform.runLater(() -> {
                                         flowInputController.setInputStyle(
@@ -131,7 +119,7 @@ public class FlowExecutionController {
                                         flowInputController.setValid(true);
                                     });
                                 } catch (BadTypeException e) {
-                                    if(flowInputController.input().getNecessity().equals(DataNecessity.OPTIONAL)){
+                                    if(flowInputController.input().necessity().equals(DataNecessity.OPTIONAL)){
                                         // input is optional and bad type: yellow
                                         Platform.runLater(() -> {
                                             flowInputController.setInputStyle(
@@ -155,7 +143,7 @@ public class FlowExecutionController {
                             }
                         }
 
-                        if (executionUserInputs.validateUserInputs())
+                        if (currentFlowExecutionUserInputs.get().validateUserInputs())
                             Platform.runLater(() -> startButton.setDisable(false));
                         else
                             Platform.runLater(() -> startButton.setDisable(true));
@@ -264,11 +252,6 @@ public class FlowExecutionController {
                 }
             }
         }
-    }
-
-    public void updateContinuations() {
-        if (currentFlow != null)
-            continuationsController.setContinuations(currentFlow.continuations());
     }
 
     public void selectStepForDetails(IStepRunResult stepResult) {

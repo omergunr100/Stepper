@@ -1,12 +1,9 @@
 package com.main.stepper.client.resources.fxml.reusable.flowdetails;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.engine.data.api.IFlowInformation;
-import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
-import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
-import com.main.stepper.shared.structures.step.StepDTO;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -55,7 +52,7 @@ public class FlowTreeViewController {
 
         TreeItem<String> stepsInFlow = new TreeItem<>("Steps in flow:"); // t1
         name.getChildren().add(stepsInFlow);
-        for(StepDTO step : information.steps()) {
+        for(StepUsageDTO step : information.steps()) {
             TreeItem<String> stepType = new TreeItem<>(step.name()); // t2
             TreeItem<String> alias = new TreeItem<>("Flow alias: " + step.alias()); // t3
             TreeItem<String> stepReadOnly = new TreeItem<>("Read only: " + step.isReadOnly()); // t3
@@ -71,7 +68,7 @@ public class FlowTreeViewController {
             TreeItem<String> necessity = new TreeItem<>("Necessity: " + input.necessity()); // t3
             TreeItem<String> linkedSteps = new TreeItem<>("Linked steps:"); // t3
             inputName.getChildren().addAll(type, necessity, linkedSteps);
-            for(StepDTO step : information.linkedSteps(input)) {
+            for(StepUsageDTO step : information.linkedSteps(input)) {
                 TreeItem<String> stepName = new TreeItem<>(step.name()); // t4
                 linkedSteps.getChildren().add(stepName);
             }

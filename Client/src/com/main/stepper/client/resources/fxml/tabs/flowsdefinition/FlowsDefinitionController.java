@@ -70,7 +70,6 @@ public class FlowsDefinitionController {
     }
 
     public void executeFlow() {
-        // todo: change to request for execution from server
         if (PropertiesManager.currentFlow.get() != null) {
             HttpUrl.Builder urlBuilder = HttpUrl
                     .parse(URLManager.FLOW_EXECUTION)

@@ -4,7 +4,7 @@ import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.exceptions.data.UnfriendlyInputException;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
-import com.main.stepper.shared.structures.step.StepDTO;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ExecutionUserInputsDTO {
     private ArrayList<DataIODTO> openUserInputs;
     private HashMap<DataIODTO, Object> userInputs;
-    private HashMap<DataIODTO, StepDTO> userInputsToSteps;
+    private HashMap<DataIODTO, StepUsageDTO> userInputsToSteps;
 
     public ExecutionUserInputsDTO(List<DataIODTO> openUserInputs, Map<DataIODTO, Object> userInputs) {
         this.openUserInputs = new ArrayList<>(openUserInputs);
@@ -31,7 +31,7 @@ public class ExecutionUserInputsDTO {
         return userInputs;
     }
 
-    public StepDTO getStep(DataIODTO input){
+    public StepUsageDTO getStep(DataIODTO input){
         return userInputsToSteps.get(input);
     }
 

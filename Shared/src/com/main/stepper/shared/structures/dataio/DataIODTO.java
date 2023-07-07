@@ -4,21 +4,18 @@ import com.main.stepper.data.DDRegistry;
 import com.main.stepper.io.api.DataNecessity;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class DataIODTO {
     private String name;
     private String userString;
     private DDRegistry type;
     private DataNecessity necessity;
-    private Object value;
 
-    public DataIODTO(String name, String userString, DDRegistry type, DataNecessity necessity, Object value) {
+    public DataIODTO(String name, String userString, DDRegistry type, DataNecessity necessity) {
         this.name = name;
         this.userString = userString;
         this.type = type;
         this.necessity = necessity;
-        this.value = value;
     }
 
     public String name() {
@@ -37,10 +34,6 @@ public class DataIODTO {
         return necessity;
     }
 
-    public Optional<Object> value() {
-        return Optional.ofNullable(value);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,18 +41,11 @@ public class DataIODTO {
 
         DataIODTO dataIODTO = (DataIODTO) o;
 
-        if (!Objects.equals(name, dataIODTO.name)) return false;
-        if (!Objects.equals(userString, dataIODTO.userString)) return false;
-        if (type != dataIODTO.type) return false;
-        return necessity == dataIODTO.necessity;
+        return Objects.equals(name, dataIODTO.name);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (userString != null ? userString.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (necessity != null ? necessity.hashCode() : 0);
-        return result;
+        return name != null ? name.hashCode() : 0;
     }
 }

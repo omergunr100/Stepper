@@ -51,8 +51,7 @@ public class DataIO implements IDataIO {
                 name,
                 userString,
                 Arrays.stream(DDRegistry.values()).filter(dd -> dd.getType().equals(dataDefinition.getType())).findFirst().get(),
-                necessity,
-                null
+                necessity
         );
     }
 

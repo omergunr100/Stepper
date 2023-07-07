@@ -5,6 +5,7 @@ import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,4 +32,11 @@ public class PropertiesManager {
 
     public static SimpleObjectProperty<FlowInfoDTO> currentFlow = new SimpleObjectProperty<>();
     public static SimpleObjectProperty<ExecutionUserInputsDTO> currentFlowExecutionUserInputs = new SimpleObjectProperty<>();
+    public static SimpleBooleanProperty isFlowExecutionRunning = new SimpleBooleanProperty(false);
+
+    // execution screen properties
+    public static SimpleObjectProperty<StepUsageDTO> executionSelectedStep = new SimpleObjectProperty<>();
+    // execution history screen properties
+    public static SimpleObjectProperty<FlowInfoDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<StepUsageDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
 }

@@ -6,11 +6,15 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.flow.FlowExecutionContextDTO;
+import com.main.stepper.shared.structures.step.StepUsageDTO;
 import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import com.main.stepper.step.execution.implementation.StepExecutionContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ServerFlowExecutionContext implements IFlowExecutionContext {
     private final UUID uniqueRunId;
@@ -92,5 +96,30 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
     @Override
     public void setUserCookie(String userCookie) {
         this.userCookie = userCookie;
+    }
+
+    @Override
+    public FlowExecutionContextDTO toDTO() {
+        Map<StepUsageDTO, HashMap<DataIODTO, DataIODTO>> newMappings = mappings.entrySet().stream()
+                .collect(Collectors.toMap(
+                                entry -> entry.getKey().toDTO(),
+                                entry -> new HashMap<>(entry.getValue().entrySet().stream()
+                                        .collect(Collectors.toMap(
+                                                innerEntry -> innerEntry.getKey().toDTO(),
+                                                innerEntry -> innerEntry.getValue().toDTO()
+                                        )))
+                        )
+                );
+        return new FlowExecutionContextDTO(
+                uniqueRunId,
+                logger,
+                newMappings,
+                variables.entrySet().stream().collect(Collectors.toMap(
+                        entry -> entry.getKey().toDTO(),
+                        entry -> entry
+                )),
+                stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
+                userCookie
+        );
     }
 }

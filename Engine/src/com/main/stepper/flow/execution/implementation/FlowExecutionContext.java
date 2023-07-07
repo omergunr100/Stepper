@@ -6,6 +6,7 @@ import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
+import com.main.stepper.shared.structures.flow.FlowExecutionContextDTO;
 import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import com.main.stepper.step.execution.implementation.StepExecutionContext;
@@ -85,5 +86,10 @@ public class FlowExecutionContext implements IFlowExecutionContext {
     @Override
     public void setUserCookie(String userCookie) {
 
+    }
+
+    @Override
+    public FlowExecutionContextDTO toDTO() {
+        return null;
     }
 }

@@ -6,10 +6,12 @@ import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FlowRunResult implements IFlowRunResult {
     private final UUID runId;
@@ -154,6 +156,24 @@ public class FlowRunResult implements IFlowRunResult {
     @Override
     public String user() {
         return user;
+    }
+
+    @Override
+    public FlowRunResultDTO toDTO() {
+        return new FlowRunResultDTO(
+                flowDefinition.information().toDTO(),
+                runId,
+                result,
+                startTime,
+                duration,
+                userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                flowOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                stepRunUUID,
+                stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
+                flowExecutionContext.toDTO(),
+                user
+        );
     }
 
     @Override
