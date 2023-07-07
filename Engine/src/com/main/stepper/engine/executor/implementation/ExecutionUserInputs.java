@@ -5,6 +5,7 @@ import com.main.stepper.exceptions.data.UnfriendlyInputException;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,5 +58,12 @@ public class ExecutionUserInputs {
                 return false;
         }
         return true;
+    }
+
+    public ExecutionUserInputsDTO toDTO() {
+        return new ExecutionUserInputsDTO(
+                openUserInputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                userInputs.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue()))
+        );
     }
 }

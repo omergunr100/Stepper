@@ -60,7 +60,7 @@ public class RunFlowServlet extends HttpServlet {
                 // if it's ok send it to the user
                 resp.setStatus(HttpServletResponse.SC_OK);
                 Gson gson = new Gson();
-                gson.toJson(executionUserInputs, resp.getWriter());
+                gson.toJson(executionUserInputs.toDTO(), resp.getWriter());
             }
         }
         else {

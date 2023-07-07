@@ -1,4 +1,4 @@
-package com.main.stepper.client.resources.fxml.tabs.executionshistory.executionelements.element;
+package com.main.stepper.client.resources.fxml.reusable.executionelements.element;
 
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import javafx.fxml.FXML;

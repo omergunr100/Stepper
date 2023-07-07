@@ -1,7 +1,7 @@
-package com.main.stepper.client.resources.fxml.tabs.executionshistory.stepdetails;
+package com.main.stepper.client.resources.fxml.tabs.flowsexecution.stepdetails;
 
-import com.main.stepper.client.resources.dataview.list.ListViewController;
-import com.main.stepper.client.resources.dataview.relation.RelationViewController;
+import com.main.stepper.application.resources.dataview.list.ListViewController;
+import com.main.stepper.application.resources.dataview.relation.RelationViewController;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.GenericList;

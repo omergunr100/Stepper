@@ -1,8 +1,8 @@
 package com.main.stepper.client.resources.fxml.tabs.executionshistory.tab;
 
-import com.main.stepper.client.resources.fxml.tabs.executionshistory.executionelements.FlowExecutionElementsController;
+import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
-import com.main.stepper.client.resources.fxml.tabs.executionshistory.stepdetails.StepDetailsController;
+import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import javafx.fxml.FXML;

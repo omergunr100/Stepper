@@ -11,4 +11,6 @@ public class URLManager {
     public static final String USERS_DATA = SERVER_ADDRESS + "/users/data";
 
     public static final String FLOW_INFORMATION = SERVER_ADDRESS + "/flow/information";
+
+    public static final String FLOW_EXECUTION = SERVER_ADDRESS + "/run/flow";
 }

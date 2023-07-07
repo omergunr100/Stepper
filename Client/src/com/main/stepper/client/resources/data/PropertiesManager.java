@@ -1,15 +1,13 @@
 package com.main.stepper.client.resources.data;
 
-import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
-import com.main.stepper.flow.definition.api.IFlowDefinition;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.roles.Role;
-import com.main.stepper.shared.structures.users.UserData;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import okhttp3.OkHttpClient;
@@ -30,4 +28,7 @@ public class PropertiesManager {
 
     public static ObservableList<IFlowRunResult> flowRunResults = FXCollections.observableArrayList();
     public static ObservableList<IStepRunResult> stepRunResults = FXCollections.observableArrayList();
+
+    public static SimpleObjectProperty<FlowInfoDTO> currentFlow = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<ExecutionUserInputsDTO> currentFlowExecutionUserInputs = new SimpleObjectProperty<>();
 }

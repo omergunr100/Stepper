@@ -17,7 +17,7 @@
   </rowConstraints>
    <children>
       <fx:include fx:id="detailsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../flowrundetails/FlowRunDetails.fxml" GridPane.columnSpan="3" />
-      <fx:include fx:id="stepDetails" source="../executionelements/FlowExecutionElements.fxml" GridPane.rowIndex="2" />
-      <fx:include fx:id="flowExecutionSteps" source="../stepdetails/StepDetails.fxml" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <fx:include fx:id="stepDetails" source="../../../reusable/executionelements/FlowExecutionElements.fxml" GridPane.rowIndex="2" />
+      <fx:include fx:id="flowExecutionSteps" source="../../../reusable/stepdetails/StepDetails.fxml" GridPane.columnIndex="2" GridPane.rowIndex="2" />
    </children>
 </GridPane>

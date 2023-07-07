@@ -1,5 +1,6 @@
 package com.main.stepper.client.resources.fxml.reusable.flowdetails;
 
+import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.engine.data.api.IFlowInformation;
 import com.main.stepper.flow.definition.api.IStepUsageDeclaration;
 import com.main.stepper.io.api.IDataIO;
@@ -16,7 +17,13 @@ public class FlowTreeViewController {
     public FlowTreeViewController() {
     }
 
-    public void setCurrentFlow(FlowInfoDTO information) {
+    @FXML public void initialize() {
+        flowTree.setShowRoot(false);
+        // bind to property
+        PropertiesManager.currentFlow.addListener((observable, oldValue, newValue) -> setCurrentFlow(newValue));
+    }
+
+    private void setCurrentFlow(FlowInfoDTO information) {
         if(information == null){
             flowTree.setRoot(null);
             return;
