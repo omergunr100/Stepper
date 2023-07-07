@@ -70,33 +70,6 @@ public class FlowsDefinitionController {
     }
 
     public void executeFlow() {
-        if (PropertiesManager.currentFlow.get() != null) {
-            HttpUrl.Builder urlBuilder = HttpUrl
-                    .parse(URLManager.FLOW_EXECUTION)
-                    .newBuilder();
-            HttpUrl url = urlBuilder.addQueryParameter("flowName", PropertiesManager.currentFlow.getName()).build();
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-            Call call = PropertiesManager.HTTP_CLIENT.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    // todo: decide whether to show error message to the user (can't reach server) or just ignore
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        Gson gson = new Gson();
-                        ExecutionUserInputsDTO userInputs = gson.fromJson(response.body().string(), ExecutionUserInputsDTO.class);
-                        PropertiesManager.currentFlowExecutionUserInputs.set(userInputs);
-                    }
-                    else {
-                        // todo: show user a message asking to wait for refresh because maybe roles were changed or manager status revoked
-                    }
-                }
-            });
-        }
+        PropertiesManager.executionSelectedFlow.set(PropertiesManager.currentFlow.get());
     }
 }

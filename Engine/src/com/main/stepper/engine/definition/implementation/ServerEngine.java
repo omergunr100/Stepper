@@ -17,6 +17,8 @@ import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.xml.generated.ex2.STFlow;
 import com.main.stepper.xml.generated.ex2.STStepper;
 import com.main.stepper.xml.parsing.api.IParser;
@@ -166,8 +168,11 @@ public class ServerEngine implements IEngine {
     }
 
     @Override
-    public UUID runFlow(String userCookie, String flowName, ExecutionUserInputs inputs) {
-        Optional<IFlowDefinition> maybeFlow = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst();
+    public UUID runFlow(String userCookie, String flowName, ExecutionUserInputsDTO inputs) {
+        Optional<IFlowDefinition> maybeFlow;
+        synchronized (flows) {
+            maybeFlow = flows.stream().filter(flow -> flow.name().equals(flowName)).findFirst();
+        }
         if(!maybeFlow.isPresent()){
             return null;
         }
@@ -183,8 +188,8 @@ public class ServerEngine implements IEngine {
                     stepRunResults
             );
 
-            for(IDataIO input : inputs.getUserInputs().keySet()){
-                context.setVariable(input, inputs.getUserInputs().get(input));
+            for(DataIODTO input : inputs.getUserInputs().keySet()){
+                context.setVariable(input.toDataIO(), inputs.getUserInputs().get(input));
             }
 
             for (Map.Entry<IDataIO, Object> entry : requested.initialValues().entrySet()) {

@@ -54,8 +54,8 @@ public class FlowTreeViewController {
         name.getChildren().add(stepsInFlow);
         for(StepUsageDTO step : information.steps()) {
             TreeItem<String> stepType = new TreeItem<>(step.name()); // t2
-            TreeItem<String> alias = new TreeItem<>("Flow alias: " + step.alias()); // t3
-            TreeItem<String> stepReadOnly = new TreeItem<>("Read only: " + step.isReadOnly()); // t3
+            TreeItem<String> alias = new TreeItem<>("Flow alias: " + step.name()); // t3
+            TreeItem<String> stepReadOnly = new TreeItem<>("Read only: " + step.step().isReadOnly()); // t3
             stepType.getChildren().addAll(alias, stepReadOnly);
             stepsInFlow.getChildren().add(stepType);
         }

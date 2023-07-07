@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController">
+<GridPane fx:id="root" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController">
   <columnConstraints>
     <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
     <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
@@ -67,9 +67,9 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
-      <ScrollPane GridPane.columnIndex="1">
+      <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1">
          <content>
-            <VBox fx:id="dataBox">
+            <VBox fx:id="dataBox" minHeight="-Infinity" minWidth="-Infinity">
                <padding>
                   <Insets left="5.0" right="5.0" />
                </padding>

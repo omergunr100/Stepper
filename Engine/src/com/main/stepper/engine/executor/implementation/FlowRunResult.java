@@ -6,6 +6,8 @@ import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 
 import java.time.Duration;
@@ -160,12 +162,21 @@ public class FlowRunResult implements IFlowRunResult {
 
     @Override
     public FlowRunResultDTO toDTO() {
+        Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().stream().collect(Collectors.toMap(
+                cont -> cont.information().toDTO(),
+                cont -> new HashMap<>(flowDefinition.continuationMapping(cont).entrySet().stream()
+                        .collect(Collectors.toMap(
+                                e -> e.getKey().toDTO(),
+                                e -> e.getValue().toDTO()
+                        )))
+        ));
         return new FlowRunResultDTO(
                 flowDefinition.information().toDTO(),
                 runId,
                 result,
                 startTime,
                 duration,
+                continuationMappings,
                 userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
                 internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
                 flowOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),

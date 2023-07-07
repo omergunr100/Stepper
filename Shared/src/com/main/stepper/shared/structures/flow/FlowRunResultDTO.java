@@ -14,6 +14,7 @@ public class FlowRunResultDTO {
     private FlowResult result;
     private Instant startTime;
     private Duration duration;
+    private HashMap<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> customContinuationMappings;
     private HashMap<DataIODTO, Object> userInputs;
     private HashMap<DataIODTO, Object> internalOutputs;
     private HashMap<DataIODTO, Object> flowOutputs;
@@ -22,12 +23,13 @@ public class FlowRunResultDTO {
     private FlowExecutionContextDTO context;
     private String user;
 
-    public FlowRunResultDTO(FlowInfoDTO flowInfo, UUID runId, FlowResult result, Instant startTime, Duration duration, Map<DataIODTO, Object> userInputs, Map<DataIODTO, Object> internalOutputs, Map<DataIODTO, Object> flowOutputs, List<UUID> stepRunUUIDs, List<StepRunResultDTO> stepRunResults, FlowExecutionContextDTO context, String user) {
+    public FlowRunResultDTO(FlowInfoDTO flowInfo, UUID runId, FlowResult result, Instant startTime, Duration duration, Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> customContinuationMappings, Map<DataIODTO, Object> userInputs, Map<DataIODTO, Object> internalOutputs, Map<DataIODTO, Object> flowOutputs, List<UUID> stepRunUUIDs, List<StepRunResultDTO> stepRunResults, FlowExecutionContextDTO context, String user) {
         this.flowInfo = flowInfo;
         this.runId = runId;
         this.result = result;
         this.startTime = startTime;
         this.duration = duration;
+        this.customContinuationMappings = new HashMap<>(customContinuationMappings);
         this.userInputs = new HashMap<>(userInputs);
         this.internalOutputs = new HashMap<>(internalOutputs);
         this.flowOutputs = new HashMap<>(flowOutputs);
@@ -55,6 +57,9 @@ public class FlowRunResultDTO {
 
     public Duration duration() {
         return duration;
+    }
+    public Map<DataIODTO, DataIODTO> continuationMapping(FlowInfoDTO flowInfoDTO) {
+        return customContinuationMappings.get(flowInfoDTO);
     }
 
     public Map<DataIODTO, Object> userInputs() {
@@ -96,11 +101,16 @@ public class FlowRunResultDTO {
 
         FlowRunResultDTO that = (FlowRunResultDTO) o;
 
-        return Objects.equals(runId, that.runId);
+        if (!Objects.equals(runId, that.runId)) return false;
+        if (result != that.result) return false;
+        return Objects.equals(stepRunResults, that.stepRunResults);
     }
 
     @Override
     public int hashCode() {
-        return runId != null ? runId.hashCode() : 0;
+        int result1 = runId != null ? runId.hashCode() : 0;
+        result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
+        result1 = 31 * result1 + (stepRunResults != null ? stepRunResults.hashCode() : 0);
+        return result1;
     }
 }

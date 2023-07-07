@@ -11,8 +11,13 @@ import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.implementation.data.Log;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.step.StepDefinitionDTO;
+import com.main.stepper.shared.structures.step.StepExecutionContextDTO;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,7 +41,7 @@ import java.util.Locale;
 public class StepDetailsController {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());
 
-    private IStepRunResult currentStepResult = null;
+    private SimpleObjectProperty<StepRunResultDTO> currentStepResult = new SimpleObjectProperty<>();
     @FXML private GridPane root;
     @FXML private Label nameLabel;
     @FXML private Label resultLabel;
@@ -54,9 +59,13 @@ public class StepDetailsController {
         root.setVisible(false);
     }
 
-    public void setStep(IStepRunResult step) {
-        currentStepResult = step;
-        if (step == null) {
+    public void setBinding(SimpleObjectProperty<StepRunResultDTO> property) {
+        currentStepResult.bind(property);
+        currentStepResult.addListener((observable, oldValue, newValue) -> onStepChange());
+    }
+
+    public void onStepChange() {
+        if (currentStepResult.isNull().get()) {
             reset();
         }
         else {
@@ -69,27 +78,27 @@ public class StepDetailsController {
         dataBox.getChildren().clear();
         logBox.getChildren().clear();
         // update header
-        nameLabel.setText(currentStepResult.name());
-        resultLabel.setText(currentStepResult.result().toString());
-        startTimeLabel.setText(dateTimeFormatter.format(currentStepResult.startTime()));
-        endTimeLabel.setText(dateTimeFormatter.format(currentStepResult.startTime().plusMillis(currentStepResult.duration().toMillis())));
-        durationLabel.setText(String.valueOf(currentStepResult.duration().toMillis()));
-        summaryLabel.setText(currentStepResult.summary());
+        nameLabel.setText(currentStepResult.get().name());
+        resultLabel.setText(currentStepResult.get().result().toString());
+        startTimeLabel.setText(dateTimeFormatter.format(currentStepResult.get().startTime()));
+        endTimeLabel.setText(dateTimeFormatter.format(currentStepResult.get().startTime().plusMillis(currentStepResult.get().duration().toMillis())));
+        durationLabel.setText(String.valueOf(currentStepResult.get().duration().toMillis()));
+        summaryLabel.setText(currentStepResult.get().summary());
         // update inputs and outputs
-        IStepDefinition step = currentStepResult.stepDefinition();
-        IStepExecutionContext context = currentStepResult.context();
-        List<IDataIO> inputs = step.getInputs();
-        List<IDataIO> outputs = step.getOutputs();
+        StepDefinitionDTO step = currentStepResult.get().step();
+        StepExecutionContextDTO context = currentStepResult.get().context();
+        List<DataIODTO> inputs = step.inputs();
+        List<DataIODTO> outputs = step.outputs();
 
         for (int i = 0; i < inputs.size(); i++) {
-            dataBox.getChildren().add(makeDataView(inputs.get(i), currentStepResult.context()));
+            dataBox.getChildren().add(makeDataView(inputs.get(i), currentStepResult.get().context()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
             dataBox.getChildren().add(new Separator());
         }
         for (int i = 0; i < outputs.size(); i++) {
-            dataBox.getChildren().add(makeDataView(outputs.get(i), currentStepResult.context()));
+            dataBox.getChildren().add(makeDataView(outputs.get(i), currentStepResult.get().context()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
             dataBox.getChildren().add(spacer);
@@ -113,10 +122,10 @@ public class StepDetailsController {
         root.setVisible(false);
     }
 
-    private static Parent makeDataView(IDataIO data, IStepExecutionContext context) {
+    private static Parent makeDataView(DataIODTO data, StepExecutionContextDTO context) {
         if (data == null)
             return null;
-        IDataIO aliasedDataIO = context.getAliasedDataIO(data);
+        DataIODTO aliasedDataIO = context.getAliasedDataIO(data);
         VBox dataView = new VBox();
         dataView.setSpacing(10);
         // dataName
@@ -125,7 +134,7 @@ public class StepDetailsController {
         Label dataName = new Label("Data name: ");
         TextField dataNameValue = new TextField();
         dataNameValue.setEditable(false);
-        dataNameValue.setText(aliasedDataIO.getName());
+        dataNameValue.setText(aliasedDataIO.name());
         dataNameBox.getChildren().addAll(dataName, dataNameValue);
         dataView.getChildren().add(dataNameBox);
 
@@ -135,7 +144,7 @@ public class StepDetailsController {
         Label dataType = new Label("Data type: ");
         TextField dataTypeValue = new TextField();
         dataTypeValue.setEditable(false);
-        dataTypeValue.setText(aliasedDataIO.getDataDefinition().getName());
+        dataTypeValue.setText(aliasedDataIO.type().getName());
         dataTypeBox.getChildren().addAll(dataType, dataTypeValue);
         dataView.getChildren().add(dataTypeBox);
 
@@ -145,7 +154,7 @@ public class StepDetailsController {
         Label dataRequirement = new Label("Data requirement: ");
         TextField dataRequirementValue = new TextField();
         dataRequirementValue.setEditable(false);
-        dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output" : data.getNecessity().toString());
+        dataRequirementValue.setText(data.necessity().equals(DataNecessity.NA) ? "Output" : data.necessity().toString());
         dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementValue);
         dataView.getChildren().add(dataRequirementBox);
 
@@ -155,14 +164,14 @@ public class StepDetailsController {
         Label dataValue = new Label("Data value: ");
         dataView.getChildren().add(dataValue);
         Parent dataValueView = null;
-        Object blob = context.getInput(data, data.getDataDefinition().getType());
+        Object blob = context.getInput(data, data.type().getType());
         if (
-                String.class.isAssignableFrom(data.getDataDefinition().getType())
-                || Double.class.isAssignableFrom(data.getDataDefinition().getType())
-                || Integer.class.isAssignableFrom(data.getDataDefinition().getType())
-                || PairData.class.isAssignableFrom(data.getDataDefinition().getType())
-                || FileData.class.isAssignableFrom(data.getDataDefinition().getType())
-                || ZipperEnumData.class.isAssignableFrom(data.getDataDefinition().getType())
+                String.class.isAssignableFrom(data.type().getType())
+                || Double.class.isAssignableFrom(data.type().getType())
+                || Integer.class.isAssignableFrom(data.type().getType())
+                || PairData.class.isAssignableFrom(data.type().getType())
+                || FileData.class.isAssignableFrom(data.type().getType())
+                || ZipperEnumData.class.isAssignableFrom(data.type().getType())
         ) {
             HBox valueBox = new HBox();
             valueBox.setSpacing(10);
@@ -175,7 +184,7 @@ public class StepDetailsController {
             dataValueView = dataValueField;
         }
         else if (
-                GenericList.class.isAssignableFrom(data.getDataDefinition().getType())
+                GenericList.class.isAssignableFrom(data.type().getType())
         ) {
             if (blob == null) {
                 TextField dataValueField = new TextField();
@@ -197,7 +206,7 @@ public class StepDetailsController {
             }
         }
         else if (
-                Relation.class.isAssignableFrom(data.getDataDefinition().getType())
+                Relation.class.isAssignableFrom(data.type().getType())
         ) {
             if (blob == null) {
                 TextField dataValueField = new TextField();

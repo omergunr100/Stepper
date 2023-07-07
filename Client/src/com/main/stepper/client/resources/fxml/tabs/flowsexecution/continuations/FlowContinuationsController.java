@@ -51,18 +51,19 @@ public class FlowContinuationsController {
         // listen for change in selection and update selected flow
         continuationsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             PropertiesManager.currentFlowExecutionUserInputs.set(null);
-            PropertiesManager.currentFlow.set(newValue);
+            PropertiesManager.continuation.set(PropertiesManager.flowRunResults.get(0));
+            PropertiesManager.executionSelectedFlow.set(newValue);
         });
 
         // listen for when to show continuations table
         // when (currentFlow is the same as the last flow in run history) and (final run history has status that is not running) and (isFlowExecutionRunning is false)
-        BooleanBinding currentFlowIsLastFlowRun = Bindings.createBooleanBinding(() -> PropertiesManager.flowRunResults.isEmpty() || PropertiesManager.currentFlow.isNull().getValue() ? false : PropertiesManager.flowRunResults.get(0).name().equals(PropertiesManager.currentFlow.getName()), PropertiesManager.flowRunResults, PropertiesManager.currentFlow);
+        BooleanBinding currentFlowIsLastFlowRun = Bindings.createBooleanBinding(() -> PropertiesManager.flowRunResults.isEmpty() || PropertiesManager.executionSelectedFlow.isNull().getValue() ? false : PropertiesManager.flowRunResults.get(0).name().equals(PropertiesManager.executionSelectedFlow.getName()), PropertiesManager.flowRunResults, PropertiesManager.executionSelectedFlow);
         BooleanBinding lastFlowFinished = Bindings.createBooleanBinding(() -> PropertiesManager.flowRunResults.isEmpty() ? false : !PropertiesManager.flowRunResults.get(0).result().equals(FlowResult.RUNNING), PropertiesManager.flowRunResults);
         PropertiesManager.isFlowExecutionRunning.not()
                 .and(currentFlowIsLastFlowRun)
                 .and(lastFlowFinished).addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
-                        setContinuations(PropertiesManager.currentFlow.get().continuations());
+                        setContinuations(PropertiesManager.executionSelectedFlow.get().continuations());
                     } else {
                         reset();
                     }
@@ -72,7 +73,6 @@ public class FlowContinuationsController {
     public void setContinuations(List<String> continuations) {
         reset();
         if (!continuations.isEmpty()) {
-            // todo: get information about flows from available flows property
             List<FlowInfoDTO> collect;
             synchronized (PropertiesManager.flowInformationList) {
                 collect = PropertiesManager.flowInformationList.stream().filter(info -> continuations.contains(info.name())).collect(Collectors.toList());

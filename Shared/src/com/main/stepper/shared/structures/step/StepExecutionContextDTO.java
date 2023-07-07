@@ -1,5 +1,6 @@
 package com.main.stepper.shared.structures.step;
 
+import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
@@ -34,4 +35,21 @@ public class StepExecutionContextDTO {
     public DataIODTO getAliasedDataIO(DataIODTO dataIO) {
         return mapping.get(dataIO);
     }
+
+    public <T> T getInput(DataIODTO name, Class<T> type) {
+        DataIODTO alias = mapping.get(name);
+
+        if(!variables.containsKey(alias)){
+            return null;
+        }
+
+        if(variables.get(alias) == null)
+            return null;
+
+        if(!type.isAssignableFrom(variables.get(alias).getClass())){
+            return null;
+        }
+        return type.cast(variables.get(alias));
+    }
+
 }

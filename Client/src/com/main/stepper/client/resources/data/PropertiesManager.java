@@ -4,7 +4,9 @@ import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -27,16 +29,20 @@ public class PropertiesManager {
 
     public static ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
 
-    public static ObservableList<IFlowRunResult> flowRunResults = FXCollections.observableArrayList();
-    public static ObservableList<IStepRunResult> stepRunResults = FXCollections.observableArrayList();
+    public static ObservableList<FlowRunResultDTO> flowRunResults = FXCollections.observableArrayList();
+    public static ObservableList<StepRunResultDTO> stepRunResults = FXCollections.observableArrayList();
 
     public static SimpleObjectProperty<FlowInfoDTO> currentFlow = new SimpleObjectProperty<>();
     public static SimpleObjectProperty<ExecutionUserInputsDTO> currentFlowExecutionUserInputs = new SimpleObjectProperty<>();
     public static SimpleBooleanProperty isFlowExecutionRunning = new SimpleBooleanProperty(false);
 
     // execution screen properties
-    public static SimpleObjectProperty<StepUsageDTO> executionSelectedStep = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<FlowInfoDTO> executionSelectedFlow = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<FlowRunResultDTO> executionRunningFlow = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<StepRunResultDTO> executionSelectedStep = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<FlowRunResultDTO> continuation = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<UUID> currentRunningFlowUUID = new SimpleObjectProperty<>();
     // execution history screen properties
-    public static SimpleObjectProperty<FlowInfoDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
-    public static SimpleObjectProperty<StepUsageDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
+    public static SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
 }

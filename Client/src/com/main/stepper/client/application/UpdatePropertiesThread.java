@@ -3,14 +3,13 @@ package com.main.stepper.client.application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.data.URLManager;
-import com.main.stepper.engine.data.api.IFlowInformation;
-import com.main.stepper.engine.data.implementation.FlowInformation;
-import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
-import com.main.stepper.shared.structures.gson.builder.GsonBuilderInterfaces;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.application.Platform;
 import okhttp3.*;
@@ -35,6 +34,8 @@ public class UpdatePropertiesThread extends Thread{
         updateStepRunResults();
         // update available flow information list
         updateFlowInformation();
+        // update currently running flow
+        updateCurrentlyRunningFlow();
     }
 
     @Override
@@ -42,7 +43,7 @@ public class UpdatePropertiesThread extends Thread{
         while (true) {
             try {
                 updateProperties();
-                sleep(2000);
+                sleep(500);
             } catch (InterruptedException ignored) {
             }
         }
@@ -64,8 +65,8 @@ public class UpdatePropertiesThread extends Thread{
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.code() == 200) {
-                        Gson gson = new Gson();
-                        List<IFlowRunResult> flowRunResultList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<IFlowRunResult>>(){}.getType());
+                        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+                        List<FlowRunResultDTO> flowRunResultList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
                         Platform.runLater(() -> {
                             synchronized (flowRunResults) {
                                 // if received an empty list exit
@@ -75,11 +76,17 @@ public class UpdatePropertiesThread extends Thread{
                                 if (flowRunResults.isEmpty())
                                     flowRunResults.addAll(flowRunResultList);
                                 else {
-                                    // if list wasn't empty only head of list is new relevant data, add it to the head
+                                    // check for new run results and add them
                                     int i = 0;
-                                    while (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
+                                    while (!flowRunResultList.get(i).runId().equals(flowRunResults.get(i).runId())) {
                                         flowRunResults.add(i, flowRunResultList.get(i));
                                         i++;
+                                    }
+                                    // for the rest check for status change and if so update
+                                    for (; i < flowRunResultList.size(); i++) {
+                                        if (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
+                                            flowRunResults.set(i, flowRunResultList.get(i));
+                                        }
                                     }
                                 }
                             }
@@ -94,9 +101,9 @@ public class UpdatePropertiesThread extends Thread{
 
     private static void updateStepRunResults() {
         // create a list of all stepRunResults from flowRunResults
-        List<IStepRunResult> stepRunResultList = new ArrayList<>();
+        List<StepRunResultDTO> stepRunResultList = new ArrayList<>();
         synchronized (stepRunResults) {
-            for (IFlowRunResult result : flowRunResults) {
+            for (FlowRunResultDTO result : flowRunResults) {
                 stepRunResultList.addAll(result.stepRunResults());
             }
         }
@@ -185,7 +192,7 @@ public class UpdatePropertiesThread extends Thread{
                                 else {
                                     // else add new information
                                     List<FlowInfoDTO> newInfoList = informations.stream()
-                                            .filter(information -> flowInformationList.contains(information))
+                                            .filter(information -> !flowInformationList.contains(information))
                                             .collect(Collectors.toList());
                                     flowInformationList.addAll(newInfoList);
                                 }
@@ -196,6 +203,23 @@ public class UpdatePropertiesThread extends Thread{
                         response.close();
                 }
             });
+        }
+    }
+
+    private static void updateCurrentlyRunningFlow() {
+        if (currentRunningFlowUUID.isNotNull().get() && !flowRunResults.isEmpty()) {
+            synchronized (flowRunResults) {
+                Platform.runLater(() -> {
+                    flowRunResults.stream()
+                            .filter(exe -> exe.runId().equals(currentRunningFlowUUID.get()))
+                            .findFirst()
+                            .ifPresent(exe -> {
+                                executionRunningFlow.set(exe);
+                                if(!exe.result().equals(FlowResult.RUNNING))
+                                    currentRunningFlowUUID.set(null);
+                            });
+                });
+            }
         }
     }
 }

@@ -60,17 +60,31 @@
                            </content>
                         </ScrollPane>
                      </content></Tab>
-                <Tab fx:id="flowsExecutionTab" text="Flows Execution" />
+                <Tab fx:id="flowsExecutionTab" text="Flows Execution">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <fx:include fx:id="flowExecution" maxHeight="1.7976931348623157E308" source="../tabs/flowsexecution/tab/FlowExecution.fxml" />
+                           </content>
+                        </ScrollPane>
+                     </content></Tab>
                   <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">
                      <content>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
-                              <fx:include source="../tabs/executionshistory/tab/ExecutionHistoryScreen.fxml" />
+                              <fx:include fx:id="flowExecutionHistory" source="../tabs/executionshistory/tab/ExecutionHistoryScreen.fxml" />
                            </content>
                         </ScrollPane>
                      </content>
                   </Tab>
-                  <Tab fx:id="statisticsTab" text="Statistics" />
+                  <Tab fx:id="statisticsTab" text="Statistics">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <fx:include fx:id="statisticsScreen" source="../tabs/statistics/tab/StatisticsScreen.fxml" />
+                           </content>
+                        </ScrollPane>
+                     </content></Tab>
               </tabs>
             </TabPane>
          </children>

@@ -1,10 +1,13 @@
 package com.main.stepper.server.servlets.run;
 
 import com.google.gson.Gson;
+import com.main.stepper.data.DDRegistry;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.server.constants.ServletAttributes;
 import com.main.stepper.server.roles.RoleManager;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,10 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet(name="RunFlowServlet", urlPatterns = "/run/flow")
 public class RunFlowServlet extends HttpServlet {
@@ -77,7 +78,20 @@ public class RunFlowServlet extends HttpServlet {
         String flowName = req.getParameter("flowName");
         // get execution user inputs
         Gson gson = new Gson();
-        ExecutionUserInputs executionUserInputs = gson.fromJson(req.getReader(), ExecutionUserInputs.class);
+        ExecutionUserInputsDTO executionUserInputs = gson.fromJson(req.getReader(), ExecutionUserInputsDTO.class);
+        // fix numbers because of json parsing as double
+        Map<DataIODTO, Object> userInputs = executionUserInputs.getUserInputs();
+        List<DataIODTO> keysToFix = new ArrayList<>();
+        List<DataIODTO> keys = userInputs.keySet().stream().collect(Collectors.toList());
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i).type().equals(DDRegistry.NUMBER)) {
+                keysToFix.add(keys.get(i));
+            }
+        }
+        for (DataIODTO key : keysToFix) {
+            Double value = (Double) userInputs.get(key);
+            userInputs.put(key, value.intValue());
+        }
 
         if (flowName == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

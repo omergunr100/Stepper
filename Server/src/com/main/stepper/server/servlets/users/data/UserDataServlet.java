@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class UserDataServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
             Gson gson = new Gson();
-            gson.toJson(userDataList, new TypeToken<List<UserData>>(){}.getType(), resp.getWriter());
+            gson.toJson(userDataList, new TypeToken<ArrayList<UserData>>(){}.getType(), resp.getWriter());
         }
     }
 }

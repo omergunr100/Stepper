@@ -1,6 +1,7 @@
 package com.main.stepper.client.resources.fxml.reusable.executionelements.element;
 
 import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +14,7 @@ public class ElementController {
     @FXML private Label propertyName;
     @FXML private Label propertyValue;
     @FXML private Button infoButton;
-    private IStepRunResult context;
+    private StepRunResultDTO context;
 
     public ElementController() {
     }
@@ -21,7 +22,7 @@ public class ElementController {
     @FXML public void initialize(){
     }
 
-    public void setContext(IStepRunResult context) {
+    public void setContext(StepRunResultDTO context) {
         this.context = context;
     }
 
@@ -33,7 +34,7 @@ public class ElementController {
         this.propertyValue.setText(propertyValue);
     }
 
-    public void setOnAction(Consumer<IStepRunResult> consumer){
+    public void setOnAction(Consumer<StepRunResultDTO> consumer){
         infoButton.setOnAction(event -> consumer.accept(context));
     }
 

@@ -8,6 +8,7 @@ import com.main.stepper.exceptions.engine.NotAFileException;
 import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.logger.implementation.data.Log;
+import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.statistics.StatManager;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public interface IEngine extends Serializable {
      * @param flowName - name of the flow
      * @return - run result object
      */
-    UUID runFlow(String userCookie, String flowName, ExecutionUserInputs inputs);
+    UUID runFlow(String userCookie, String flowName, ExecutionUserInputsDTO inputs);
 
     /**
      * @return - list of flow runs

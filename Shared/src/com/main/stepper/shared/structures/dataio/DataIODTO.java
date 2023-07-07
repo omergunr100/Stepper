@@ -2,6 +2,8 @@ package com.main.stepper.shared.structures.dataio;
 
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.io.api.DataNecessity;
+import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.io.implementation.DataIO;
 
 import java.util.Objects;
 
@@ -32,6 +34,15 @@ public class DataIODTO {
 
     public DataNecessity necessity() {
         return necessity;
+    }
+
+    public IDataIO toDataIO() {
+        return new DataIO(
+                name,
+                userString,
+                necessity,
+                type
+        );
     }
 
     @Override

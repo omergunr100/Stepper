@@ -1,19 +1,23 @@
 package com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.main.stepper.client.resources.data.PropertiesManager;
+import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
 import com.main.stepper.client.resources.fxml.reusable.flowinput.FlowInputController;
 import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
-import com.main.stepper.client.resources.fxml.root.RootController;
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
-import com.main.stepper.engine.executor.implementation.ExecutionUserInputs;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -24,13 +28,16 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Duration;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import static com.main.stepper.client.resources.data.PropertiesManager.currentFlowExecutionUserInputs;
+import static com.main.stepper.client.resources.data.PropertiesManager.*;
 
 public class FlowExecutionController {
     private Thread validateInputsThread = null;
@@ -52,6 +59,13 @@ public class FlowExecutionController {
         startButton.setOnAction(event -> startFlow());
         flowInputControllers = new ArrayList<>();
         flowInputComponents = new ArrayList<>();
+
+        // add listener for selected flow change and update ui accordingly
+        executionSelectedFlow.addListener((observable, oldValue, newValue) -> onCurrentFlowChange());
+
+        // setup sub-controllers
+        executionElementsController.setBindings(executionRunningFlow, executionSelectedStep);
+        stepDetailsController.setBinding(executionSelectedStep);
     }
 
     public void reset() {
@@ -68,32 +82,209 @@ public class FlowExecutionController {
         stepDetailsController.reset();
     }
 
-    public void setCurrentFlow(IFlowDefinition currentFlow, IFlowRunResult context) {
-        this.currentFlow = currentFlow;
-        if (currentFlow == null){
+    private void onCurrentFlowChange() {
+        if (executionSelectedFlow.isNull().getValue()){
             validateInputsThread.interrupt();
+            synchronized (currentFlowExecutionUserInputs.get()) {
+                currentFlowExecutionUserInputs.set(null);
+            }
             reset();
             return;
         }
 
-        if (executionUserInputs != null) {
-            synchronized (executionUserInputs) {
-                executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
+        if (currentFlowExecutionUserInputs.isNull().not().getValue()) {
+            synchronized (currentFlowExecutionUserInputs.get()) {
                 if (validateInputsThread != null)
                     validateInputsThread.interrupt();
             }
         }
         else {
-            executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
             if (validateInputsThread != null)
                 validateInputsThread.interrupt();
         }
+        requestExecutionUserInputs();
+
+
         executionElementsController.reset();
         continuationsController.reset();
         stepDetailsController.reset();
 
-        setInputs(context);
+        mandatoryBox.setDisable(false);
+        optionalBox.setDisable(false);
+    }
 
+    // initialize input components - happens when currentFlowExecutionUserInputs is changed
+    private void setInputs(FlowRunResultDTO runResult) {
+        this.flowInputControllers.clear();
+        this.flowInputComponents.clear();
+        this.inputsFlowPane.getChildren().clear();
+        List<FadeTransition> animations = new ArrayList<>();
+        if (currentFlowExecutionUserInputs.isNotNull().get()) {
+            synchronized (currentFlowExecutionUserInputs.get()) {
+                for (DataIODTO dataIO : currentFlowExecutionUserInputs.get().getOpenUserInputs()) {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(FlowInputController.class.getResource("FlowInput.fxml"));
+                    try {
+                        // load fxml file
+                        Parent inputComp = loader.load();
+                        FlowInputController flowInputController = loader.getController();
+                        flowInputController.init(dataIO);
+
+                        // get value for continuation if there is one
+                        if (runResult != null) {
+                            Map<DataIODTO, DataIODTO> customContinuationMappings = runResult.continuationMapping(executionSelectedFlow.get());
+                            Object value = null;
+                            DataIODTO key = customContinuationMappings.get(dataIO);
+                            if (key != null)
+                                value = runResult.flowExecutionContext().getVariable(key, key.type().getType());
+                            if (value != null)
+                                flowInputController.setValue(value.toString());
+                        }
+
+                        flowInputControllers.add(flowInputController);
+                        flowInputComponents.add(inputComp);
+                        inputComp.setOpacity(0.0);
+                        inputsFlowPane.getChildren().add(inputComp);
+                        // animate fade in
+                        FadeTransition ft = new FadeTransition(Duration.millis(250), inputComp);
+                        ft.setFromValue(0.0);
+                        ft.setToValue(1.0);
+                        animations.add(ft);
+                    } catch (IOException ignored) {
+                    }
+                }
+                for (int i = 0; i < animations.size() - 1; i++) {
+                    final FadeTransition next = animations.get(i + 1);
+                    animations.get(i).setOnFinished(event -> next.play());
+                }
+                animations.get(0).play();
+            }
+        }
+    }
+
+    @FXML private void startFlow() {
+        continuationsController.reset();
+        stepDetailsController.reset();
+        executionElementsController.reset();
+
+        requestExecuteFlow();
+    }
+
+    @FXML private void toggleMandatory() {
+        if(mandatoryBox.isSelected()){
+            int startInd = 0;
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().necessity().equals(DataNecessity.MANDATORY)) {
+                    inputsFlowPane.getChildren().add(startInd, flowInputComponents.get(i));
+                    startInd++;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().necessity().equals(DataNecessity.MANDATORY)) {
+                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
+                }
+            }
+        }
+    }
+
+    @FXML private void toggleOptional() {
+        if(optionalBox.isSelected()){
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().necessity().equals(DataNecessity.OPTIONAL)) {
+                    inputsFlowPane.getChildren().add(flowInputComponents.get(i));
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < flowInputControllers.size(); i++) {
+                if (flowInputControllers.get(i).input().necessity().equals(DataNecessity.OPTIONAL)) {
+                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
+                }
+            }
+        }
+    }
+
+    public void selectStepForDetails(StepRunResultDTO stepResult) {
+        PropertiesManager.executionSelectedStep.set(stepResult);
+    }
+
+    private void requestExecutionUserInputs() {
+        if (executionSelectedFlow.isNull().not().getValue()) {
+            HttpUrl.Builder urlBuilder = HttpUrl
+                    .parse(URLManager.FLOW_EXECUTION)
+                    .newBuilder();
+            HttpUrl url = urlBuilder.addQueryParameter("flowName", executionSelectedFlow.get().name()).build();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
+            Call call = PropertiesManager.HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // todo: decide whether to show error message to the user (can't reach server) or just ignore
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        final ExecutionUserInputsDTO userInputs = gson.fromJson(response.body().string(), ExecutionUserInputsDTO.class);
+                        Platform.runLater(() -> {
+                            currentFlowExecutionUserInputs.set(userInputs);
+                            setInputs(continuation.get());
+                            continuation.set(null);
+                            initializeValidationThread();
+                        });
+                    }
+                    else {
+                        // todo: show user a message asking to wait for refresh because maybe roles were changed or manager status revoked
+                    }
+                }
+            });
+        }
+    }
+
+    private void requestExecuteFlow() {
+        if (currentFlowExecutionUserInputs.isNotNull().get() && executionSelectedFlow.isNotNull().get()) {
+            HttpUrl.Builder urlBuilder = HttpUrl
+                    .parse(URLManager.FLOW_EXECUTION)
+                    .newBuilder();
+            HttpUrl url = urlBuilder.addQueryParameter("flowName", executionSelectedFlow.get().name()).build();
+            Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+            RequestBody body = RequestBody.create(gson.toJson(currentFlowExecutionUserInputs.get()), MediaType.parse("application/json"));
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+            Call call = PropertiesManager.HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // todo: decide whether to show error message to the user (can't reach server) or just ignore
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        UUID executionId = gson.fromJson(response.body().string(), UUID.class);
+                        Platform.runLater(() -> {
+                            currentRunningFlowUUID.set(executionId);
+                        });
+                    }
+                    else {
+                        // todo: show user a message asking to wait for refresh because maybe roles were changed or manager status revoked
+                    }
+                }
+            });
+            currentFlowExecutionUserInputs.set(null);
+        }
+    }
+
+    private void initializeValidationThread() {
         // initialize validation thread
         validateInputsThread = new Thread(()->{
             while (true){
@@ -114,7 +305,7 @@ public class FlowExecutionController {
                                     Platform.runLater(() -> {
                                         flowInputController.setInputStyle(
                                                 "-fx-text-box-border: lightgreen ;\n" +
-                                                "  -fx-focus-color: lightgreen ;"
+                                                        "  -fx-focus-color: lightgreen ;"
                                         );
                                         flowInputController.setValid(true);
                                     });
@@ -124,7 +315,7 @@ public class FlowExecutionController {
                                         Platform.runLater(() -> {
                                             flowInputController.setInputStyle(
                                                     "-fx-text-box-border: yellow ;\n" +
-                                                    "  -fx-focus-color: yellow ;"
+                                                            "  -fx-focus-color: yellow ;"
                                             );
                                             flowInputController.setValid(true);
                                         });
@@ -134,7 +325,7 @@ public class FlowExecutionController {
                                         Platform.runLater(() -> {
                                             flowInputController.setInputStyle(
                                                     "-fx-text-box-border: red ;\n" +
-                                                    "  -fx-focus-color: red ;"
+                                                            "  -fx-focus-color: red ;"
                                             );
                                             flowInputController.setValid(false);
                                         });
@@ -157,104 +348,5 @@ public class FlowExecutionController {
         validateInputsThread.setName("Validate Inputs Thread");
         validateInputsThread.setDaemon(true);
         validateInputsThread.start();
-
-        mandatoryBox.setDisable(false);
-        optionalBox.setDisable(false);
-    }
-
-    // initialize input components
-    private void setInputs(IFlowRunResult runResult) {
-        this.flowInputControllers.clear();
-        this.flowInputComponents.clear();
-        this.inputsFlowPane.getChildren().clear();
-        List<FadeTransition> animations = new ArrayList<>();
-        synchronized (executionUserInputs) {
-            for (IDataIO dataIO : executionUserInputs.getOpenUserInputs()) {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(FlowInputController.class.getResource("FlowInput.fxml"));
-                try {
-                    // load fxml file
-                    Parent inputComp = loader.load();
-                    FlowInputController flowInputController = loader.getController();
-                    flowInputController.init(dataIO);
-
-                    // get value for continuation if there is one
-                    if (runResult != null) {
-                        Map<IDataIO, IDataIO> customContinuationMappings = runResult.flowDefinition().continuationMapping(currentFlow);
-                        Object value = null;
-                        IDataIO key = customContinuationMappings.get(dataIO);
-                        if (key != null)
-                            value = runResult.flowExecutionContext().getVariable(key, key.getDataDefinition().getType());
-                        if (value != null)
-                            flowInputController.setValue(value.toString());
-                    }
-
-                    flowInputControllers.add(flowInputController);
-                    flowInputComponents.add(inputComp);
-                    inputComp.setOpacity(0.0);
-                    inputsFlowPane.getChildren().add(inputComp);
-                    // animate fade in
-                    FadeTransition ft = new FadeTransition(Duration.millis(250), inputComp);
-                    ft.setFromValue(0.0);
-                    ft.setToValue(1.0);
-                    animations.add(ft);
-                } catch (IOException ignored) {
-                }
-            }
-            for (int i = 0; i < animations.size() - 1; i++) {
-                final FadeTransition next = animations.get(i + 1);
-                animations.get(i).setOnFinished(event -> next.play());
-            }
-            animations.get(0).play();
-        }
-    }
-
-    @FXML private void startFlow() {
-        continuationsController.reset();
-        stepDetailsController.reset();
-        executionElementsController.reset();
-
-        rootController.getEngine().runFlow(currentFlow.name(), executionUserInputs);
-        executionUserInputs = rootController.getEngine().getExecutionUserInputs(currentFlow.name());
-    }
-
-    @FXML private void toggleMandatory() {
-        if(mandatoryBox.isSelected()){
-            int startInd = 0;
-            for (int i = 0; i < flowInputControllers.size(); i++) {
-                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.MANDATORY)) {
-                    inputsFlowPane.getChildren().add(startInd, flowInputComponents.get(i));
-                    startInd++;
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < flowInputControllers.size(); i++) {
-                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.MANDATORY)) {
-                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
-                }
-            }
-        }
-    }
-
-    @FXML private void toggleOptional() {
-        if(optionalBox.isSelected()){
-            for (int i = 0; i < flowInputControllers.size(); i++) {
-                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.OPTIONAL)) {
-                    inputsFlowPane.getChildren().add(flowInputComponents.get(i));
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < flowInputControllers.size(); i++) {
-                if (flowInputControllers.get(i).input().getNecessity().equals(DataNecessity.OPTIONAL)) {
-                    inputsFlowPane.getChildren().remove(flowInputComponents.get(i));
-                }
-            }
-        }
-    }
-
-    public void selectStepForDetails(IStepRunResult stepResult) {
-        stepDetailsController.setStep(stepResult);
     }
 }

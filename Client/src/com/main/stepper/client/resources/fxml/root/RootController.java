@@ -4,6 +4,7 @@ import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.client.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
+import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.client.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.shared.structures.roles.Role;
 import javafx.beans.binding.Bindings;
@@ -32,6 +33,7 @@ public class RootController {
     @FXML Tab statisticsTab;
     // tab screen controllers
     @FXML FlowsDefinitionController flowsDefinitionController;
+    @FXML FlowExecutionController flowExecutionController;
     @FXML ExecutionHistoryScreenController flowExecutionHistoryController;
     @FXML StatisticsScreenController statisticsScreenController;
 
@@ -57,6 +59,12 @@ public class RootController {
         loadCSSController.setRootController(this);
         // select initial window
         tabs.getSelectionModel().select(flowsDefinitionTab);
+        // on execution flow selection change (if not null go to tab)
+        PropertiesManager.executionSelectedFlow.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tabs.getSelectionModel().select(flowsExecutionTab);
+            }
+        });
     }
 
     public void setPrimaryStage(Stage primaryStage) {

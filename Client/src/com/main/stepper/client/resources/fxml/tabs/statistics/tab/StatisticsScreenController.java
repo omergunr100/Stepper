@@ -5,6 +5,8 @@ import com.main.stepper.client.resources.fxml.tabs.statistics.selector.SelectorC
 import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.statistics.dto.StatDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
@@ -90,10 +92,10 @@ public class StatisticsScreenController {
         stepBarChart.setAnimated(false);
 
         // bind for changes from PropertyManager
-        PropertiesManager.flowRunResults.addListener((ListChangeListener.Change<? extends IFlowRunResult> c) -> {
+        PropertiesManager.flowRunResults.addListener((ListChangeListener.Change<? extends FlowRunResultDTO> c) -> {
             onFlowRunResultsUpdate();
         });
-        PropertiesManager.stepRunResults.addListener((ListChangeListener.Change<? extends IStepRunResult> c) -> {
+        PropertiesManager.stepRunResults.addListener((ListChangeListener.Change<? extends StepRunResultDTO> c) -> {
             onStepRunResultsUpdate();
         });
     }
@@ -102,13 +104,13 @@ public class StatisticsScreenController {
         // collect all unique flow run names
         Set<String> uniqueFlowNames;
         synchronized(PropertiesManager.flowRunResults) {
-            uniqueFlowNames = PropertiesManager.flowRunResults.stream().filter(f -> !f.result().equals(FlowResult.RUNNING)).map(IFlowRunResult::name).collect(Collectors.toSet());
+            uniqueFlowNames = PropertiesManager.flowRunResults.stream().filter(f -> !f.result().equals(FlowResult.RUNNING)).map(FlowRunResultDTO::name).collect(Collectors.toSet());
         }
         // for each unique flow name, create a new StatDTO from data in flowRunResults
         synchronized (PropertiesManager.flowRunResults) {
             for (String name : uniqueFlowNames) {
                 // calculate new statDTO
-                List<IFlowRunResult> collection = PropertiesManager.flowRunResults.stream().filter(f -> f.name().equals(name)).collect(Collectors.toList());
+                List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> f.name().equals(name)).collect(Collectors.toList());
                 Duration duration = Duration.ofMillis(collection.stream().mapToLong(f -> f.duration().toMillis()).sum() / collection.size());
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.FLOW, name, collection.size(), duration);
 
@@ -145,13 +147,13 @@ public class StatisticsScreenController {
         // collect all unique step run names
         Set<String> uniqueStepNames;
         synchronized(PropertiesManager.stepRunResults) {
-            uniqueStepNames = PropertiesManager.stepRunResults.stream().map(IStepRunResult::name).collect(Collectors.toSet());
+            uniqueStepNames = PropertiesManager.stepRunResults.stream().map(StepRunResultDTO::name).collect(Collectors.toSet());
         }
         // for each unique step name, create a new StatDTO from data in stepRunResults
         synchronized (PropertiesManager.stepRunResults) {
             for (String name : uniqueStepNames) {
                 // calculate new statDTO
-                List<IStepRunResult> collection = PropertiesManager.stepRunResults.stream().filter(s -> s.name().equals(name)).collect(Collectors.toList());
+                List<StepRunResultDTO> collection = PropertiesManager.stepRunResults.stream().filter(s -> s.name().equals(name)).collect(Collectors.toList());
                 Duration duration = Duration.ofMillis(collection.stream().mapToLong(s -> s.duration().toMillis()).sum() / collection.size());
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.STEP, name, collection.size(), duration);
 
