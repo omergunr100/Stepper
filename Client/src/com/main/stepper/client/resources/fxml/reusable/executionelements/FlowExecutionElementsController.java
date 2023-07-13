@@ -1,6 +1,5 @@
 package com.main.stepper.client.resources.fxml.reusable.executionelements;
 
-import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.dataview.list.ListViewController;
 import com.main.stepper.client.resources.dataview.relation.RelationViewController;
 import com.main.stepper.client.resources.fxml.reusable.executionelements.element.ElementController;
@@ -255,7 +254,6 @@ public class FlowExecutionElementsController {
             Label dataCreatedByStep = new Label("Created by step: ");
             TextField dataCreatedByStepValue = new TextField();
             dataCreatedByStepValue.setEditable(false);
-            // todo: ensure it works correctly
             dataCreatedByStepValue.setText(selectedFlowResult.getValue().flowInfo().producerStep(data).name());
             dataCreatedByStepBox.getChildren().addAll(dataCreatedByStep, dataCreatedByStepValue);
             dataView.getChildren().add(dataCreatedByStepBox);
@@ -307,7 +305,7 @@ public class FlowExecutionElementsController {
                 try {
                     listView = loader.load();
                     ListViewController controller = loader.getController();
-                    controller.loadList((List) blob);
+                    controller.loadList((ArrayList) blob);
                 } catch (IOException ignored) {
                 }
                 dataValueView = listView;

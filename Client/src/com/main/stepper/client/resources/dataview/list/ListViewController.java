@@ -38,6 +38,6 @@ public class ListViewController {
         }
         table.getItems().add(list);
         table.fixedCellSizeProperty().set(35);
-        table.prefHeightProperty().bind(table.fixedCellSizeProperty().multiply(table.getItems().size()).add(30));
+        table.prefHeightProperty().bind(table.fixedCellSizeProperty().multiply(table.getItems().size()).add(60));
     }
 }

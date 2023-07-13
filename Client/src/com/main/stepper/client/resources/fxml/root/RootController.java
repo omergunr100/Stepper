@@ -15,33 +15,39 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class RootController {
     // stage
     private Stage primaryStage;
+    // root
+    @FXML private GridPane root;
     // header elements
-    @FXML LoadCSSController loadCSSController;
-    @FXML TextField userNameTextField;
-    @FXML CheckBox isManagerCheckBox;
-    @FXML TextField assignedRolesTextField;
+    @FXML private LoadCSSController loadCSSController;
+    @FXML private TextField userNameTextField;
+    @FXML private CheckBox isManagerCheckBox;
+    @FXML private TextField assignedRolesTextField;
     // tabs
-    @FXML TabPane tabs;
-    @FXML Tab flowsDefinitionTab;
-    @FXML Tab flowsExecutionTab;
-    @FXML Tab executionsHistoryTab;
-    @FXML Tab statisticsTab;
+    @FXML private TabPane tabs;
+    @FXML private Tab flowsDefinitionTab;
+    @FXML private Tab flowsExecutionTab;
+    @FXML private Tab executionsHistoryTab;
+    @FXML private Tab statisticsTab;
     // tab screen controllers
-    @FXML FlowsDefinitionController flowsDefinitionController;
-    @FXML FlowExecutionController flowExecutionController;
-    @FXML ExecutionHistoryScreenController flowExecutionHistoryController;
-    @FXML StatisticsScreenController statisticsScreenController;
+    @FXML private FlowsDefinitionController flowsDefinitionController;
+    @FXML private FlowExecutionController flowExecutionController;
+    @FXML private ExecutionHistoryScreenController flowExecutionHistoryController;
+    @FXML private StatisticsScreenController statisticsScreenController;
 
     public RootController() {
     }
 
     @FXML public void initialize(){
         // bind to properties
+        PropertiesManager.health.addListener((observable, oldValue, newValue) -> {
+            root.setDisable(!newValue);
+        });
         userNameTextField.textProperty().bind(PropertiesManager.userName);
         isManagerCheckBox.selectedProperty().bind(PropertiesManager.isManager);
         PropertiesManager.roles.addListener((ListChangeListener.Change<? extends Role> c) -> {

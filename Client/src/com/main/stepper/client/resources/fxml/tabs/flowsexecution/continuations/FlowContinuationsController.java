@@ -50,6 +50,9 @@ public class FlowContinuationsController {
 
         // listen for change in selection and update selected flow
         continuationsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
             PropertiesManager.currentFlowExecutionUserInputs.set(null);
             PropertiesManager.continuation.set(PropertiesManager.flowRunResults.get(0));
             PropertiesManager.executionSelectedFlow.set(newValue);
@@ -57,21 +60,16 @@ public class FlowContinuationsController {
 
         // listen for when to show continuations table
         // when (currentFlow is the same as the last flow in run history) and (final run history has status that is not running) and (isFlowExecutionRunning is false)
-        BooleanBinding currentFlowIsLastFlowRun = Bindings.createBooleanBinding(() -> PropertiesManager.flowRunResults.isEmpty() || PropertiesManager.executionSelectedFlow.isNull().getValue() ? false : PropertiesManager.flowRunResults.get(0).name().equals(PropertiesManager.executionSelectedFlow.getName()), PropertiesManager.flowRunResults, PropertiesManager.executionSelectedFlow);
-        BooleanBinding lastFlowFinished = Bindings.createBooleanBinding(() -> PropertiesManager.flowRunResults.isEmpty() ? false : !PropertiesManager.flowRunResults.get(0).result().equals(FlowResult.RUNNING), PropertiesManager.flowRunResults);
-        PropertiesManager.isFlowExecutionRunning.not()
-                .and(currentFlowIsLastFlowRun)
-                .and(lastFlowFinished).addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        setContinuations(PropertiesManager.executionSelectedFlow.get().continuations());
-                    } else {
-                        reset();
-                    }
-                });
+        PropertiesManager.executionRunningFlow.addListener((observable, oldValue, newValue) -> {
+            if (!newValue.result().equals(FlowResult.RUNNING)) {
+                setContinuations(PropertiesManager.executionSelectedFlow.get().continuations());
+            } else {
+                continuationsTable.setVisible(false);
+            }
+        });
     }
 
     public void setContinuations(List<String> continuations) {
-        reset();
         if (!continuations.isEmpty()) {
             List<FlowInfoDTO> collect;
             synchronized (PropertiesManager.flowInformationList) {
@@ -79,14 +77,9 @@ public class FlowContinuationsController {
             }
             if (!collect.isEmpty()) {
                 // set continuations
-                continuationsTable.getItems().addAll(collect);
+                continuationsTable.getItems().setAll(collect);
                 continuationsTable.setVisible(true);
             }
         }
-    }
-
-    public void reset() {
-        continuationsTable.getItems().clear();
-        continuationsTable.setVisible(false);
     }
 }

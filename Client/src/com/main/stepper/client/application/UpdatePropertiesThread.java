@@ -41,10 +41,36 @@ public class UpdatePropertiesThread extends Thread{
     public void run() {
         while (true) {
             try {
-                updateProperties();
+                checkServerHealth();
                 sleep(500);
             } catch (InterruptedException ignored) {
             }
+        }
+    }
+
+    private static void checkServerHealth() {
+        Request request = new Request.Builder()
+                .url(URLManager.SERVER_HEALTH)
+                .get()
+                .build();
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // freeze application
+                    Platform.runLater(() -> health.set(false));
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.code() == 200) {
+                        Platform.runLater(() -> health.set(true));
+                        updateProperties();
+                    }
+                    response.close();
+                }
+            });
         }
     }
 
@@ -109,7 +135,7 @@ public class UpdatePropertiesThread extends Thread{
         }
         if (stepRunResultList.isEmpty())
             return;
-        stepRunResults.setAll(stepRunResultList);
+        Platform.runLater(() -> stepRunResults.setAll(stepRunResultList));
     }
 
     private static void updateUserData() {

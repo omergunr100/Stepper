@@ -110,7 +110,7 @@ public class StatisticsScreenController {
         synchronized (PropertiesManager.flowRunResults) {
             for (String name : uniqueFlowNames) {
                 // calculate new statDTO
-                List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> f.name().equals(name)).collect(Collectors.toList());
+                List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> f.name().equals(name) && !f.result().equals(FlowResult.RUNNING)).collect(Collectors.toList());
                 Duration duration = Duration.ofMillis(collection.stream().mapToLong(f -> f.duration().toMillis()).sum() / collection.size());
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.FLOW, name, collection.size(), duration);
 
@@ -169,7 +169,7 @@ public class StatisticsScreenController {
                     existingStatDTO.setAvgRunTime(statDTO.getAvgRunTime());
                 } else {
                     // if it doesn't, add it to the list
-                    flowStatsList.add(statDTO);
+                    stepStatsList.add(statDTO);
                 }
             }
         }

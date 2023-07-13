@@ -57,7 +57,6 @@ public class FlowExecutionElementsController {
         stepElementControllers = new ArrayList<>();
         stepElements = new ArrayList<>();
 
-        // todo: replace with bindings to the PropertiesManager
         // setup bindings and listeners
         currentFlowResult = new SimpleObjectProperty<>();
         currentStepResult = new SimpleObjectProperty<>();

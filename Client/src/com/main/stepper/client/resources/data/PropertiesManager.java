@@ -22,6 +22,7 @@ public class PropertiesManager {
             .cookieJar(new CookieManager())
             .build();
 
+    public static SimpleBooleanProperty health = new SimpleBooleanProperty(false);
     public static SimpleStringProperty userName = new SimpleStringProperty();
     public static SimpleBooleanProperty isManager = new SimpleBooleanProperty();
     public static ObservableList<Role> roles = FXCollections.observableArrayList();
@@ -34,7 +35,6 @@ public class PropertiesManager {
 
     public static SimpleObjectProperty<FlowInfoDTO> currentFlow = new SimpleObjectProperty<>();
     public static SimpleObjectProperty<ExecutionUserInputsDTO> currentFlowExecutionUserInputs = new SimpleObjectProperty<>();
-    public static SimpleBooleanProperty isFlowExecutionRunning = new SimpleBooleanProperty(false);
 
     // execution screen properties
     public static SimpleObjectProperty<FlowInfoDTO> executionSelectedFlow = new SimpleObjectProperty<>();

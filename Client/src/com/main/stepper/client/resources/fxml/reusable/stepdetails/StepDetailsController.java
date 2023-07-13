@@ -17,6 +17,8 @@ import com.main.stepper.shared.structures.step.StepExecutionContextDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
+import com.sun.javafx.tk.FontLoader;
+import com.sun.javafx.tk.Toolkit;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -109,9 +111,11 @@ public class StepDetailsController {
         List<Log> logs = context.getLogs();
         for (int i = 0; i < logs.size(); i++) {
             HBox logView = new HBox();
-            Label log = new Label(logs.get(i).toString());
+            Label log = new Label();
             logView.getChildren().add(log);
             logBox.getChildren().add(logView);
+            log.setText(logs.get(i).toString());
+            // todo: figure out why label is cutting out instead of scrolling
         }
 
         root.setVisible(true);

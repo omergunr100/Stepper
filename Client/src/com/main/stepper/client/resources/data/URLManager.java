@@ -2,6 +2,7 @@ package com.main.stepper.client.resources.data;
 
 public class URLManager {
     public static final String SERVER_ADDRESS = "http://localhost:8080/stepper";
+    public static final String SERVER_HEALTH = SERVER_ADDRESS + "/health";
 
     public static final String LOGIN = SERVER_ADDRESS + "/users/sign";
 

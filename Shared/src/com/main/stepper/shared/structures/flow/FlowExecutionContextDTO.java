@@ -3,6 +3,7 @@ package com.main.stepper.shared.structures.flow;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.gson.FixerUtility;
 import com.main.stepper.shared.structures.step.StepExecutionContextDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
@@ -51,5 +52,10 @@ public class FlowExecutionContextDTO {
 
     public String user() {
         return user;
+    }
+
+    public FlowExecutionContextDTO fix() {
+        FixerUtility.fixMap(variables);
+        return this;
     }
 }

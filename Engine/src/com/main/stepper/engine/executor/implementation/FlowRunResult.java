@@ -162,7 +162,7 @@ public class FlowRunResult implements IFlowRunResult {
 
     @Override
     public FlowRunResultDTO toDTO() {
-        Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().stream().collect(Collectors.toMap(
+        Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().stream().collect(Collectors.toMap(
                 cont -> cont.information().toDTO(),
                 cont -> new HashMap<>(flowDefinition.continuationMapping(cont).entrySet().stream()
                         .collect(Collectors.toMap(
@@ -177,11 +177,11 @@ public class FlowRunResult implements IFlowRunResult {
                 startTime,
                 duration,
                 continuationMappings,
-                userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
-                internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
-                flowOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                userInputs == null || userInputs.isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                internalOutputs == null || internalOutputs.isEmpty() ? new HashMap<>() : internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                flowOutputs == null || flowOutputs.isEmpty() ? new HashMap<>() : flowOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
                 stepRunUUID,
-                stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
+                stepRunResults == null || stepRunResults.isEmpty() ? new ArrayList<>() : stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
                 flowExecutionContext.toDTO(),
                 user
         );

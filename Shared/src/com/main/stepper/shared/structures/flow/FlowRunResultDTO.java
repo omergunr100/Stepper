@@ -99,6 +99,7 @@ public class FlowRunResultDTO {
         FixerUtility.fixMap(userInputs);
         FixerUtility.fixMap(internalOutputs);
         FixerUtility.fixMap(flowOutputs);
+        context.fix();
         return this;
     }
 

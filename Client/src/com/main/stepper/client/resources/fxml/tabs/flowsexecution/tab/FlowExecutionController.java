@@ -27,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class FlowExecutionController {
     private Thread validateInputsThread = null;
     private List<FlowInputController> flowInputControllers;
     private List<Parent> flowInputComponents = new ArrayList<>();
-    @FXML SplitPane root;
+    @FXML GridPane flowInputsGrid;
     @FXML FlowPane inputsFlowPane;
     @FXML Button startButton;
     @FXML CheckBox mandatoryBox;
@@ -61,7 +62,11 @@ public class FlowExecutionController {
         flowInputComponents = new ArrayList<>();
 
         // add listener for selected flow change and update ui accordingly
-        executionSelectedFlow.addListener((observable, oldValue, newValue) -> onCurrentFlowChange());
+        executionSelectedFlow.addListener((observable, oldValue, newValue) -> {
+            if (oldValue == null && newValue == null)
+                return;
+            onCurrentFlowChange();
+        });
 
         // setup sub-controllers
         executionElementsController.setBindings(executionRunningFlow, executionSelectedStep);
@@ -69,6 +74,8 @@ public class FlowExecutionController {
     }
 
     public void reset() {
+        executionSelectedFlow.set(null);
+        flowInputsGrid.setDisable(true);
         startButton.setDisable(true);
         optionalBox.setDisable(true);
         mandatoryBox.setDisable(true);
@@ -78,16 +85,12 @@ public class FlowExecutionController {
 
         flowInputControllers.clear();
         executionElementsController.reset();
-        continuationsController.reset();
         stepExecutionDetailsController.reset();
     }
 
     private void onCurrentFlowChange() {
-        if (executionSelectedFlow.isNull().getValue()){
+        if (executionSelectedFlow.isNull().get()){
             validateInputsThread.interrupt();
-            synchronized (currentFlowExecutionUserInputs.get()) {
-                currentFlowExecutionUserInputs.set(null);
-            }
             reset();
             return;
         }
@@ -106,9 +109,9 @@ public class FlowExecutionController {
 
 
         executionElementsController.reset();
-        continuationsController.reset();
         stepExecutionDetailsController.reset();
 
+        flowInputsGrid.setDisable(false);
         mandatoryBox.setDisable(false);
         optionalBox.setDisable(false);
     }
@@ -163,10 +166,9 @@ public class FlowExecutionController {
     }
 
     @FXML private void startFlow() {
-        continuationsController.reset();
         stepExecutionDetailsController.reset();
         executionElementsController.reset();
-
+        flowInputsGrid.setDisable(true);
         requestExecuteFlow();
     }
 
@@ -276,7 +278,6 @@ public class FlowExecutionController {
                     }
                 }
             });
-            currentFlowExecutionUserInputs.set(null);
         }
     }
 
