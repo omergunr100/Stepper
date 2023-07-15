@@ -2,9 +2,9 @@ package com.main.stepper.admin.resources.fxml.header.loadfile;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.admin.resources.dynamic.errorpopup.ErrorPopup;
-import com.main.stepper.admin.resources.fxml.root.RootController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,20 +15,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.HTTP_CLIENT;
+import static com.main.stepper.admin.resources.data.PropertiesManager.primaryStage;
 
 public class LoadFileController {
     @FXML private Button loadFileButton;
     @FXML private TextField filePathTextField;
-    private RootController rootController;
 
     public LoadFileController() {
     }
 
-    public void setRootController(RootController rootController) {
-        this.rootController = rootController;
+    @FXML private void initialize() {
+        // bind text field to property
+        filePathTextField.textProperty().bind(PropertiesManager.lastLoadedFile);
     }
 
     @FXML private void loadFile() {
@@ -37,49 +39,47 @@ public class LoadFileController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("XML Files", "*.xml")
         );
-        File chosenFile = fileChooser.showOpenDialog(rootController.getPrimaryStage());
+        File chosenFile = fileChooser.showOpenDialog(primaryStage.get());
 
         if (chosenFile == null) {
             return;
         }
 
         RequestBody body = new MultipartBody.Builder()
-                .addFormDataPart("file1", chosenFile.getName(), RequestBody.create(chosenFile, MediaType.parse("text/plain")))
+                .addFormDataPart(chosenFile.getName(), chosenFile.getName(), RequestBody.create(chosenFile, MediaType.parse("text/plain")))
                 .build();
+
         Request request = new Request.Builder()
-                .url(URLManager.LOAD_XML)
+                .url(URLManager.XML_FILE_UPLOAD)
                 .addHeader("isAdmin", "true")
                 .post(body)
                 .build();
-        Call call;
-        synchronized (HTTP_CLIENT) {
-            call = HTTP_CLIENT.newCall(request);
-        }
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                // check if request was successful
-                if (response.code() != 200) {
-                    // failed on a technicality
-                    Platform.runLater(() -> new ErrorPopup("Failed to load file, make sure it's a valid XML file!"));
-                }
-                else {
-                    // read error list
-                    Gson gson = new Gson();
-                    List<String> errors = gson.fromJson(response.body().charStream(), new TypeToken<List<String>>() {}.getType());
-                    if(errors.isEmpty()) {
-                        Platform.runLater(() -> filePathTextField.setText(chosenFile.getAbsolutePath()));
-                    }
-                    else{
-                        Platform.runLater(() -> new ErrorPopup(errors));
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> new ErrorPopup("Failed to connect to server, ensure your connection is stable!"));
-            }
-        });
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // show error popup
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.code() == 200) {
+                        Gson gson = new Gson();
+                        List<String> errors = gson.fromJson(response.body().string(), new TypeToken<ArrayList<String>>(){}.getType());
+                        if(errors.isEmpty()) {
+                            Platform.runLater(() -> PropertiesManager.lastLoadedFile.set(chosenFile.getAbsolutePath()));
+                        }
+                        else{
+                            new ErrorPopup(errors);
+                        }
+                    }
+                    else if (response.code() == 400) {
+                        new ErrorPopup("XML file is not scheme compliant!");
+                    }
+                }
+            });
+        }
     }
 }

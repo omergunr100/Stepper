@@ -3,20 +3,20 @@ package com.main.stepper.admin.application;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.admin.resources.data.URLManager;
-import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.application.Platform;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 
@@ -34,12 +34,40 @@ public class UpdatePropertiesThread extends Thread{
 
     @Override
     public void run() {
+        // todo: for debugging only, remove from code before release
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
         while (true) {
             try {
-                updateProperties();
+                checkHealth();
                 sleep(500);
             } catch (InterruptedException ignored) {
             }
+        }
+    }
+
+    private static void checkHealth() {
+        Request request = new Request.Builder()
+                .url(URLManager.SERVER_HEALTH)
+                .addHeader("isAdmin", "true")
+                .get()
+                .build();
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    health.set(false);
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() == 200) {
+                        health.set(true);
+                        updateProperties();
+                    }
+                    response.close();
+                }
+            });
         }
     }
 
@@ -61,7 +89,7 @@ public class UpdatePropertiesThread extends Thread{
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.code() == 200) {
                         Gson gson = new Gson();
-                        List<IFlowRunResult> flowRunResultList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<IFlowRunResult>>(){}.getType());
+                        List<FlowRunResultDTO> flowRunResultList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
                         Platform.runLater(() -> {
                             synchronized (flowRunResults) {
                                 // if received an empty list exit
@@ -88,9 +116,9 @@ public class UpdatePropertiesThread extends Thread{
 
     private static void updateStepRunResults() {
         // create a list of all stepRunResults from flowRunResults
-        List<IStepRunResult> stepRunResultList = new ArrayList<>();
+        List<StepRunResultDTO> stepRunResultList = new ArrayList<>();
         synchronized (stepRunResults) {
-            for (IFlowRunResult result : flowRunResults) {
+            for (FlowRunResultDTO result : flowRunResults) {
                 stepRunResultList.addAll(result.stepRunResults());
             }
         }
@@ -117,14 +145,19 @@ public class UpdatePropertiesThread extends Thread{
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() == 200) {
                         Gson gson = new Gson();
-                        List<UserData> dataList = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<UserData>>() {}.getType());
+                        List<UserData> dataList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<UserData>>() {}.getType());
                         Platform.runLater(() -> {
                             synchronized (userDataList) {
-                                // if received an empty list exit
-                                if (dataList.isEmpty())
-                                    return;
-                                // else set all
-                                userDataList.setAll(dataList);
+                                for (UserData data : dataList) {
+                                    Optional<UserData> first = userDataList.stream().filter(user -> user.name().equals(data.name())).findFirst();
+                                    if (first.isPresent()) {
+                                        if (!first.get().equals(data))
+                                            first.get().update(data);
+                                    }
+                                    else {
+                                        userDataList.add(data);
+                                    }
+                                }
                             }
                         });
                     }
@@ -151,14 +184,24 @@ public class UpdatePropertiesThread extends Thread{
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() == 200) {
                         Gson gson = new Gson();
-                        List<Role> roles = gson.fromJson(response.body().charStream(), new TypeToken<ArrayList<Role>>() {}.getType());
+                        List<Role> roles = gson.fromJson(response.body().string(), new TypeToken<ArrayList<Role>>() {}.getType());
                         Platform.runLater(() -> {
                             synchronized (rolesList) {
-                                // if received an empty list exit
-                                if (roles.isEmpty())
-                                    return;
-                                // else set all
-                                rolesList.setAll(roles);
+                                if (rolesList.isEmpty()) {
+                                    rolesList.setAll(roles);
+                                }
+                                else {
+                                    for (Role role : rolesList) {
+                                        Optional<Role> first = roles.stream().filter(r -> r.name().equals(role.name())).findFirst();
+                                        if (first.isPresent()) {
+                                            if (!first.get().equals(role))
+                                                first.get().update(role);
+                                        }
+                                        else {
+                                            roles.add(role);
+                                        }
+                                    }
+                                }
                             }
                         });
                     }

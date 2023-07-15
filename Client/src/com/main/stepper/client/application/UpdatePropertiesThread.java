@@ -176,15 +176,17 @@ public class UpdatePropertiesThread extends Thread{
 
     private static void updateFlowInformation() {
         Set<String> flows = new HashSet<>();
-        synchronized (roles) {
-            if (roles.isEmpty())
-                return;
-            for (Role role : roles) {
-                flows.addAll(role.allowedFlows());
+        if (!isManager.get()) {
+            synchronized (roles) {
+                if (roles.isEmpty())
+                    return;
+                for (Role role : roles) {
+                    flows.addAll(role.allowedFlows());
+                }
             }
+            if (flows.isEmpty())
+                return;
         }
-        if (flows.isEmpty())
-            return;
 
         Gson gson = new Gson();
         RequestBody body = RequestBody.create(gson.toJson(flows, new TypeToken<HashSet<String>>() {}.getType()), MediaType.parse("application/json"));
@@ -209,9 +211,6 @@ public class UpdatePropertiesThread extends Thread{
                         final List<FlowInfoDTO> informations = gson.fromJson(responseBody, new TypeToken<ArrayList<FlowInfoDTO>>(){}.getType());
                         Platform.runLater(() -> {
                             synchronized (flowInformationList) {
-                                // if received an empty list exit
-                                if (informations.isEmpty())
-                                    return;
                                 // if list was empty, add all
                                 if (flowInformationList.isEmpty())
                                     flowInformationList.addAll(informations);
@@ -220,7 +219,11 @@ public class UpdatePropertiesThread extends Thread{
                                     List<FlowInfoDTO> newInfoList = informations.stream()
                                             .filter(information -> !flowInformationList.contains(information))
                                             .collect(Collectors.toList());
+                                    List<FlowInfoDTO> deletedInfoList = flowInformationList.stream()
+                                            .filter(information -> !informations.contains(information))
+                                            .collect(Collectors.toList());
                                     flowInformationList.addAll(newInfoList);
+                                    flowInformationList.removeAll(deletedInfoList);
                                 }
                             }
                         });

@@ -27,6 +27,9 @@ public class UserData {
     public boolean isManager() {
         return isManager;
     }
+    public void setManager(boolean manager) {
+        isManager = manager;
+    }
 
     public List<Role> roles() {
         synchronized (roles) {
@@ -54,6 +57,14 @@ public class UserData {
         }
     }
 
+    public boolean updateRoles(List<Role> roles) {
+        synchronized (this.roles) {
+            this.roles.clear();
+            this.roles.addAll(roles);
+            return true;
+        }
+    }
+
     public List<UUID> flowExecutionHistory() {
         synchronized (flowExecutionHistory) {
             return new ArrayList<>(flowExecutionHistory);
@@ -66,6 +77,14 @@ public class UserData {
         }
     }
 
+    public void update(UserData userData) {
+        this.isManager = userData.isManager;
+        this.roles.clear();
+        this.roles.addAll(userData.roles);
+        this.flowExecutionHistory.clear();
+        this.flowExecutionHistory.addAll(userData.flowExecutionHistory);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,11 +92,18 @@ public class UserData {
 
         UserData userData = (UserData) o;
 
-        return Objects.equals(name, userData.name);
+        if (isManager != userData.isManager) return false;
+        if (!Objects.equals(name, userData.name)) return false;
+        if (!roles.equals(userData.roles)) return false;
+        return flowExecutionHistory.equals(userData.flowExecutionHistory);
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (isManager ? 1 : 0);
+        result = 31 * result + roles.hashCode();
+        result = 31 * result + flowExecutionHistory.hashCode();
+        return result;
     }
 }

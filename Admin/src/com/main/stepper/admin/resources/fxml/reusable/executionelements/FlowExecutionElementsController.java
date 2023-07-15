@@ -1,21 +1,19 @@
-package com.main.stepper.admin.resources.fxml.tabs.executionshistory.executionelements;
+package com.main.stepper.admin.resources.fxml.reusable.executionelements;
 
 import com.main.stepper.admin.resources.dataview.list.ListViewController;
 import com.main.stepper.admin.resources.dataview.relation.RelationViewController;
-import com.main.stepper.admin.resources.fxml.tabs.executionshistory.executionelements.element.ElementController;
-import com.main.stepper.admin.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
+import com.main.stepper.admin.resources.fxml.reusable.executionelements.element.ElementController;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.GenericList;
 import com.main.stepper.data.implementation.mapping.api.PairData;
 import com.main.stepper.data.implementation.relation.Relation;
-import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.io.api.DataNecessity;
-import com.main.stepper.io.api.IDataIO;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
+import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import javafx.application.Platform;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,14 +29,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class FlowExecutionElementsController {
-    private Property<IFlowRunResult> currentFlowResult;
-    private Property<IStepRunResult> currentStepResult;
-    private ExecutionHistoryScreenController parent;
+    private SimpleObjectProperty<FlowRunResultDTO> selectedFlowResult;
+    private StepRunResultDTO selectedStepResult;
+    private SimpleObjectProperty<StepRunResultDTO> currentStepResult;
     @FXML private VBox root;
     // header elements
     private ElementController currentFlowUUID;
@@ -52,18 +52,21 @@ public class FlowExecutionElementsController {
     public FlowExecutionElementsController() {
     }
 
+    public void setBindings(SimpleObjectProperty<FlowRunResultDTO> flowRunResultProperty, SimpleObjectProperty<StepRunResultDTO> stepRunResultProperty) {
+        selectedFlowResult = flowRunResultProperty;
+        currentStepResult = stepRunResultProperty;
+        selectedFlowResult.addListener((observable, oldValue, newValue) -> onSelectedFlowChange());
+    }
+
     @FXML public void initialize() {
         // initialize step element list
         stepElementControllers = new ArrayList<>();
         stepElements = new ArrayList<>();
 
         // setup bindings and listeners
-        currentFlowResult = new SimpleObjectProperty<>();
+        selectedFlowResult = new SimpleObjectProperty<>();
         currentStepResult = new SimpleObjectProperty<>();
-    }
-
-    public void setParent(ExecutionHistoryScreenController parent) {
-        this.parent = parent;
+        selectedStepResult = null;
     }
 
     public void reset() {
@@ -81,7 +84,7 @@ public class FlowExecutionElementsController {
             Parent loaded = loader.load();
             currentFlowUUID = loader.getController();
             currentFlowUUID.setPropertyName("Run UUID:");
-            Platform.runLater(() -> currentFlowUUID.setPropertyValue(currentFlowResult.getValue().runId().toString()));
+            Platform.runLater(() -> currentFlowUUID.setPropertyValue(selectedFlowResult.getValue().runId().toString()));
             currentFlowUUID.removeButton();
             root.getChildren().add(loaded);
             // Name
@@ -90,7 +93,7 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowName = loader.getController();
             currentFlowName.setPropertyName("Flow Name:");
-            Platform.runLater(() -> currentFlowName.setPropertyValue(currentFlowResult.getValue().name()));
+            Platform.runLater(() -> currentFlowName.setPropertyValue(selectedFlowResult.getValue().name()));
             currentFlowName.removeButton();
             root.getChildren().add(loaded);
             // Status
@@ -99,7 +102,7 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowStatus = loader.getController();
             currentFlowStatus.setPropertyName("Status\\Result:");
-            Platform.runLater(() -> currentFlowStatus.setPropertyValue(currentFlowResult.getValue().result().toString()));
+            Platform.runLater(() -> currentFlowStatus.setPropertyValue(selectedFlowResult.getValue().result().toString()));
             currentFlowStatus.removeButton();
             root.getChildren().add(loaded);
             // Duration
@@ -108,7 +111,12 @@ public class FlowExecutionElementsController {
             loaded = loader.load();
             currentFlowDuration = loader.getController();
             currentFlowDuration.setPropertyName("Duration:");
-            Platform.runLater(() -> currentFlowDuration.setPropertyValue(currentFlowResult.getValue().duration().toMillis() + " ms"));
+            Platform.runLater(() -> {
+                if (selectedFlowResult.getValue().duration() == null)
+                    currentFlowDuration.setPropertyValue(Duration.between(selectedFlowResult.getValue().startTime(), Instant.now()).toMillis() + " ms");
+                else
+                    currentFlowDuration.setPropertyValue(selectedFlowResult.getValue().duration().toMillis() + " ms");
+            });
             currentFlowDuration.removeButton();
             root.getChildren().add(loaded);
             // Spacing from step elements
@@ -130,7 +138,7 @@ public class FlowExecutionElementsController {
         try {
             Parent loaded = loader.load();
             ElementController currentStep = loader.getController();
-            final IStepRunResult currentStepResultValue = currentStepResult.getValue();
+            final StepRunResultDTO currentStepResultValue = selectedStepResult;
             currentStep.setPropertyName("Step:");
             currentStep.setPropertyValue(currentStepResultValue.alias() == null ? currentStepResultValue.name() : currentStepResultValue.alias());
             currentStep.setContext(currentStepResultValue);
@@ -143,18 +151,18 @@ public class FlowExecutionElementsController {
     }
 
     private void loadFlowInputsFormalOutputs() {
-        IFlowRunResult flowResult = currentFlowResult.getValue();
+        FlowRunResultDTO flowResult = selectedFlowResult.getValue();
         // get map of formal outputs and values
-        Map<IDataIO, Object> flowFormalOutputs = flowResult.flowOutputs();
+        Map<DataIODTO, Object> flowFormalOutputs = flowResult.flowOutputs();
         // get map of user inputs and values
-        Map<IDataIO, Object> flowUserInputs = flowResult.userInputs();
+        Map<DataIODTO, Object> flowUserInputs = flowResult.userInputs();
         // get map of all internal outputs and values
-        Map<IDataIO, Object> flowInternalOutputs = flowResult.internalOutputs();
+        Map<DataIODTO, Object> flowInternalOutputs = flowResult.internalOutputs();
 
         // create list of elements for user inputs and add to components
         Label userInputsLabel = new Label("User inputs:");
         root.getChildren().add(userInputsLabel);
-        for (Map.Entry<IDataIO, Object> entry : flowUserInputs.entrySet()) {
+        for (Map.Entry<DataIODTO, Object> entry : flowUserInputs.entrySet()) {
             root.getChildren().add(makeDataView(entry.getKey(), entry.getValue()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
@@ -166,7 +174,7 @@ public class FlowExecutionElementsController {
         // create list of elements for formal outputs and add to components
         Label formalOutputsLabel = new Label("Formal outputs:");
         root.getChildren().add(formalOutputsLabel);
-        for (Map.Entry<IDataIO, Object> entry : flowFormalOutputs.entrySet()) {
+        for (Map.Entry<DataIODTO, Object> entry : flowFormalOutputs.entrySet()) {
             root.getChildren().add(makeDataView(entry.getKey(), entry.getValue()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
@@ -178,7 +186,7 @@ public class FlowExecutionElementsController {
         // create list of elements for all outputs
         Label internalOutputsLabel = new Label("Internal outputs:");
         root.getChildren().add(internalOutputsLabel);
-        for (Map.Entry<IDataIO, Object> entry : flowInternalOutputs.entrySet()) {
+        for (Map.Entry<DataIODTO, Object> entry : flowInternalOutputs.entrySet()) {
             root.getChildren().add(makeDataView(entry.getKey(), entry.getValue()));
             Label spacer = new Label();
             spacer.setMinHeight(10);
@@ -186,22 +194,25 @@ public class FlowExecutionElementsController {
         }
     }
 
-    public void forceLoadAllElementsFrom(IFlowRunResult flowRunResult) {
+    public void onSelectedFlowChange() {
         reset();
-        currentFlowResult.setValue(flowRunResult);
-        for (int i = 0; i < flowRunResult.stepRunResults().size(); i++) {
+        if (selectedFlowResult.isNull().get()) {
+            currentStepResult.set(null);
+            return;
+        }
+        for (int i = 0; i < selectedFlowResult.get().stepRunResults().size(); i++) {
             updateHeader();
-            currentStepResult.setValue(flowRunResult.stepRunResults().get(i));
+            selectedStepResult = selectedFlowResult.get().stepRunResults().get(i);
             updateElements();
         }
         loadFlowInputsFormalOutputs();
     }
 
-    public void selectStep(IStepRunResult step) {
-        parent.selectStepRunDetails(step);
+    public void selectStep(StepRunResultDTO step) {
+        currentStepResult.set(step);
     }
 
-    private Parent makeDataView(IDataIO data, Object blob) {
+    private Parent makeDataView(DataIODTO data, Object blob) {
         if (data == null)
             return null;
         VBox dataView = new VBox();
@@ -212,7 +223,7 @@ public class FlowExecutionElementsController {
         Label dataName = new Label("Data name: ");
         TextField dataNameValue = new TextField();
         dataNameValue.setEditable(false);
-        dataNameValue.setText(data.getName());
+        dataNameValue.setText(data.name());
         dataNameBox.getChildren().addAll(dataName, dataNameValue);
         dataView.getChildren().add(dataNameBox);
 
@@ -222,7 +233,7 @@ public class FlowExecutionElementsController {
         Label dataType = new Label("Data type: ");
         TextField dataTypeValue = new TextField();
         dataTypeValue.setEditable(false);
-        dataTypeValue.setText(data.getDataDefinition().getName());
+        dataTypeValue.setText(data.type().getName());
         dataTypeBox.getChildren().addAll(dataType, dataTypeValue);
         dataView.getChildren().add(dataTypeBox);
 
@@ -232,18 +243,18 @@ public class FlowExecutionElementsController {
         Label dataRequirement = new Label("Data requirement: ");
         TextField dataRequirementValue = new TextField();
         dataRequirementValue.setEditable(false);
-        dataRequirementValue.setText(data.getNecessity().equals(DataNecessity.NA) ? "Output" : data.getNecessity().toString());
+        dataRequirementValue.setText(data.necessity().equals(DataNecessity.NA) ? "Output" : data.necessity().toString());
         dataRequirementBox.getChildren().addAll(dataRequirement, dataRequirementValue);
         dataView.getChildren().add(dataRequirementBox);
 
         // optional created by step
-        if (data.getNecessity().equals(DataNecessity.NA)) {
+        if (data.necessity().equals(DataNecessity.NA)) {
             HBox dataCreatedByStepBox = new HBox();
             dataCreatedByStepBox.setSpacing(10);
             Label dataCreatedByStep = new Label("Created by step: ");
             TextField dataCreatedByStepValue = new TextField();
             dataCreatedByStepValue.setEditable(false);
-            dataCreatedByStepValue.setText(currentFlowResult.getValue().flowDefinition().reverseMapDataIO(data).name());
+            dataCreatedByStepValue.setText(selectedFlowResult.getValue().flowInfo().producerStep(data).name());
             dataCreatedByStepBox.getChildren().addAll(dataCreatedByStep, dataCreatedByStepValue);
             dataView.getChildren().add(dataCreatedByStepBox);
         }
@@ -255,19 +266,19 @@ public class FlowExecutionElementsController {
         dataView.getChildren().add(dataValue);
         Parent dataValueView = null;
         if (
-                String.class.isAssignableFrom(data.getDataDefinition().getType())
-                        || Double.class.isAssignableFrom(data.getDataDefinition().getType())
-                        || Integer.class.isAssignableFrom(data.getDataDefinition().getType())
-                        || PairData.class.isAssignableFrom(data.getDataDefinition().getType())
-                        || FileData.class.isAssignableFrom(data.getDataDefinition().getType())
-                        || ZipperEnumData.class.isAssignableFrom(data.getDataDefinition().getType())
+                String.class.isAssignableFrom(data.type().getType())
+                        || Double.class.isAssignableFrom(data.type().getType())
+                        || Integer.class.isAssignableFrom(data.type().getType())
+                        || PairData.class.isAssignableFrom(data.type().getType())
+                        || FileData.class.isAssignableFrom(data.type().getType())
+                        || ZipperEnumData.class.isAssignableFrom(data.type().getType())
         ) {
             HBox valueBox = new HBox();
             valueBox.setSpacing(10);
             TextField dataValueField = new TextField();
             dataValueField.setEditable(false);
             if (blob == null){
-                if (currentFlowResult.getValue().result().equals(FlowResult.RUNNING))
+                if (selectedFlowResult.getValue().result().equals(FlowResult.RUNNING))
                     blob = "Data not available";
                 else
                     blob = "Not created due to failure in flow";
@@ -276,12 +287,12 @@ public class FlowExecutionElementsController {
             dataValueView = dataValueField;
         }
         else if (
-                GenericList.class.isAssignableFrom(data.getDataDefinition().getType())
+                GenericList.class.isAssignableFrom(data.type().getType())
         ) {
             if (blob == null) {
                 TextField dataValueField = new TextField();
                 dataValueField.setEditable(false);
-                if (currentFlowResult.getValue().result().equals(FlowResult.RUNNING))
+                if (selectedFlowResult.getValue().result().equals(FlowResult.RUNNING))
                     dataValueField.setText("Data not available");
                 else
                     dataValueField.setText("Not created due to failure in flow");
@@ -294,19 +305,19 @@ public class FlowExecutionElementsController {
                 try {
                     listView = loader.load();
                     ListViewController controller = loader.getController();
-                    controller.loadList((GenericList) blob);
+                    controller.loadList((ArrayList) blob);
                 } catch (IOException ignored) {
                 }
                 dataValueView = listView;
             }
         }
         else if (
-                Relation.class.isAssignableFrom(data.getDataDefinition().getType())
+                Relation.class.isAssignableFrom(data.type().getType())
         ) {
             if (blob == null) {
                 TextField dataValueField = new TextField();
                 dataValueField.setEditable(false);
-                if (currentFlowResult.getValue().result().equals(FlowResult.RUNNING))
+                if (selectedFlowResult.getValue().result().equals(FlowResult.RUNNING))
                     dataValueField.setText("Data not available");
                 else
                     dataValueField.setText("Not created due to failure in flow");

@@ -41,7 +41,7 @@ public class FlowRunHistoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // get user cookie
         Cookie[] cookies = req.getCookies();
-        Optional<Cookie> cookie = Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
+        Optional<Cookie> cookie = cookies == null ? Optional.ofNullable(null) : Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
         // initialize return list
         List<FlowRunResultDTO> results;
         if (cookie.isPresent()) {

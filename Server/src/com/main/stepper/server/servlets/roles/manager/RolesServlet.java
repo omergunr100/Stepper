@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class RolesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        gson.toJson(RoleManager.getRoles(), new TypeToken<List<Role>>(){}.getType(), resp.getWriter());
+        gson.toJson(RoleManager.getRoles(), new TypeToken<ArrayList<Role>>(){}.getType(), resp.getWriter());
     }
 
     /**

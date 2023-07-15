@@ -16,12 +16,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(name="UploadXMLServlet", urlPatterns = "/files/xml/")
+@WebServlet(name="UploadXMLServlet", urlPatterns = "/files/xml")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10 MB
         maxFileSize = 1024 * 1024 * 50, // 50 MB
         maxRequestSize = 1024 * 1024 * 100 // 100 MB
@@ -54,7 +55,7 @@ public class UploadXMLServlet extends HttpServlet {
         try {
             List<String> errors = engine.readSystemFromXMLString(fileContent.toString());
             Gson gson = new Gson();
-            gson.toJson(errors, new TypeToken<List<String>>(){}.getType(), resp.getWriter());
+            gson.toJson(errors, new TypeToken<ArrayList<String>>(){}.getType(), resp.getWriter());
             resp.setStatus(HttpServletResponse.SC_OK);
             List<IFlowDefinition> flows = engine.getFlows();
             synchronized (flows) {
