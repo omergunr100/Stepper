@@ -22,6 +22,7 @@ public enum StepRegistry implements IStepDefinition {
     ZIPPER(new ZipperStep()),
     COMMAND_LINE(new CommandLineStep()),
     HTTP_CALL(new HttpCallStep()),
+    JASONATOR(new JasonatorStep()),
     ;
 
     private final IStepDefinition step;

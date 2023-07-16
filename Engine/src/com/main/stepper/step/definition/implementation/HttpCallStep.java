@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.StepRunResult;
+import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
 import com.main.stepper.step.definition.api.AbstractStepDefinition;
@@ -20,11 +21,11 @@ public class HttpCallStep extends AbstractStepDefinition {
 
     public HttpCallStep() {
         super("HTTP Call", false);
-        addInput(new DataIO("RESOURCE", "Resource Name (include query parameters)", DDRegistry.STRING));
-        addInput(new DataIO("ADDRESS", "Domain:Port", DDRegistry.STRING));
-        addInput(new DataIO("PROTOCOL", "Protocol", DDRegistry.HTTP_PROTOCOL_ENUM));
-        addInput(new DataIO("METHOD", "Method", DDRegistry.HTTP_VERB_ENUM));
-        addInput(new DataIO("BODY", "Request Body", DDRegistry.JSON));
+        addInput(new DataIO("RESOURCE", "Resource Name (include query parameters)", DataNecessity.MANDATORY, DDRegistry.STRING));
+        addInput(new DataIO("ADDRESS", "Domain:Port", DataNecessity.MANDATORY, DDRegistry.STRING));
+        addInput(new DataIO("PROTOCOL", "Protocol", DataNecessity.MANDATORY, DDRegistry.HTTP_PROTOCOL_ENUM));
+        addInput(new DataIO("METHOD", "Method", DataNecessity.OPTIONAL, DDRegistry.HTTP_VERB_ENUM));
+        addInput(new DataIO("BODY", "Request Body", DataNecessity.OPTIONAL, DDRegistry.JSON));
         addOutput(new DataIO("CODE", "Response Code", DDRegistry.NUMBER));
         addOutput(new DataIO("RESPONSE_BODY", "Response Body", DDRegistry.STRING));
     }
