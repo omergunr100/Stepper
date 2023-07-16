@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet(name="RolesServlet", urlPatterns = "/roles")
@@ -36,17 +37,27 @@ public class RolesServlet extends HttpServlet {
     }
 
     /**
-     * This method is used to define a brand-new role.
+     * This method is used to change an existing role or define a brand-new role.
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        Role newRole = gson.fromJson(req.getReader(), Role.class);
-        boolean result = RoleManager.addRole(newRole);
-        if (result) {
+        Role role = gson.fromJson(req.getReader(), Role.class);
+        gson.toJson(role.isLocal(), resp.getWriter());
+        Optional<Role> existing = RoleManager.getRole(role.name());
+        if (existing.isPresent()) {
+            Role existingRole = existing.get();
+            existingRole.update(role);
             resp.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        else {
+            role.setLocal(false);
+            boolean result = RoleManager.addRole(role);
+            if (result) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
     }
 
@@ -55,7 +66,8 @@ public class RolesServlet extends HttpServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getReader().readLine();
+        Gson gson = new Gson();
+        String name = gson.fromJson(req.getReader(), String.class);
         List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
         List<UserData> collected = userDataList.stream().filter(userData -> userData.roles().stream().anyMatch(role -> role.name().equals(name))).collect(Collectors.toList());
         if (collected.isEmpty()) {
@@ -70,7 +82,6 @@ public class RolesServlet extends HttpServlet {
             // if there are users with this role
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        Gson gson = new Gson();
-        gson.toJson(collected, new TypeToken<List<UserData>>(){}.getType(), resp.getWriter());
+        gson.toJson(collected, new TypeToken<ArrayList<UserData>>(){}.getType(), resp.getWriter());
     }
 }

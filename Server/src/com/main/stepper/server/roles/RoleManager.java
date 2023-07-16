@@ -13,8 +13,8 @@ public class RoleManager {
     // default roles
     private static final String ALL_FLOWS = "All Flows";
     private static final String READ_ONLY_FLOWS = "Read Only Flows";
-    private static final Role ALL_FLOWS_ROLE = new Role(ALL_FLOWS, "Can call any flow", new ArrayList<>());
-    private static final Role READ_ONLY_FLOWS_ROLE = new Role(READ_ONLY_FLOWS, "Can call only flows that are marked as read only", new ArrayList<>());
+    private static final Role ALL_FLOWS_ROLE = new Role(ALL_FLOWS, "Can call any flow", new ArrayList<>(), true, false);
+    private static final Role READ_ONLY_FLOWS_ROLE = new Role(READ_ONLY_FLOWS, "Can call only flows that are marked as read only", new ArrayList<>(), true, false);
     private static RoleManager instance = new RoleManager();
 
     private final List<Role> roleList;

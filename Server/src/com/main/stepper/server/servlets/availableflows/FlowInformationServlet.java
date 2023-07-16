@@ -30,8 +30,12 @@ public class FlowInformationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
         // search for user cookie
+        Optional<Cookie> name;
         Cookie[] cookies = req.getCookies();
-        Optional<Cookie> name = Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
+        if (cookies == null)
+            name = Optional.empty();
+        else
+            name = Arrays.stream(cookies).filter(c -> c.getName().equals("name")).findFirst();
         List<FlowInfoDTO> information = new ArrayList<>();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder

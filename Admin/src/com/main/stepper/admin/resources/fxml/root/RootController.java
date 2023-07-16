@@ -5,6 +5,7 @@ import com.main.stepper.admin.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.admin.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.admin.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
+import com.main.stepper.admin.resources.fxml.tabs.roles.tab.RolesManagementScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.users.tab.UsersManagementScreenController;
 import javafx.fxml.FXML;
@@ -26,6 +27,7 @@ public class RootController {
     @FXML private Tab statisticsTab;
     // tab screen controllers
     @FXML private UsersManagementScreenController usersManagementScreenController;
+    @FXML private RolesManagementScreenController rolesManagementScreenController;
     @FXML private ExecutionHistoryScreenController flowExecutionHistoryController;
     @FXML private StatisticsScreenController statisticsScreenController;
 

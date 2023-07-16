@@ -52,7 +52,10 @@
                      </content></Tab>
                   <Tab fx:id="rolesManagementTab" text="Roles Management">
                      <content>
-                        <ScrollPane fitToHeight="true" fitToWidth="true" />
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <fx:include fx:id="rolesManagementScreen" source="../tabs/roles/tab/RolesManagementScreen.fxml" />
+                           </content></ScrollPane>
                      </content>
                   </Tab>
                   <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">

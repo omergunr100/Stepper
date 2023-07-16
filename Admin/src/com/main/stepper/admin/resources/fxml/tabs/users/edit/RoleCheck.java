@@ -1,7 +1,6 @@
 package com.main.stepper.admin.resources.fxml.tabs.users.edit;
 
 import com.main.stepper.shared.structures.roles.Role;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

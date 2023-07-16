@@ -24,6 +24,7 @@ public class PropertiesManager {
     public static SimpleBooleanProperty health = new SimpleBooleanProperty(true);
     public static SimpleStringProperty lastLoadedFile = new SimpleStringProperty("");
     public static ObservableList<Role> rolesList = FXCollections.observableArrayList();
+    public static SimpleObjectProperty<Role> localRole = new SimpleObjectProperty<>(null);
     public static ObservableList<UserData> userDataList = FXCollections.observableArrayList();
     public static ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
     public static ObservableList<FlowRunResultDTO> flowRunResults = FXCollections.observableArrayList();
@@ -31,6 +32,9 @@ public class PropertiesManager {
 
     // user management screen properties
     public static SimpleObjectProperty<UserData> selectedUser = new SimpleObjectProperty<>();
+
+    // role management screen properties
+    public static SimpleObjectProperty<Role> selectedRole = new SimpleObjectProperty<>();
 
     // execution history screen properties
     public static SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();

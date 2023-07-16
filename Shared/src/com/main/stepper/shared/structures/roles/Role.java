@@ -8,11 +8,23 @@ public class Role {
     private String name;
     private String description;
     private List<String> allowedFlows;
+    private Boolean automatic;
+    private Boolean isLocal;
+
+    public Role(String name, String description) {
+        this(name, description, new ArrayList<>(), false, true);
+    }
 
     public Role(String name, String description, List<String> allowedFlows) {
+        this(name, description, allowedFlows, false, false);
+    }
+
+    public Role(String name, String description, List<String> allowedFlows, Boolean automatic, Boolean isLocal) {
         this.name = name;
         this.description = description;
         this.allowedFlows = allowedFlows;
+        this.automatic = automatic;
+        this.isLocal = isLocal;
     }
 
     public String name() {
@@ -34,6 +46,13 @@ public class Role {
             this.allowedFlows.addAll(allowedFlows);
         }
     }
+
+    public Boolean isAutomatic() {
+        return automatic;
+    }
+
+    public Boolean isLocal() { return isLocal; }
+    public void setLocal(Boolean isLocal) { this.isLocal = isLocal; }
 
     public boolean update(Role role) {
         if (role == null) {
@@ -60,7 +79,9 @@ public class Role {
 
         if (!Objects.equals(name, role.name)) return false;
         if (!Objects.equals(description, role.description)) return false;
-        return Objects.equals(allowedFlows, role.allowedFlows);
+        if (!Objects.equals(allowedFlows, role.allowedFlows)) return false;
+        if (!Objects.equals(automatic, role.automatic)) return false;
+        return Objects.equals(isLocal, role.isLocal);
     }
 
     @Override
@@ -68,6 +89,8 @@ public class Role {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (allowedFlows != null ? allowedFlows.hashCode() : 0);
+        result = 31 * result + (automatic != null ? automatic.hashCode() : 0);
+        result = 31 * result + (isLocal != null ? isLocal.hashCode() : 0);
         return result;
     }
 }
