@@ -23,6 +23,7 @@ public enum StepRegistry implements IStepDefinition {
     COMMAND_LINE(new CommandLineStep()),
     HTTP_CALL(new HttpCallStep()),
     JASONATOR(new JasonatorStep()),
+    JSON_DATA_EXTRACTOR(new JsonDataExtractorStep()),
     ;
 
     private final IStepDefinition step;
