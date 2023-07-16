@@ -2,6 +2,7 @@ package com.main.stepper.shared.structures.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.data.DDRegistry;
@@ -55,47 +56,52 @@ public final class FixerUtility {
                     break;
                 case RELATION:
                     // convert LinkedTreeMap to Relation
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<Relation>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), Relation.class);
                     entry.setValue(value);
                     break;
                 case FILE:
                     // convert LinkedTreeMap to FileData
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<FileData>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), FileData.class);
                     entry.setValue(value);
                     break;
                 case INT_TO_INT_MAPPING:
                     // convert LinkedTreeMap to IntToIntPair
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<IntToIntPair>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), IntToIntPair.class);
                     entry.setValue(value);
                     break;
                 case STRING_LIST:
                     // convert ArrayList to StringList
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<StringList>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), StringList.class);
                     entry.setValue(value);
                     break;
                 case RELATION_LIST:
                     // convert ArrayList of LinkedTreeMap to RelationList
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<RelationList>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), RelationList.class);
                     entry.setValue(value);
                     break;
                 case NUMBER_LIST:
                     // convert ArrayList to NumberList
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<NumberList>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), NumberList.class);
                     entry.setValue(value);
                     break;
                 case FILE_LIST:
                     // convert ArrayList of LinkedTreeMap to FileList
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<FileList>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), FileList.class);
                     entry.setValue(value);
                     break;
                 case DOUBLE_LIST:
                     // convert ArrayList to DoubleList
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<DoubleList>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), DoubleList.class);
                     entry.setValue(value);
                     break;
                 case ZIPPER_ENUM:
                     // convert LinkedTreeMap to ZipperEnumData
-                    value = gson.fromJson(gson.toJson(value), new TypeToken<ZipperEnumData>(){}.getType());
+                    value = gson.fromJson(gson.toJson(value), ZipperEnumData.class);
+                    entry.setValue(value);
+                    break;
+                case JSON:
+                    // convert LinkedTreeMap to JsonObject
+                    value = gson.fromJson(gson.toJson(value), JsonObject.class);
                     entry.setValue(value);
                     break;
             }
