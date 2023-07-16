@@ -21,6 +21,7 @@ public enum StepRegistry implements IStepDefinition {
     FILE_DUMPER(new FileDumperStep()),
     ZIPPER(new ZipperStep()),
     COMMAND_LINE(new CommandLineStep()),
+    HTTP_CALL(new HttpCallStep()),
     ;
 
     private final IStepDefinition step;
