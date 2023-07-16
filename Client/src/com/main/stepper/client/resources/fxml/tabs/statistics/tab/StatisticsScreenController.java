@@ -2,8 +2,6 @@ package com.main.stepper.client.resources.fxml.tabs.statistics.tab;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.tabs.statistics.selector.SelectorController;
-import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;

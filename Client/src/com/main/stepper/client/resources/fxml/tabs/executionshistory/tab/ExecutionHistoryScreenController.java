@@ -2,9 +2,8 @@ package com.main.stepper.client.resources.fxml.tabs.executionshistory.tab;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
-import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
 import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
-import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
+import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
 import javafx.fxml.FXML;
 
 public class ExecutionHistoryScreenController {

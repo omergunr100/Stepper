@@ -20,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.main.stepper.client.resources.data.PropertiesManager.HTTP_CLIENT;
 

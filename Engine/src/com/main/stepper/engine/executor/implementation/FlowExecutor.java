@@ -11,13 +11,13 @@ import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.step.definition.api.IStepDefinition;
 import com.main.stepper.step.definition.api.StepResult;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
-import javafx.application.Platform;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FlowExecutor implements IFlowExecutor {
 

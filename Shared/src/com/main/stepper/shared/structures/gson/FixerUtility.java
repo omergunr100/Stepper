@@ -4,14 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
-import com.main.stepper.data.DDRegistry;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.*;
 import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
 import com.main.stepper.data.implementation.relation.Relation;
-import com.main.stepper.exceptions.data.EnumValueMissingException;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 
 import java.util.ArrayList;

@@ -7,7 +7,6 @@ import com.main.stepper.client.resources.fxml.tabs.flowsdefinition.FlowsDefiniti
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.client.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.shared.structures.roles.Role;
-import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

@@ -1,7 +1,6 @@
 package com.main.stepper.data.implementation.list.datatype;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class GenericList<T> extends ArrayList<T> {
     protected GenericList(){

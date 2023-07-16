@@ -5,7 +5,6 @@ import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.flow.execution.api.IFlowExecutionContext;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
-import com.main.stepper.shared.structures.users.UserData;
 
 import java.io.Serializable;
 import java.time.Duration;

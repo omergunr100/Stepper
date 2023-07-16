@@ -2,7 +2,6 @@ package com.main.stepper.client.application;
 
 import com.main.stepper.client.resources.css.CSSRegistry;
 import com.main.stepper.client.resources.fxml.login.LoginScreenController;
-import com.main.stepper.client.resources.fxml.root.RootController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

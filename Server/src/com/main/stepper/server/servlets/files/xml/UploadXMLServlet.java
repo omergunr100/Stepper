@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 @WebServlet(name="UploadXMLServlet", urlPatterns = "/files/xml")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10 MB

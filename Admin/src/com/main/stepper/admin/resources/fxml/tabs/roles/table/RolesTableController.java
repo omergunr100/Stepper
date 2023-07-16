@@ -1,10 +1,8 @@
 package com.main.stepper.admin.resources.fxml.tabs.roles.table;
 
-import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.shared.structures.roles.Role;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;

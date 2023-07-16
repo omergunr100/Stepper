@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 

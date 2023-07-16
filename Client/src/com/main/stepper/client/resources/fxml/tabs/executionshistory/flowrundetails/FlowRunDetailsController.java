@@ -1,11 +1,8 @@
 package com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.client.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
-import com.main.stepper.engine.executor.api.IFlowRunResult;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;

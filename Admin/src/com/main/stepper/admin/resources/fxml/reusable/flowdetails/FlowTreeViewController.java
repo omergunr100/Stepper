@@ -1,6 +1,5 @@
 package com.main.stepper.admin.resources.fxml.reusable.flowdetails;
 
-import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;

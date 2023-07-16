@@ -1,6 +1,5 @@
 package com.main.stepper.client.resources.fxml.reusable.executionelements.element;
 
-import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -1,6 +1,5 @@
 package com.main.stepper.shared.structures.step;
 
-import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.logger.implementation.maplogger.MapLogger;

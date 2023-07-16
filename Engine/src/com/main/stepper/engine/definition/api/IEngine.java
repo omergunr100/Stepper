@@ -9,7 +9,6 @@ import com.main.stepper.exceptions.xml.XMLException;
 import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
-import com.main.stepper.statistics.StatManager;
 
 import java.io.IOException;
 import java.io.Serializable;

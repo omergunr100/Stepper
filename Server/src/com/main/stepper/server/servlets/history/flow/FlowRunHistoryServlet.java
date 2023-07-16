@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.implementation.FlowRunResult;
 import com.main.stepper.server.constants.ServletAttributes;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
@@ -17,7 +16,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet(name="FlowRunHistoryServlet", urlPatterns = "/history/flow")

@@ -1,10 +1,7 @@
 package com.main.stepper.client.resources.fxml.tabs.flowsdefinition;
 
-import com.google.gson.Gson;
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.client.resources.fxml.reusable.flowdetails.FlowTreeViewController;
-import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
@@ -12,10 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class FlowsDefinitionController {
     @FXML private TableView<FlowInfoDTO> flowsTableView;

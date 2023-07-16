@@ -1,13 +1,10 @@
 package com.main.stepper.client.resources.data;
 
-import com.main.stepper.engine.executor.api.IFlowRunResult;
-import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
-import com.main.stepper.shared.structures.step.StepUsageDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

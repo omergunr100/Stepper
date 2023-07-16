@@ -9,7 +9,6 @@ import com.main.stepper.logger.api.ILogger;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowExecutionContextDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
-import com.main.stepper.statistics.StatManager;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 import com.main.stepper.step.execution.implementation.StepExecutionContext;
 

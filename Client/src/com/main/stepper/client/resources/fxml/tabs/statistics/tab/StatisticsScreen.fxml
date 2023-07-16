@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-
+<?import javafx.scene.layout.*?>
 <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="800.0" minWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.client.resources.fxml.tabs.statistics.tab.StatisticsScreenController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />

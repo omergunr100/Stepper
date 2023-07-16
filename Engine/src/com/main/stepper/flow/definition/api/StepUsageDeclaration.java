@@ -1,10 +1,7 @@
 package com.main.stepper.flow.definition.api;
 
-import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
 import com.main.stepper.step.definition.api.IStepDefinition;
-
-import java.util.stream.Collectors;
 
 public class StepUsageDeclaration implements IStepUsageDeclaration, Comparable<String>{
     private final String name;

@@ -1,12 +1,8 @@
 package com.main.stepper.client.resources.fxml.tabs.flowsexecution.continuations;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
 import com.main.stepper.flow.definition.api.FlowResult;
-import com.main.stepper.flow.definition.api.IFlowDefinition;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
