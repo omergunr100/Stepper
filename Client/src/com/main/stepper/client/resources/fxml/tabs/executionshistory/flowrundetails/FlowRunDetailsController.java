@@ -14,7 +14,9 @@ import java.util.Locale;
 
 public class FlowRunDetailsController {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());
-    @FXML TableView<FlowRunResultDTO> table;
+    @FXML private TableView<FlowRunResultDTO> table;
+
+    private final TableColumn<FlowRunResultDTO, String> userColumn = new TableColumn<>("User");
 
     public FlowRunDetailsController() {
     }
@@ -33,7 +35,19 @@ public class FlowRunDetailsController {
         resultColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().result().toString()));
         nameColumn.setPrefWidth(150);
 
+        userColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().user()));
+        userColumn.setPrefWidth(150);
+
         table.getColumns().addAll(nameColumn, timeColumn, resultColumn);
+
+        // add listener on manager status to disable/enable user column
+        PropertiesManager.isManager.addListener((observable, oldValue, newValue) -> {
+            if(!oldValue && newValue) {
+                table.getColumns().add(userColumn);
+            } else if (oldValue) {
+                table.getColumns().remove(userColumn);
+            }
+        });
 
         // bind selected flow to the table selection
         PropertiesManager.executionHistorySelectedFlow.bind(table.getSelectionModel().selectedItemProperty());

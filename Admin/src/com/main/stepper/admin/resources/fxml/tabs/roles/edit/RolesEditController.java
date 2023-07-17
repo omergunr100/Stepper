@@ -72,6 +72,12 @@ public class RolesEditController {
         nameCol.setEditable(false);
         descriptionCol.setEditable(false);
 
+        // disable row selection
+        flowInfoTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                flowInfoTable.getSelectionModel().clearSelection();
+        });
+
         // listener on flows to update flow checks
         flowInformationList.addListener((ListChangeListener<? super FlowInfoDTO>) c -> {
             c.next();

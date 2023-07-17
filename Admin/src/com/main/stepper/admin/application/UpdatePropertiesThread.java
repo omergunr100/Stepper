@@ -129,7 +129,7 @@ public class UpdatePropertiesThread extends Thread{
         }
         if (stepRunResultList.isEmpty())
             return;
-        stepRunResults.setAll(stepRunResultList);
+        Platform.runLater(() -> stepRunResults.setAll(stepRunResultList));
     }
 
     private static void updateUserDataList() {

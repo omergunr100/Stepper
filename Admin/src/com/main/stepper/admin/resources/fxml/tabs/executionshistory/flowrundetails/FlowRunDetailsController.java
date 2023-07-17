@@ -33,7 +33,11 @@ public class FlowRunDetailsController {
         resultColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().result().toString()));
         nameColumn.setPrefWidth(150);
 
-        table.getColumns().addAll(nameColumn, timeColumn, resultColumn);
+        TableColumn<FlowRunResultDTO, String> userColumn = new TableColumn<>("User");
+        userColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().user()));
+        nameColumn.setPrefWidth(150);
+
+        table.getColumns().addAll(nameColumn, timeColumn, resultColumn, userColumn);
 
         // bind selected flow to the table selection
         PropertiesManager.executionHistorySelectedFlow.bind(table.getSelectionModel().selectedItemProperty());

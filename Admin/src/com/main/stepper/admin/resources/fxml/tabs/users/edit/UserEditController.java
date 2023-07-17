@@ -67,6 +67,13 @@ public class UserEditController {
         nameCol.setEditable(false);
         descriptionCol.setEditable(false);
 
+        // disable row selection
+        rolesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                rolesTable.getSelectionModel().clearSelection();
+            }
+        });
+
         // listener on rolesList to update roleChecksList
         rolesList.addListener((ListChangeListener<? super Role>) c -> {
             c.next();

@@ -60,7 +60,7 @@ public class LoadFileController {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    // show error popup
+                    Platform.runLater(() -> new ErrorPopup("Could not connect to server!"));
                 }
 
                 @Override
@@ -72,11 +72,11 @@ public class LoadFileController {
                             Platform.runLater(() -> PropertiesManager.lastLoadedFile.set(chosenFile.getAbsolutePath()));
                         }
                         else{
-                            new ErrorPopup(errors);
+                            Platform.runLater(() -> new ErrorPopup(errors));
                         }
                     }
                     else if (response.code() == 400) {
-                        new ErrorPopup("XML file is not scheme compliant!");
+                        Platform.runLater(() -> new ErrorPopup("XML file is not scheme compliant!"));
                     }
                 }
             });
