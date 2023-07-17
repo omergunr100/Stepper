@@ -54,14 +54,17 @@ public class UserEditController {
         isSelectedCol.setCellValueFactory(param -> param.getValue().selected);
         isSelectedCol.setCellFactory(param -> new CheckBoxTableCell<>());
         isSelectedCol.setPrefWidth(100);
+        isSelectedCol.setSortable(false);
 
         TableColumn<RoleCheck, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(param -> param.getValue().name);
         nameCol.setPrefWidth(100);
+        nameCol.setSortable(false);
 
         TableColumn<RoleCheck, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setCellValueFactory(param -> param.getValue().description);
         descriptionCol.setPrefWidth(200);
+        descriptionCol.setSortable(false);
 
         rolesTable.getColumns().addAll(isSelectedCol, nameCol, descriptionCol);
         nameCol.setEditable(false);

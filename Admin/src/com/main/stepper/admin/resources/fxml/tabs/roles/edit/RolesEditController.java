@@ -59,14 +59,17 @@ public class RolesEditController {
         isSelectedCol.setCellValueFactory(param -> param.getValue().selected);
         isSelectedCol.setCellFactory(param -> new CheckBoxTableCell<>());
         isSelectedCol.setPrefWidth(100);
+        isSelectedCol.setSortable(false);
 
         TableColumn<FlowCheck, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(param -> param.getValue().name);
         nameCol.setPrefWidth(100);
+        nameCol.setSortable(false);
 
         TableColumn<FlowCheck, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setCellValueFactory(param -> param.getValue().description);
         descriptionCol.setPrefWidth(200);
+        descriptionCol.setSortable(false);
 
         flowInfoTable.getColumns().addAll(isSelectedCol, nameCol, descriptionCol);
         nameCol.setEditable(false);
