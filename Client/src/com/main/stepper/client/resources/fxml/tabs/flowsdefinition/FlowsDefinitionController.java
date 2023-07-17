@@ -63,6 +63,7 @@ public class FlowsDefinitionController {
     }
 
     public void executeFlow() {
+        PropertiesManager.executionSelectedFlow.set(null);
         PropertiesManager.executionSelectedFlow.set(PropertiesManager.currentFlow.get());
     }
 }

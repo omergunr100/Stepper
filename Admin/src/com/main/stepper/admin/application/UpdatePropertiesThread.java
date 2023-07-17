@@ -99,16 +99,22 @@ public class UpdatePropertiesThread extends Thread{
                             synchronized (flowRunResults) {
                                 // if received an empty list exit
                                 if (flowRunResultList.isEmpty())
-                                    return;
+                                    flowRunResults.clear();
                                 // if list was empty, add all
                                 if (flowRunResults.isEmpty())
                                     flowRunResults.addAll(flowRunResultList);
                                 else {
-                                    // if list wasn't empty only head of list is new relevant data, add it to the head
+                                    // check for new run results and add them
                                     int i = 0;
-                                    while (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
+                                    while (!flowRunResultList.get(i).runId().equals(flowRunResults.get(i).runId())) {
                                         flowRunResults.add(i, flowRunResultList.get(i));
                                         i++;
+                                    }
+                                    // for the rest check for status change and if so update
+                                    for (; i < flowRunResultList.size() && i < flowRunResults.size(); i++) {
+                                        if (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
+                                            flowRunResults.set(i, flowRunResultList.get(i));
+                                        }
                                     }
                                 }
                             }
