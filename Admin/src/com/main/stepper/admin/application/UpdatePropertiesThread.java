@@ -39,8 +39,6 @@ public class UpdatePropertiesThread extends Thread{
 
     @Override
     public void run() {
-        // todo: for debugging only, remove from code before release
-        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
         while (true) {
             try {
                 checkHealth();

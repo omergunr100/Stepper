@@ -41,8 +41,7 @@ public class UserEditController {
     public UserEditController() {
     }
 
-    @FXML public void initialize() {
-        // todo: add initialization and listeners for userFlowRunsTable
+    private void setupRoleCheckTable() {
         // force setup rolesCheckList
         if (roleChecksList.isEmpty() && !rolesList.isEmpty()) {
             synchronized (rolesList) {
@@ -95,6 +94,39 @@ public class UserEditController {
             rolesTable.setItems(roleChecksList);
             rolesTable.refresh();
         });
+    }
+
+    private void setupFlowRunTable() {
+        // setup table columns
+        TableColumn<FlowRunCounter, Boolean> isSelectedCol = new TableColumn<>();
+        isSelectedCol.setCellValueFactory(param -> param.getValue().enabled);
+        isSelectedCol.setCellFactory(param -> new CheckBoxTableCell<>());
+        isSelectedCol.setPrefWidth(100);
+
+        TableColumn<FlowRunCounter, String> flowNameCol = new TableColumn<>();
+        flowNameCol.setCellValueFactory(param -> param.getValue().name);
+        flowNameCol.setPrefWidth(150);
+
+        TableColumn<FlowRunCounter, String> flowDescCol = new TableColumn<>();
+        flowDescCol.setCellValueFactory(param -> param.getValue().description);
+        flowDescCol.setPrefWidth(200);
+
+        TableColumn<FlowRunCounter, Integer> flowRunCount = new TableColumn<>();
+        flowRunCount.setCellValueFactory(param -> param.getValue().timesRun.asObject());
+        flowRunCount.setPrefWidth(100);
+
+        userFlowRunsTable.getColumns().addAll(
+                isSelectedCol,
+                flowNameCol,
+                flowDescCol,
+                flowRunCount
+        );
+    }
+
+    @FXML public void initialize() {
+        setupRoleCheckTable();
+
+        setupFlowRunTable();
 
         // listener on selected user to update this
         selectedUser.addListener((observable, oldValue, newValue) -> {

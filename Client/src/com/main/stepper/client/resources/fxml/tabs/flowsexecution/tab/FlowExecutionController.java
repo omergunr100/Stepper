@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.data.URLManager;
+import com.main.stepper.client.resources.dynamic.errorpopup.ErrorPopup;
 import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
 import com.main.stepper.client.resources.fxml.reusable.flowinput.FlowInputController;
 import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
@@ -216,7 +217,7 @@ public class FlowExecutionController {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    // todo: decide whether to show error message to the user (can't reach server) or just ignore
+                    Platform.runLater(() -> new ErrorPopup("Can't reach server, try again later."));
                 }
 
                 @Override
@@ -232,7 +233,7 @@ public class FlowExecutionController {
                         });
                     }
                     else {
-                        // todo: show user a message asking to wait for refresh because maybe roles were changed or manager status revoked
+                        Platform.runLater(() -> new ErrorPopup("Inconsistent data, please wait a few seconds for a system refresh."));
                     }
                 }
             });
@@ -255,7 +256,7 @@ public class FlowExecutionController {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    // todo: decide whether to show error message to the user (can't reach server) or just ignore
+                    Platform.runLater(() -> new ErrorPopup("Can't reach server, try again later."));
                 }
 
                 @Override
@@ -268,7 +269,7 @@ public class FlowExecutionController {
                         });
                     }
                     else {
-                        // todo: show user a message asking to wait for refresh because maybe roles were changed or manager status revoked
+                        Platform.runLater(() -> new ErrorPopup("Inconsistent data, please wait a few seconds for a system refresh."));
                     }
                 }
             });
