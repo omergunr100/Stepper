@@ -63,6 +63,10 @@ public class HttpCallStep extends AbstractStepDefinition {
             return new StepRunResult(context.getUniqueRunId(), getName(), StepResult.FAILURE, startTime, Duration.between(startTime, Instant.now()), "Missing mandatory data.");
         }
 
+        // ensure address doesn't end with '/' and resource doesn't start with '/'
+        if (address.endsWith("/")) address = address.substring(0, address.length() - 1);
+        if (resource.startsWith("/")) resource = resource.substring(1);
+
         // create url string
         String url = protocol + "://" + address + "/" + resource;
 

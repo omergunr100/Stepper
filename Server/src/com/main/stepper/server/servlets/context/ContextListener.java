@@ -1,5 +1,6 @@
 package com.main.stepper.server.servlets.context;
 
+import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.ServerEngine;
 import com.main.stepper.server.constants.ServletAttributes;
 import com.main.stepper.shared.structures.users.UserData;
@@ -21,6 +22,8 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-
+        // shutdown engine to close executor service threads
+        IEngine engine = (IEngine) sce.getServletContext().getAttribute(ServletAttributes.ENGINE);
+        engine.shutdown();
     }
 }

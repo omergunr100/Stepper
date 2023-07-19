@@ -31,6 +31,7 @@ import com.main.stepper.xml.validators.implementation.pipeline.Validator;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class ServerEngine implements IEngine {
     private final List<IFlowRunResult> flowRunResults;
     private final List<IStepRunResult> stepRunResults;
     private Boolean validated;
-    private Executor executor;
+    private ExecutorService executor;
 
     public ServerEngine() {
         logger = new MapLogger();
@@ -239,6 +240,11 @@ public class ServerEngine implements IEngine {
         synchronized (stepRunResults) {
             return stepRunResults.stream().filter(r -> uuids.contains(r.runId())).collect(Collectors.toList());
         }
+    }
+
+    @Override
+    public void shutdown() {
+        executor.shutdown();
     }
 
     /**

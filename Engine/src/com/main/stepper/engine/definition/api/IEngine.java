@@ -90,4 +90,6 @@ public interface IEngine extends Serializable {
     List<IFlowRunResult> getFlowRunsFromList(List<UUID> uuids);
 
     List<IStepRunResult> getStepRunsFromList(List<UUID> uuids);
+
+    void shutdown();
 }
