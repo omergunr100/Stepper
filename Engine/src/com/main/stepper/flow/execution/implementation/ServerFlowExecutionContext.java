@@ -83,7 +83,7 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
     @Override
     public void addFlowRunResult(IFlowRunResult flowRunResult) {
         synchronized (flowRunResults) {
-            flowRunResults.add(flowRunResult);
+            flowRunResults.add(0, flowRunResult);
         }
     }
 
