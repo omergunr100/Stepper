@@ -4,6 +4,9 @@ public class URLManager {
     // Base address
     public static final String SERVER_ADDRESS = "http://localhost:8080/stepper";
 
+    // Is admin spot available
+    public static final String ADMIN = SERVER_ADDRESS + "/admin";
+
     // Is server alive
     public static final String SERVER_HEALTH = SERVER_ADDRESS + "/health";
 

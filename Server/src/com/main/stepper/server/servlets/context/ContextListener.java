@@ -18,6 +18,8 @@ public class ContextListener implements ServletContextListener {
         sce.getServletContext().setAttribute(ServletAttributes.USER_DATA_LIST, new ArrayList<UserData>());
         // initialize the engine
         sce.getServletContext().setAttribute(ServletAttributes.ENGINE, new ServerEngine());
+        // set isAdminUp
+        sce.getServletContext().setAttribute(ServletAttributes.IS_ADMIN_UP, false);
     }
 
     @Override

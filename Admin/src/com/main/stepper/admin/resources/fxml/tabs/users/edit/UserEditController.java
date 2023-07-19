@@ -3,6 +3,7 @@ package com.main.stepper.admin.resources.fxml.tabs.users.edit;
 import com.google.gson.Gson;
 import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.admin.resources.dynamic.errorpopup.ErrorPopup;
+import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.users.UserData;
 import com.main.stepper.shared.structures.wrappers.RolesAssignmentWrapper;
@@ -29,14 +30,19 @@ public class UserEditController {
     @FXML private CheckBox isManagerCheckBox;
     @FXML private TableView<RoleCheck> rolesTable;
     @FXML private Button applyChangesButton;
+    @FXML private TableView<FlowRunCounter> userFlowRunsTable;
 
-    private ObservableList<RoleCheck> roleChecksList = FXCollections.observableArrayList();
-    private ObservableList<Role> selectedRoles = FXCollections.observableArrayList();
+    private final ObservableList<RoleCheck> roleChecksList = FXCollections.observableArrayList();
+    private final ObservableList<Role> selectedRoles = FXCollections.observableArrayList();
+
+    private final ObservableList<FlowRunCounter> userFlowRunsList = FXCollections.observableArrayList();
+    private final ObservableList<FlowInfoDTO> userEnabledFlows = FXCollections.observableArrayList();
 
     public UserEditController() {
     }
 
     @FXML public void initialize() {
+        // todo: add initialization and listeners for userFlowRunsTable
         // force setup rolesCheckList
         if (roleChecksList.isEmpty() && !rolesList.isEmpty()) {
             synchronized (rolesList) {
@@ -49,7 +55,7 @@ public class UserEditController {
             rolesTable.refresh();
         }
 
-        // setup table
+        // setup table of roles
         TableColumn<RoleCheck, Boolean> isSelectedCol = new TableColumn<>("Selected");
         isSelectedCol.setCellValueFactory(param -> param.getValue().selected);
         isSelectedCol.setCellFactory(param -> new CheckBoxTableCell<>());
@@ -158,9 +164,7 @@ public class UserEditController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() == 200) {
-                    }
-                    else if (response.code() == 404) {
+                    if (response.code() == 404) {
                         Platform.runLater(() -> new ErrorPopup("User not found, make sure the user is still in the system."));
                     }
                     response.close();

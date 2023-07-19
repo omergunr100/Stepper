@@ -15,31 +15,31 @@ import okhttp3.OkHttpClient;
 
 public class PropertiesManager {
     // HTTP client
-    public static OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    public static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 
     // JavaFX properties
-    public static SimpleObjectProperty<Stage> primaryStage = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<Stage> primaryStage = new SimpleObjectProperty<>();
 
     // General use properties updated from server
-    public static SimpleBooleanProperty health = new SimpleBooleanProperty(true);
-    public static SimpleStringProperty lastLoadedFile = new SimpleStringProperty("");
-    public static ObservableList<Role> rolesList = FXCollections.observableArrayList();
-    public static SimpleObjectProperty<Role> localRole = new SimpleObjectProperty<>(null);
-    public static ObservableList<UserData> userDataList = FXCollections.observableArrayList();
-    public static ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
-    public static ObservableList<FlowRunResultDTO> flowRunResults = FXCollections.observableArrayList();
-    public static ObservableList<StepRunResultDTO> stepRunResults = FXCollections.observableArrayList();
+    public static final SimpleBooleanProperty health = new SimpleBooleanProperty(true);
+    public static final SimpleStringProperty lastLoadedFile = new SimpleStringProperty("");
+    public static final ObservableList<Role> rolesList = FXCollections.observableArrayList();
+    public static final SimpleObjectProperty<Role> localRole = new SimpleObjectProperty<>(null);
+    public static final ObservableList<UserData> userDataList = FXCollections.observableArrayList();
+    public static final ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
+    public static final ObservableList<FlowRunResultDTO> flowRunResults = FXCollections.observableArrayList();
+    public static final ObservableList<StepRunResultDTO> stepRunResults = FXCollections.observableArrayList();
 
     // user management screen properties
-    public static SimpleObjectProperty<UserData> selectedUser = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<UserData> selectedUser = new SimpleObjectProperty<>();
 
     // role management screen properties
-    public static SimpleObjectProperty<Role> selectedRole = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<Role> selectedRole = new SimpleObjectProperty<>();
 
     // execution history screen properties
-    public static SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
-    public static SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
 
     // flow selection properties
-    public static SimpleObjectProperty<FlowInfoDTO> selectedFlow = new SimpleObjectProperty<>();
+    public static final SimpleObjectProperty<FlowInfoDTO> selectedFlow = new SimpleObjectProperty<>();
 }

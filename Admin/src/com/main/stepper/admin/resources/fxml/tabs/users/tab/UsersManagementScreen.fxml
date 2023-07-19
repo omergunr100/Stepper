@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.main.stepper.admin.resources.fxml.tabs.users.tab.UsersManagementScreenController">
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.admin.resources.fxml.tabs.users.tab.UsersManagementScreenController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+    <ColumnConstraints hgrow="NEVER" />
     <ColumnConstraints hgrow="SOMETIMES" />
   </columnConstraints>
   <rowConstraints>
