@@ -1,6 +1,7 @@
 package com.main.stepper.data;
 
 import com.main.stepper.data.api.IDataDefinition;
+import com.main.stepper.data.implementation.enumeration.httpprotocol.HttpProtocolEnumDef;
 import com.main.stepper.data.implementation.enumeration.httpverb.HttpVerbEnumDef;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumDef;
 import com.main.stepper.data.implementation.file.FileDef;
@@ -28,7 +29,7 @@ public enum DDRegistry implements IDataDefinition {
     DOUBLE_LIST(new DoubleListDef()),
     ZIPPER_ENUM(new ZipperEnumDef()),
     HTTP_VERB_ENUM(new HttpVerbEnumDef()),
-    HTTP_PROTOCOL_ENUM(new HttpVerbEnumDef()),
+    HTTP_PROTOCOL_ENUM(new HttpProtocolEnumDef()),
     JSON(new JsonDef())
     ;
 

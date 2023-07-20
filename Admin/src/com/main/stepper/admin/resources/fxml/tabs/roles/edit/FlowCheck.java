@@ -23,14 +23,15 @@ public class FlowCheck {
 
     public void listForSelected(ObservableList<FlowInfoDTO> userRolesList) {
         userRolesList.addListener((ListChangeListener<FlowInfoDTO>) c -> {
-            c.next();
-            ObservableList<? extends FlowInfoDTO> list = c.getList();
-            synchronized (list) {
-                Optional<? extends FlowInfoDTO> first = list.stream().filter(role -> role.name().equals(name.get())).findFirst();
-                if (first.isPresent())
-                    selected.set(true);
-                else
-                    selected.set(false);
+            while(c.next()) {
+                ObservableList<? extends FlowInfoDTO> list = c.getList();
+                synchronized (list) {
+                    Optional<? extends FlowInfoDTO> first = list.stream().filter(role -> role.name().equals(name.get())).findFirst();
+                    if (first.isPresent())
+                        selected.set(true);
+                    else
+                        selected.set(false);
+                }
             }
         });
     }

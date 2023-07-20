@@ -43,10 +43,15 @@ public class RootController {
     }
 
     @FXML public void initialize(){
-        // bind to properties
+        // listen on server connection loss
         PropertiesManager.health.addListener((observable, oldValue, newValue) -> {
             root.setDisable(!newValue);
         });
+        // listen on roles change
+        PropertiesManager.roles.addListener((ListChangeListener.Change<? extends Role> c) -> {
+            PropertiesManager.rolesUpdated.set(true);
+        });
+        // bind to properties
         userNameTextField.textProperty().bind(PropertiesManager.userName);
         isManagerCheckBox.selectedProperty().bind(PropertiesManager.isManager);
         PropertiesManager.roles.addListener((ListChangeListener.Change<? extends Role> c) -> {

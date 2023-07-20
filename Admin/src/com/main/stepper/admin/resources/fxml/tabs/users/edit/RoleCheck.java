@@ -24,14 +24,15 @@ public class RoleCheck {
 
     public void listForSelected(ObservableList<Role> userRolesList) {
         userRolesList.addListener((ListChangeListener<Role>) c -> {
-            c.next();
-            ObservableList<? extends Role> list = c.getList();
-            synchronized (list) {
-                Optional<? extends Role> first = list.stream().filter(role -> role.name().equals(name.get())).findFirst();
-                if (first.isPresent())
-                    selected.set(true);
-                else
-                    selected.set(false);
+            while(c.next()) {
+                ObservableList<? extends Role> list = c.getList();
+                synchronized (list) {
+                    Optional<? extends Role> first = list.stream().filter(role -> role.name().equals(name.get())).findFirst();
+                    if (first.isPresent())
+                        selected.set(true);
+                    else
+                        selected.set(false);
+                }
             }
         });
     }

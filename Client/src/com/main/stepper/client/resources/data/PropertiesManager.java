@@ -23,6 +23,7 @@ public class PropertiesManager {
     public static SimpleStringProperty userName = new SimpleStringProperty();
     public static SimpleBooleanProperty isManager = new SimpleBooleanProperty();
     public static ObservableList<Role> roles = FXCollections.observableArrayList();
+    public static SimpleBooleanProperty rolesUpdated = new SimpleBooleanProperty(false);
     public static ObservableList<UUID> flowExecutionHistory = FXCollections.observableArrayList();
 
     public static ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();

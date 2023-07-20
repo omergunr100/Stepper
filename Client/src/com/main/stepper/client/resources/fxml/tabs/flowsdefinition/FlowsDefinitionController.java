@@ -52,13 +52,14 @@ public class FlowsDefinitionController {
 
         // bind to property
         PropertiesManager.flowInformationList.addListener((ListChangeListener<FlowInfoDTO>) c -> {
-            c.next();
-            c.getRemoved().forEach(flowInformation -> {
-                if (flowInformation.equals(PropertiesManager.currentFlow.get()))
-                    PropertiesManager.currentFlow.set(null);
-                flowsTableView.getItems().remove(flowInformation);
-            });
-            flowsTableView.getItems().addAll(c.getAddedSubList());
+            while (c.next()) {
+                c.getRemoved().forEach(flowInformation -> {
+                    if (flowInformation.equals(PropertiesManager.currentFlow.get()))
+                        PropertiesManager.currentFlow.set(null);
+                    flowsTableView.getItems().remove(flowInformation);
+                });
+                flowsTableView.getItems().addAll(c.getAddedSubList());
+            }
         });
     }
 

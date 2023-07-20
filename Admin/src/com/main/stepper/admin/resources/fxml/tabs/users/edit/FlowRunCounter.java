@@ -24,14 +24,14 @@ public class FlowRunCounter {
 
     public void setListForEnabled(ObservableList<FlowInfoDTO> flowInfoList) {
         flowInfoList.addListener((ListChangeListener<FlowInfoDTO>) c -> {
-            c.next();
-
-            ObservableList<? extends FlowInfoDTO> list = c.getList();
-            synchronized (list) {
-                if (list.stream().anyMatch(flow -> flow.name().equals(name.get()))) {
-                    this.enabled.set(true);
-                } else {
-                    this.enabled.set(false);
+            while(c.next()) {
+                ObservableList<? extends FlowInfoDTO> list = c.getList();
+                synchronized (list) {
+                    if (list.stream().anyMatch(flow -> flow.name().equals(name.get()))) {
+                        this.enabled.set(true);
+                    } else {
+                        this.enabled.set(false);
+                    }
                 }
             }
         });
@@ -39,13 +39,14 @@ public class FlowRunCounter {
 
     public void setListForCount(ObservableList<FlowRunResultDTO> flowRunResultList) {
         flowRunResultList.addListener((ListChangeListener<FlowRunResultDTO>) c -> {
-            c.next();
+            while(c.next()) {
 
-            List<? extends FlowRunResultDTO> added = c.getAddedSubList();
-            this.timesRun.set((int) (this.timesRun.get() + added.stream().filter(result -> result.name().equals(name.get())).count()));
+                List<? extends FlowRunResultDTO> added = c.getAddedSubList();
+                this.timesRun.set((int) (this.timesRun.get() + added.stream().filter(result -> result.name().equals(name.get())).count()));
 
-            List<? extends FlowRunResultDTO> removed = c.getRemoved();
-            this.timesRun.set((int) (this.timesRun.get() + removed.stream().filter(result -> result.name().equals(name.get())).count()));
+                List<? extends FlowRunResultDTO> removed = c.getRemoved();
+                this.timesRun.set((int) (this.timesRun.get() + removed.stream().filter(result -> result.name().equals(name.get())).count()));
+            }
         });
     }
 }

@@ -84,13 +84,14 @@ public class UserEditController {
 
         // listener on rolesList to update roleChecksList
         rolesList.addListener((ListChangeListener<? super Role>) c -> {
-            c.next();
-            c.getRemoved().forEach(role -> roleChecksList.removeIf(roleCheck -> roleCheck.name.get().equals(role.name())));
-            c.getAddedSubList().forEach(role -> {
-                RoleCheck roleCheck = new RoleCheck(role, false);
-                roleCheck.listForSelected(selectedRoles);
-                roleChecksList.add(roleCheck);
-            });
+            while(c.next()) {
+                c.getRemoved().forEach(role -> roleChecksList.removeIf(roleCheck -> roleCheck.name.get().equals(role.name())));
+                c.getAddedSubList().forEach(role -> {
+                    RoleCheck roleCheck = new RoleCheck(role, false);
+                    roleCheck.listForSelected(selectedRoles);
+                    roleChecksList.add(roleCheck);
+                });
+            }
             rolesTable.setItems(roleChecksList);
             rolesTable.refresh();
         });

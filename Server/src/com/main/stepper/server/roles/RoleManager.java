@@ -52,7 +52,9 @@ public class RoleManager {
     }
 
     public static void updateDefaultRoles(List<IFlowDefinition> flows) {
-        instance.pUpdateDefaultRoles(flows);
+        synchronized (instance) {
+            instance.pUpdateDefaultRoles(flows);
+        }
     }
 
     private RoleManager() {
@@ -97,7 +99,7 @@ public class RoleManager {
         synchronized (roleList) {
             synchronized (READ_ONLY_FLOWS_ROLE) {
                 READ_ONLY_FLOWS_ROLE.setAllowedFlows(
-                        flows.stream().filter(f -> f.isReadOnly()).map(IFlowDefinition::name).collect(Collectors.toList())
+                        flows.stream().filter(IFlowDefinition::isReadOnly).map(IFlowDefinition::name).collect(Collectors.toList())
                 );
             }
             synchronized (ALL_FLOWS_ROLE) {

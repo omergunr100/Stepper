@@ -83,13 +83,14 @@ public class RolesEditController {
 
         // listener on flows to update flow checks
         flowInformationList.addListener((ListChangeListener<? super FlowInfoDTO>) c -> {
-            c.next();
-            c.getRemoved().forEach(flow -> flowChecks.removeIf(flowCheck -> flowCheck.name.get().equals(flow.name())));
-            c.getAddedSubList().forEach(flow -> {
-                FlowCheck flowCheck = new FlowCheck(flow, false);
-                flowCheck.listForSelected(selectedFlows);
-                flowChecks.add(flowCheck);
-            });
+            while(c.next()) {
+                c.getRemoved().forEach(flow -> flowChecks.removeIf(flowCheck -> flowCheck.name.get().equals(flow.name())));
+                c.getAddedSubList().forEach(flow -> {
+                    FlowCheck flowCheck = new FlowCheck(flow, false);
+                    flowCheck.listForSelected(selectedFlows);
+                    flowChecks.add(flowCheck);
+                });
+            }
             flowInfoTable.setItems(flowChecks);
             flowInfoTable.refresh();
         });
