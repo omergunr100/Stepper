@@ -52,5 +52,7 @@ public interface IFlowRunResult extends Serializable {
 
     String user();
 
+    void setUser(String user);
+
     FlowRunResultDTO toDTO();
 }

@@ -89,7 +89,20 @@ public class LoginScreenController {
 
                                 Scene scene = new Scene(root, 840, 520);
                                 scene.getStylesheets().add(CSSRegistry.class.getResource(CSSRegistry.DEFAULT.getFile().getPath()).toExternalForm());
-                                primaryStage.setOnCloseRequest(event -> System.exit(0));
+                                primaryStage.setOnCloseRequest(event -> {
+                                    Request request = new Request.Builder()
+                                            .url(URLManager.LOGOUT)
+                                            .get()
+                                            .build();
+
+                                    try (Response res = PropertiesManager.HTTP_CLIENT.newCall(request).execute()) {
+                                    } catch (IOException ignored) {
+                                    }
+
+                                    PropertiesManager.HTTP_CLIENT.dispatcher().executorService().shutdown();
+
+                                    System.exit(0);
+                                });
                                 primaryStage.setScene(scene);
                                 primaryStage.show();
                             } catch (IOException ignored) {

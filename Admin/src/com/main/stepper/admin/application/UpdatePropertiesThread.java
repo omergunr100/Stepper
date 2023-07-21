@@ -109,7 +109,7 @@ public class UpdatePropertiesThread extends Thread{
                                         flowRunResults.add(i, flowRunResultList.get(i));
                                         i++;
                                     }
-                                    // for the rest check for status change and if so update
+                                    // for the rest check for status change or user change and if so update
                                     for (; i < flowRunResultList.size() && i < flowRunResults.size(); i++) {
                                         if (!flowRunResultList.get(i).equals(flowRunResults.get(i))) {
                                             flowRunResults.set(i, flowRunResultList.get(i));
@@ -159,6 +159,15 @@ public class UpdatePropertiesThread extends Thread{
                         Platform.runLater(() -> {
                             Boolean updated = false;
                             synchronized (userDataList) {
+                                List<String> names = dataList.stream().map(UserData::name).collect(Collectors.toList());
+                                List<UserData> toRemove = userDataList.stream().filter(user -> !names.contains(user.name())).collect(Collectors.toList());
+                                toRemove.forEach(user -> {
+                                    if (selectedUser.isNotNull().get() && user.name().equals(selectedUser.get().name()))
+                                        selectedUser.set(null);
+                                });
+
+                                userDataList.removeAll(toRemove);
+
                                 for (UserData data : dataList) {
                                     Optional<UserData> first = userDataList.stream().filter(user -> user.name().equals(data.name())).findFirst();
                                     if (first.isPresent()) {

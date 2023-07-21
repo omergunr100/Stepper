@@ -161,6 +161,11 @@ public class FlowRunResult implements IFlowRunResult {
     }
 
     @Override
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    @Override
     public FlowRunResultDTO toDTO() {
         Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().stream().collect(Collectors.toMap(
                 cont -> cont.information().toDTO(),

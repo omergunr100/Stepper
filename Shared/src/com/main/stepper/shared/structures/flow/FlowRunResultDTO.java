@@ -112,6 +112,7 @@ public class FlowRunResultDTO {
 
         if (!Objects.equals(runId, that.runId)) return false;
         if (result != that.result) return false;
+        if (!Objects.equals(user, that.user)) return false;
         return Objects.equals(stepRunResults, that.stepRunResults);
     }
 

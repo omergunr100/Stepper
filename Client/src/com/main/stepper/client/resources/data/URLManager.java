@@ -5,6 +5,7 @@ public class URLManager {
     public static final String SERVER_HEALTH = SERVER_ADDRESS + "/health";
 
     public static final String LOGIN = SERVER_ADDRESS + "/users/sign";
+    public static final String LOGOUT = SERVER_ADDRESS + "/users/logout";
 
     public static final String FLOW_RUN_RESULTS = SERVER_ADDRESS + "/history/flow";
     public static final String STEP_RUN_RESULTS = SERVER_ADDRESS + "/history/step";
