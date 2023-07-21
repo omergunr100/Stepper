@@ -38,17 +38,7 @@ public class RoleManager {
     }
 
     public static List<String> uniqueUnionGroup(List<Role> roles) {
-        List<String> unionGroup = new ArrayList<>();
-        for (Role role : roles) {
-            synchronized (role.allowedFlows()) {
-                for (String flow : role.allowedFlows()) {
-                    if (!unionGroup.contains(flow)) {
-                        unionGroup.add(flow);
-                    }
-                }
-            }
-        }
-        return unionGroup;
+        return Role.uniqueUnionGroup(roles);
     }
 
     public static void updateDefaultRoles(List<IFlowDefinition> flows) {

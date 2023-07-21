@@ -9,8 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
-import static com.main.stepper.admin.resources.data.PropertiesManager.selectedUser;
-import static com.main.stepper.admin.resources.data.PropertiesManager.userDataList;
+import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 
 public class UsersTableController {
     @FXML private TableView<UserData> table;
@@ -34,6 +33,14 @@ public class UsersTableController {
         Bindings.bindContent(table.getItems(), userDataList);
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedUser.set(newValue);
+        });
+
+        // listen for users list indirect updates
+        userUpdated.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                table.refresh();
+                userUpdated.set(false);
+            }
         });
     }
 }

@@ -3,6 +3,7 @@ package com.main.stepper.admin.application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
@@ -156,18 +157,24 @@ public class UpdatePropertiesThread extends Thread{
                         Gson gson = new Gson();
                         List<UserData> dataList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<UserData>>() {}.getType());
                         Platform.runLater(() -> {
+                            Boolean updated = false;
                             synchronized (userDataList) {
                                 for (UserData data : dataList) {
                                     Optional<UserData> first = userDataList.stream().filter(user -> user.name().equals(data.name())).findFirst();
                                     if (first.isPresent()) {
-                                        if (!first.get().equals(data))
+                                        if (!first.get().equals(data)) {
+                                            if (selectedUser.isNotNull().get() && first.get().name().equals(selectedUser.get().name()))
+                                                selectedUser.set(data);
                                             first.get().update(data);
+                                            updated = true;
+                                        }
                                     }
                                     else {
                                         userDataList.add(data);
                                     }
                                 }
                             }
+                            PropertiesManager.userUpdated.set(updated);
                         });
                     }
                 }

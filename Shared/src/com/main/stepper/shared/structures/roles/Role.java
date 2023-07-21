@@ -70,6 +70,20 @@ public class Role {
         return true;
     }
 
+    public static List<String> uniqueUnionGroup(List<Role> roles) {
+        List<String> unionGroup = new ArrayList<>();
+        for (Role role : roles) {
+            synchronized (role.allowedFlows()) {
+                for (String flow : role.allowedFlows()) {
+                    if (!unionGroup.contains(flow)) {
+                        unionGroup.add(flow);
+                    }
+                }
+            }
+        }
+        return unionGroup;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

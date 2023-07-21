@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.admin.resources.dynamic.errorpopup.ErrorPopup;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
+import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.users.UserData;
 import com.main.stepper.shared.structures.wrappers.RolesAssignmentWrapper;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 
@@ -36,7 +38,7 @@ public class UserEditController {
     private final ObservableList<Role> selectedRoles = FXCollections.observableArrayList();
 
     private final ObservableList<FlowRunCounter> userFlowRunsList = FXCollections.observableArrayList();
-    private final ObservableList<FlowInfoDTO> userEnabledFlows = FXCollections.observableArrayList();
+    private final ObservableList<String> userSelectedFlows = FXCollections.observableArrayList();
 
     public UserEditController() {
     }
@@ -99,20 +101,20 @@ public class UserEditController {
 
     private void setupFlowRunTable() {
         // setup table columns
-        TableColumn<FlowRunCounter, Boolean> isSelectedCol = new TableColumn<>();
+        TableColumn<FlowRunCounter, Boolean> isSelectedCol = new TableColumn<>("Enabled");
         isSelectedCol.setCellValueFactory(param -> param.getValue().enabled);
         isSelectedCol.setCellFactory(param -> new CheckBoxTableCell<>());
         isSelectedCol.setPrefWidth(100);
 
-        TableColumn<FlowRunCounter, String> flowNameCol = new TableColumn<>();
+        TableColumn<FlowRunCounter, String> flowNameCol = new TableColumn<>("Name");
         flowNameCol.setCellValueFactory(param -> param.getValue().name);
         flowNameCol.setPrefWidth(150);
 
-        TableColumn<FlowRunCounter, String> flowDescCol = new TableColumn<>();
+        TableColumn<FlowRunCounter, String> flowDescCol = new TableColumn<>("Description");
         flowDescCol.setCellValueFactory(param -> param.getValue().description);
         flowDescCol.setPrefWidth(200);
 
-        TableColumn<FlowRunCounter, Integer> flowRunCount = new TableColumn<>();
+        TableColumn<FlowRunCounter, Integer> flowRunCount = new TableColumn<>("Times Run");
         flowRunCount.setCellValueFactory(param -> param.getValue().timesRun.asObject());
         flowRunCount.setPrefWidth(100);
 
@@ -122,6 +124,59 @@ public class UserEditController {
                 flowDescCol,
                 flowRunCount
         );
+
+        userFlowRunsTable.setItems(userFlowRunsList);
+
+        // add listeners to update userFlowRunsList
+        flowInformationList.addListener((ListChangeListener<? super FlowInfoDTO>) c -> {
+            while(c.next()) {
+                c.getRemoved().forEach(flowInfoDTO -> userFlowRunsList.removeIf(flowRunCounter -> flowRunCounter.name.get().equals(flowInfoDTO.name())));
+                c.getAddedSubList().forEach(flowInfoDTO -> {
+                    FlowRunCounter flowRunCounter = new FlowRunCounter(flowInfoDTO);
+                    flowRunCounter.listForSelected(userSelectedFlows);
+                    userFlowRunsList.add(flowRunCounter);
+                });
+            }
+            userFlowRunsTable.setItems(userFlowRunsList);
+            userFlowRunsTable.refresh();
+        });
+
+        // add listeners to update flow counts
+        // reset list on user change
+        selectedUser.addListener((observable, oldValue, newValue) -> {
+                userFlowRunsList.forEach(flowRunCounter -> {
+                    if (newValue == null)
+                        flowRunCounter.timesRun.set(0);
+                    else {
+                        flowRunCounter.timesRun.set(
+                                (int) flowRunResults.stream()
+                                        .filter(result -> result.user().equals(newValue.name()) && result.name().equals(flowRunCounter.name.get()))
+                                        .count()
+                        );
+                    }
+                    userFlowRunsTable.refresh();
+                });
+        });
+        // change list based on new results
+        flowRunResults.addListener((ListChangeListener<? super FlowRunResultDTO>) c -> {
+            while(c.next()) {
+                c.getRemoved().forEach(flowRunResult -> {
+                    userFlowRunsList.forEach(flowRunCounter -> {
+                        if (flowRunCounter.name.get().equals(flowRunResult.name())) {
+                            flowRunCounter.timesRun.set(flowRunCounter.timesRun.get() - 1);
+                        }
+                    });
+                });
+                c.getAddedSubList().forEach(flowRunResult -> {
+                    userFlowRunsList.forEach(flowRunCounter -> {
+                        if (flowRunCounter.name.get().equals(flowRunResult.name())) {
+                            flowRunCounter.timesRun.set(flowRunCounter.timesRun.get() + 1);
+                        }
+                    });
+                });
+            }
+            userFlowRunsTable.refresh();
+        });
     }
 
     @FXML public void initialize() {
@@ -136,11 +191,19 @@ public class UserEditController {
                 isManagerCheckBox.setSelected(newValue.isManager());
                 selectedRoles.setAll(newValue.roles());
                 rolesTable.refresh();
+                if (newValue.isManager()) {
+                    userSelectedFlows.setAll(flowInformationList.stream().map(FlowInfoDTO::name).collect(Collectors.toList()));
+                }
+                else {
+                    userSelectedFlows.setAll(Role.uniqueUnionGroup(newValue.roles()));
+                }
+                userFlowRunsTable.refresh();
                 root.setDisable(false);
                 root.setVisible(true);
             }
             else {
                 selectedRoles.clear();
+                userSelectedFlows.clear();
                 root.setDisable(true);
                 root.setVisible(false);
             }
