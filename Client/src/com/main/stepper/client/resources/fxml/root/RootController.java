@@ -83,6 +83,11 @@ public class RootController {
                 this.chatStage.setScene(scene);
                 this.chatStage.setTitle("Chat");
                 this.chatStage.show();
+                this.chatStage.setOnCloseRequest(event -> {
+                    this.chatController.isOpen.set(false);
+                    this.chatStage = null;
+                    Bindings.unbindContent(scene.getStylesheets(), primaryStage.getScene().getStylesheets());
+                });
             } catch (IOException ignored) {
             }
         }

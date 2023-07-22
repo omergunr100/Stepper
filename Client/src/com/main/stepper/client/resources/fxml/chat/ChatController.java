@@ -61,9 +61,9 @@ public class ChatController {
         loader.setLocation(MessageController.class.getResource("Message.fxml"));
         try {
             Parent component = loader.load();
-            messageBox.getChildren().add(component);
             MessageController controller = loader.getController();
             controller.loadMessage(message);
+            messageBox.getChildren().add(component);
             scroller.setVvalue(1.0);
         } catch (IOException ignored) {
         }
