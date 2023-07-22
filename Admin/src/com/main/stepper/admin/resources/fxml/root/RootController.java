@@ -5,7 +5,7 @@ import com.main.stepper.admin.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.admin.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.admin.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.roles.tab.RolesManagementScreenController;
-import com.main.stepper.admin.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
+import com.main.stepper.admin.resources.fxml.tabs.statistics.StatisticsScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.users.tab.UsersManagementScreenController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;

@@ -11,13 +11,15 @@
     <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" percentWidth="50.0" prefWidth="400.0" />
   </columnConstraints>
   <rowConstraints>
+      <RowConstraints vgrow="NEVER" />
       <RowConstraints prefHeight="300.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" percentHeight="1.0" vgrow="NEVER" />
     <RowConstraints prefHeight="300.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <fx:include fx:id="detailsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../flowrundetails/FlowRunDetails.fxml" GridPane.columnSpan="3" />
-      <fx:include fx:id="flowExecutionElements" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/executionelements/FlowExecutionElements.fxml" GridPane.rowIndex="2" />
-      <fx:include fx:id="stepDetails" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/stepdetails/StepDetails.fxml" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <fx:include fx:id="detailsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../flowrundetails/FlowRunDetails.fxml" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+      <fx:include fx:id="flowExecutionElements" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/executionelements/FlowExecutionElements.fxml" GridPane.rowIndex="3" />
+      <fx:include fx:id="stepDetails" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/stepdetails/StepDetails.fxml" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <fx:include fx:id="userSelector" source="../../../reusable/selector/Selector.fxml" GridPane.halignment="CENTER" />
    </children>
 </GridPane>

@@ -39,6 +39,7 @@ public class PropertiesManager {
     public static final SimpleObjectProperty<Role> selectedRole = new SimpleObjectProperty<>();
 
     // execution history screen properties
+    public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
 

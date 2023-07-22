@@ -62,7 +62,7 @@
                      <content>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
-                              <fx:include fx:id="statisticsScreen" source="../tabs/statistics/tab/StatisticsScreen.fxml" />
+                              <fx:include fx:id="statisticsScreen" source="../tabs/statistics/StatisticsScreen.fxml" />
                            </content>
                         </ScrollPane>
                      </content></Tab>

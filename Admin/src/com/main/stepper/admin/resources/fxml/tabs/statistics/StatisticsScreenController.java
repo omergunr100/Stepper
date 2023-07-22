@@ -1,7 +1,7 @@
-package com.main.stepper.client.resources.fxml.tabs.statistics.tab;
+package com.main.stepper.admin.resources.fxml.tabs.statistics;
 
-import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.client.resources.fxml.tabs.statistics.selector.SelectorController;
+import com.main.stepper.admin.resources.data.PropertiesManager;
+import com.main.stepper.admin.resources.fxml.reusable.selector.SelectorController;
 import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
@@ -21,13 +21,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.main.stepper.admin.resources.data.PropertiesManager.*;
+
 public class StatisticsScreenController {
     @FXML private TableView<StatDTO> flowTable;
     @FXML private TableView<StatDTO> stepTable;
     @FXML private BarChart<String, Number> flowBarChart;
     @FXML private BarChart<String, Number> stepBarChart;
-    @FXML private SelectorController flowSelectorController;
-    @FXML private SelectorController stepSelectorController;
+    @FXML private SelectorController userSelectorController;
     private ObservableList<StatDTO> flowStatsList;
     private ObservableList<StatDTO> stepStatsList;
     private XYChart.Series<String, Number> flowTimesRun;
@@ -39,6 +40,9 @@ public class StatisticsScreenController {
     }
 
     @FXML public void initialize() {
+        // bind user selector
+        userSelectorController.setProperty(statisticsSelectedUser);
+
         // initialize properties
         flowStatsList = flowTable.itemsProperty().get();
         stepStatsList = stepTable.itemsProperty().get();
@@ -96,6 +100,11 @@ public class StatisticsScreenController {
         PropertiesManager.stepRunResults.addListener((ListChangeListener.Change<? extends StepRunResultDTO> c) -> {
             onStepRunResultsUpdate();
         });
+
+        statisticsSelectedUser.addListener((observable, oldValue, newValue) -> {
+            onFlowRunResultsUpdate();
+            onStepRunResultsUpdate();
+        });
     }
 
     private void onFlowRunResultsUpdate() {
@@ -108,14 +117,14 @@ public class StatisticsScreenController {
         synchronized (PropertiesManager.flowRunResults) {
             for (String name : uniqueFlowNames) {
                 // calculate new statDTO
-                List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> f.name().equals(name) && !f.result().equals(FlowResult.RUNNING)).collect(Collectors.toList());
+                List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> (statisticsSelectedUser.get().equals("") ? true : f.user().equals(statisticsSelectedUser.get())) && f.name().equals(name) && !f.result().equals(FlowResult.RUNNING)).collect(Collectors.toList());
                 Duration duration = Duration.ofMillis(collection.stream().mapToLong(f -> f.duration().toMillis()).sum() / collection.size());
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.FLOW, name, collection.size(), duration);
 
                 // check if statDTO already exists in list
                 Optional<StatDTO> first;
-                synchronized (flowStatsList) {
-                    first = flowStatsList.stream().filter(s -> s.getName().equals(statDTO.getName())).findFirst();
+                synchronized (filteredFlowStatDTOs) {
+                    first = filteredFlowStatDTOs.stream().filter(s -> s.getName().equals(statDTO.getName())).findFirst();
                 }
                 if (first.isPresent()) {
                     // if it does, update the existing statDTO
@@ -124,20 +133,21 @@ public class StatisticsScreenController {
                     existingStatDTO.setAvgRunTime(statDTO.getAvgRunTime());
                 } else {
                     // if it doesn't, add it to the list
-                    flowStatsList.add(statDTO);
+                    filteredFlowStatDTOs.add(statDTO);
                 }
             }
         }
         // update chart
         flowTimesRun.getData().clear();
         flowAvgRunTime.getData().clear();
-        if(!flowStatsList.isEmpty()) {
-            synchronized (flowStatsList) {
-                flowTimesRun.getData().addAll(flowStatsList.stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
-                flowAvgRunTime.getData().addAll(flowStatsList.stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
+        if(!filteredFlowStatDTOs.isEmpty()) {
+            synchronized (filteredFlowStatDTOs) {
+                flowTimesRun.getData().addAll(filteredFlowStatDTOs.stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getRunCounter())).collect(Collectors.toList()));
+                flowAvgRunTime.getData().addAll(filteredFlowStatDTOs.stream().map(statDTO -> new XYChart.Data<String, Number>(statDTO.getName(), statDTO.getAvgRunTime().toMillis())).collect(Collectors.toList()));
             }
         }
         // update table
+        flowStatsList.setAll(filteredFlowStatDTOs);
         flowTable.refresh();
     }
 
@@ -151,14 +161,14 @@ public class StatisticsScreenController {
         synchronized (PropertiesManager.stepRunResults) {
             for (String name : uniqueStepNames) {
                 // calculate new statDTO
-                List<StepRunResultDTO> collection = PropertiesManager.stepRunResults.stream().filter(s -> s.name().equals(name)).collect(Collectors.toList());
+                List<StepRunResultDTO> collection = PropertiesManager.stepRunResults.stream().filter(s -> (statisticsSelectedUser.get().equals("") ? true : s.user().equals(statisticsSelectedUser.get())) && s.name().equals(name)).collect(Collectors.toList());
                 Duration duration = Duration.ofMillis(collection.stream().mapToLong(s -> s.duration().toMillis()).sum() / collection.size());
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.STEP, name, collection.size(), duration);
 
                 // check if statDTO already exists in list
                 Optional<StatDTO> first;
-                synchronized (stepStatsList) {
-                    first = stepStatsList.stream().filter(s -> s.getName().equals(statDTO.getName())).findFirst();
+                synchronized (filteredStepStatDTOs) {
+                    first = filteredStepStatDTOs.stream().filter(s -> s.getName().equals(statDTO.getName())).findFirst();
                 }
                 if (first.isPresent()) {
                     // if it does, update the existing statDTO
@@ -167,7 +177,7 @@ public class StatisticsScreenController {
                     existingStatDTO.setAvgRunTime(statDTO.getAvgRunTime());
                 } else {
                     // if it doesn't, add it to the list
-                    stepStatsList.add(statDTO);
+                    filteredStepStatDTOs.add(statDTO);
                 }
             }
         }
@@ -181,6 +191,7 @@ public class StatisticsScreenController {
             }
         }
         // update table
+        stepStatsList.setAll(filteredStepStatDTOs);
         stepTable.refresh();
     }
 }
