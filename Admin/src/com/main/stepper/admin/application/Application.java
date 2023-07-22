@@ -38,13 +38,19 @@ public class Application extends javafx.application.Application {
                 .addHeader("isAdmin", "true")
                 .get()
                 .build();
-        Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) {
+        Boolean status;
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                new ErrorPopup("Server unreachable, try again later.");
+                return;
+            } else {
+                Gson gson = new Gson();
+                status = gson.fromJson(response.body().string(), Boolean.class);
+            }
+        } catch (IOException e) {
             new ErrorPopup("Server unreachable, try again later.");
             return;
         }
-        Gson gson = new Gson();
-        Boolean status = gson.fromJson(response.body().string(), Boolean.class);
         if (!status) {
             new ErrorPopup("Admin already up.");
             return;

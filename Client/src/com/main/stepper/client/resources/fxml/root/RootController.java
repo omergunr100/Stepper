@@ -5,7 +5,6 @@ import com.main.stepper.client.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.client.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
-import com.main.stepper.client.resources.fxml.tabs.statistics.tab.StatisticsScreenController;
 import com.main.stepper.shared.structures.roles.Role;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -32,12 +31,10 @@ public class RootController {
     @FXML private Tab flowsDefinitionTab;
     @FXML private Tab flowsExecutionTab;
     @FXML private Tab executionsHistoryTab;
-    @FXML private Tab statisticsTab;
     // tab screen controllers
     @FXML private FlowsDefinitionController flowsDefinitionController;
     @FXML private FlowExecutionController flowExecutionController;
     @FXML private ExecutionHistoryScreenController flowExecutionHistoryController;
-    @FXML private StatisticsScreenController statisticsScreenController;
 
     public RootController() {
     }

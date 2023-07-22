@@ -5,6 +5,7 @@ import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
+import com.main.stepper.statistics.dto.StatDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -40,4 +41,9 @@ public class PropertiesManager {
     // execution history screen properties
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+
+    // statistics screen properties
+    public static final SimpleStringProperty statisticsSelectedUser = new SimpleStringProperty("");
+    public static final ObservableList<StatDTO> filteredFlowStatDTOs = FXCollections.observableArrayList();
+    public static final ObservableList<StatDTO> filteredStepStatDTOs = FXCollections.observableArrayList();
 }
