@@ -2,6 +2,7 @@ package com.main.stepper.client.resources.fxml.root;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.header.loadcss.LoadCSSController;
+import com.main.stepper.client.resources.fxml.header.rolesfilter.RolesFilterController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.client.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
@@ -25,7 +26,7 @@ public class RootController {
     @FXML private LoadCSSController loadCSSController;
     @FXML private TextField userNameTextField;
     @FXML private CheckBox isManagerCheckBox;
-    @FXML private TextField assignedRolesTextField;
+    @FXML private RolesFilterController roleFilterController;
     // tabs
     @FXML private TabPane tabs;
     @FXML private Tab flowsDefinitionTab;
@@ -44,24 +45,9 @@ public class RootController {
         PropertiesManager.health.addListener((observable, oldValue, newValue) -> {
             root.setDisable(!newValue);
         });
-        // listen on roles change
-        PropertiesManager.roles.addListener((ListChangeListener.Change<? extends Role> c) -> {
-            PropertiesManager.rolesUpdated.set(true);
-        });
         // bind to properties
         userNameTextField.textProperty().bind(PropertiesManager.userName);
         isManagerCheckBox.selectedProperty().bind(PropertiesManager.isManager);
-        PropertiesManager.roles.addListener((ListChangeListener.Change<? extends Role> c) -> {
-            StringBuilder sb = new StringBuilder();
-            ObservableList<Role> roles = PropertiesManager.roles;
-            for (Role role : roles) {
-                sb.append(role.name()).append(", ");
-            }
-            if (sb.length() > 0) {
-                sb.delete(sb.length() - 2, sb.length());
-            }
-            assignedRolesTextField.setText(sb.toString());
-        });
         // set root controller
         loadCSSController.setRootController(this);
         // select initial window

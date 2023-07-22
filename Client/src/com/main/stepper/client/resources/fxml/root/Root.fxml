@@ -40,8 +40,8 @@
                   </HBox>
                   <HBox fillHeight="false" spacing="10.0">
                      <children>
-                        <Label text="Assigned Roles:" />
-                        <TextField fx:id="assignedRolesTextField" editable="false" />
+                        <Label text="Assigned Role Filter:" />
+                        <fx:include fx:id="roleFilter" source="../header/rolesfilter/RolesFilter.fxml" />
                      </children>
                   </HBox>
                   <Separator />
