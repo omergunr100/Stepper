@@ -66,7 +66,6 @@ public class FlowsDefinitionController {
                         PropertiesManager.currentFlow.set(null);
                     flowsTableView.getItems().remove(flowInformation);
                 });
-                // todo: filter based on selection
                 List<FlowInfoDTO> toAdd = new ArrayList<>();
                 c.getAddedSubList().forEach(dto -> {
                     if (PropertiesManager.roleFilter.get().equals("") || (!PropertiesManager.roles.isEmpty() && PropertiesManager.roles.stream().filter(r -> r.name().equals(PropertiesManager.roleFilter.get())).findFirst().get().allowedFlows().contains(dto.name())))
