@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.flow.definition.api.FlowResult;
+import com.main.stepper.shared.structures.chat.message.Message;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
@@ -37,6 +38,8 @@ public class UpdatePropertiesThread extends Thread{
         updateCurrentlyRunningFlow();
         // update usernames list
         updateUsernamesList();
+        // update chat messages
+        updateChatMessages();
     }
 
     @Override
@@ -284,6 +287,46 @@ public class UpdatePropertiesThread extends Thread{
                             List<String> toRemove = usernamesList.stream().filter(name -> !newUserDataList.contains(name)).collect(Collectors.toList());
                             usernamesList.removeAll(toRemove);
                             usernamesList.addAll(toAdd);
+                        });
+                    }
+                    else
+                        response.close();
+                }
+            });
+        }
+    }
+
+    private static void updateChatMessages() {
+        Request request = new Request.Builder()
+                .url(URLManager.CHAT)
+                .get()
+                .build();
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // ignore failure, updates regularly
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        List<Message> messages = gson.fromJson(response.body().string(), new TypeToken<ArrayList<Message>>() {}.getType());
+                        Platform.runLater(() -> {
+                            synchronized (chatMessages) {
+                                // if list was empty, add all
+                                if (chatMessages.isEmpty())
+                                    chatMessages.addAll(messages);
+                                else {
+                                    // else add new messages
+                                    List<Message> newMessages = messages.stream()
+                                            .filter(message -> !chatMessages.contains(message))
+                                            .collect(Collectors.toList());
+                                    chatMessages.addAll(newMessages);
+                                }
+                            }
                         });
                     }
                     else

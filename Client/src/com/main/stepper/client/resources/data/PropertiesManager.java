@@ -1,5 +1,6 @@
 package com.main.stepper.client.resources.data;
 
+import com.main.stepper.shared.structures.chat.message.Message;
 import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInputsDTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
@@ -43,8 +44,12 @@ public class PropertiesManager {
     public static final SimpleObjectProperty<StepRunResultDTO> executionSelectedStep = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<FlowRunResultDTO> continuation = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<UUID> currentRunningFlowUUID = new SimpleObjectProperty<>();
+
     // execution history screen properties
     public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+
+    // chat properties
+    public static final ObservableList<Message> chatMessages = FXCollections.observableArrayList();
 }

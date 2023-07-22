@@ -3,6 +3,7 @@ package com.main.stepper.server.servlets.context;
 import com.main.stepper.engine.definition.api.IEngine;
 import com.main.stepper.engine.definition.implementation.ServerEngine;
 import com.main.stepper.server.constants.ServletAttributes;
+import com.main.stepper.shared.structures.chat.message.Message;
 import com.main.stepper.shared.structures.users.UserData;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -20,6 +21,8 @@ public class ContextListener implements ServletContextListener {
         sce.getServletContext().setAttribute(ServletAttributes.ENGINE, new ServerEngine());
         // set isAdminUp
         sce.getServletContext().setAttribute(ServletAttributes.IS_ADMIN_UP, false);
+        // initialize chat records
+        sce.getServletContext().setAttribute(ServletAttributes.CHAT_RECORDS, new ArrayList<Message>());
     }
 
     @Override

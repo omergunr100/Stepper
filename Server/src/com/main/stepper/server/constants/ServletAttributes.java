@@ -4,4 +4,5 @@ public class ServletAttributes {
     public static final String USER_DATA_LIST = "user_data_list";
     public static final String ENGINE = "engine";
     public static final String IS_ADMIN_UP = "isAdminUp";
+    public static final String CHAT_RECORDS = "chat_records";
 }
