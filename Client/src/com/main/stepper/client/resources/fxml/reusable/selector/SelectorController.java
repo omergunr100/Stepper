@@ -1,7 +1,6 @@
 package com.main.stepper.client.resources.fxml.reusable.selector;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.shared.structures.users.UserData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -24,6 +23,7 @@ public class SelectorController {
 
     @FXML public void initialize() {
         // initialize selector
+        selection.setDisable(true);
         loadOptions(null);
 
         // add listener for selector change
@@ -36,19 +36,22 @@ public class SelectorController {
             }
         });
 
-        // add listener for change in results to update unique user names for filtering
-        // todo: make user list from flow run history
-//        PropertiesManager.userDataList.addListener((ListChangeListener<? super UserData>) c -> {
-//            List<String> uniqueUsers;
-//            if (PropertiesManager.userDataList.isEmpty())
-//                loadOptions(null);
-//            else {
-//                synchronized (PropertiesManager.userDataList) {
-//                    uniqueUsers = PropertiesManager.userDataList.stream().map(UserData::name).collect(Collectors.toList());
-//                }
-//                loadOptions(uniqueUsers);
-//            }
-//        });
+        // add listener for manager status
+        PropertiesManager.isManager.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                selection.setDisable(false);
+            }
+            else {
+                selection.getSelectionModel().clearSelection();
+                selectedUser.set("");
+                selection.setDisable(true);
+            }
+        });
+
+        // add listener for change in results to update unique usernames for filtering
+        PropertiesManager.usernamesList.addListener((ListChangeListener<? super String>) c -> {
+            loadOptions((List<String>) c.getList());
+        });
     }
 
     public void loadOptions(List<String> values) {

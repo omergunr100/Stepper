@@ -24,6 +24,7 @@ public class PropertiesManager {
     public static final SimpleBooleanProperty isManager = new SimpleBooleanProperty();
     public static final ObservableList<Role> roles = FXCollections.observableArrayList();
     public static final ObservableList<UUID> flowExecutionHistory = FXCollections.observableArrayList();
+    public static final ObservableList<String> usernamesList = FXCollections.observableArrayList();
 
     public static final ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
 
@@ -43,6 +44,7 @@ public class PropertiesManager {
     public static final SimpleObjectProperty<FlowRunResultDTO> continuation = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<UUID> currentRunningFlowUUID = new SimpleObjectProperty<>();
     // execution history screen properties
+    public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
 }

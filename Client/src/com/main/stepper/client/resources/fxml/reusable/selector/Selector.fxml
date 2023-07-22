@@ -2,4 +2,4 @@
 
 
 <?import javafx.scene.control.ComboBox?>
-<ComboBox fx:id="selection" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.main.stepper.admin.resources.fxml.reusable.selector.SelectorController" />
+<ComboBox fx:id="selection" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.main.stepper.client.resources.fxml.reusable.selector.SelectorController" />

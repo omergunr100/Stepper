@@ -11,6 +11,7 @@ public class URLManager {
     public static final String STEP_RUN_RESULTS = SERVER_ADDRESS + "/history/step";
 
     public static final String USERS_DATA = SERVER_ADDRESS + "/users/data";
+    public static final String USERS_NAMES = SERVER_ADDRESS + "/users/names";
 
     public static final String FLOW_INFORMATION = SERVER_ADDRESS + "/flow/information";
 

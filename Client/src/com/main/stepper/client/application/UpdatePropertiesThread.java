@@ -35,6 +35,8 @@ public class UpdatePropertiesThread extends Thread{
         updateFlowInformation();
         // update currently running flow
         updateCurrentlyRunningFlow();
+        // update usernames list
+        updateUsernamesList();
     }
 
     @Override
@@ -95,6 +97,13 @@ public class UpdatePropertiesThread extends Thread{
                         final List<FlowRunResultDTO> flowRunResultList = temp.stream().map(FlowRunResultDTO::fix).collect(Collectors.toList());
                         Platform.runLater(() -> {
                             synchronized (flowRunResults) {
+                                // check if not manager and try to delete all non-user flows
+                                if (!isManager.get() && !flowRunResults.isEmpty()) {
+                                    List<FlowRunResultDTO> toRemove = flowRunResults.stream()
+                                            .filter(result -> !result.user().equals(userName.get()))
+                                            .collect(Collectors.toList());
+                                    flowRunResults.removeAll(toRemove);
+                                }
                                 // if received an empty list exit
                                 if (flowRunResultList.isEmpty())
                                     return;
@@ -249,6 +258,38 @@ public class UpdatePropertiesThread extends Thread{
                             });
                 });
             }
+        }
+    }
+
+    private static void updateUsernamesList() {
+        Request request = new Request.Builder()
+                .url(URLManager.USERS_NAMES)
+                .get()
+                .build();
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // ignore failure, updates regularly
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() == 200) {
+                        Gson gson = new Gson();
+                        List<String> newUserDataList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<String>>(){}.getType());
+                        Platform.runLater(() -> {
+                            List<String> toAdd = newUserDataList.stream().filter(name -> !usernamesList.contains(name)).collect(Collectors.toList());
+                            List<String> toRemove = usernamesList.stream().filter(name -> !newUserDataList.contains(name)).collect(Collectors.toList());
+                            usernamesList.removeAll(toRemove);
+                            usernamesList.addAll(toAdd);
+                        });
+                    }
+                    else
+                        response.close();
+                }
+            });
         }
     }
 }
