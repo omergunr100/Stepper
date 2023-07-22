@@ -27,17 +27,11 @@ public class UserLogoutServlet extends HttpServlet {
                 // username found
                 String username = name.get().getValue();
 
-                // delete user from history
-                IEngine engine = (IEngine) getServletContext().getAttribute(ServletAttributes.ENGINE);
-                List<IFlowRunResult> runs = engine.getFlowRuns();
-                runs.stream().filter(run -> run.user().equals(username)).forEach(run -> {
-                    run.stepRunResults().forEach(step -> step.setUser(""));
-                    run.setUser("");
-                });
-
                 // delete user data
                 List<UserData> userDataList = (List<UserData>) getServletContext().getAttribute(ServletAttributes.USER_DATA_LIST);
-                userDataList.removeIf(data -> data.name().equals(username));
+                synchronized (userDataList) {
+                    userDataList.stream().filter(user -> user.name().equals(username)).findFirst().ifPresent(user -> user.setLoggedIn(false));
+                }
             }
         }
     }

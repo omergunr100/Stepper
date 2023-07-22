@@ -12,12 +12,14 @@ public class UserData {
     private boolean isManager;
     private final List<Role> roles;
     private final List<UUID> flowExecutionHistory;
+    private Boolean loggedIn;
 
     public UserData(String name) {
         this.name = name;
         this.isManager = false;
         roles = new ArrayList<>();
         flowExecutionHistory = new ArrayList<>();
+        loggedIn = true;
     }
 
     public String name() {
@@ -29,6 +31,13 @@ public class UserData {
     }
     public void setManager(boolean manager) {
         isManager = manager;
+    }
+
+    public Boolean loggedIn() {
+        return loggedIn;
+    }
+    public void setLoggedIn(Boolean loggedIn) {
+        this.loggedIn = loggedIn;
     }
 
     public List<Role> roles() {

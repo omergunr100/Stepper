@@ -26,8 +26,10 @@ public class UserSignServlet extends HttpServlet {
         // search for current user in list
         Optional<UserData> currentUser = users.stream().filter(userData -> userData.name().equals(name)).findFirst();
         if (currentUser.isPresent()) {
-            // if the user already exists check if he has the matching cookie (returning user) else return conflict
-            if (cookies != null && Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("name") && cookie.getValue().equals(name))) {
+            // if the user already exists check if he has the matching cookie or user is logged out (returning user) else return conflict
+            if (!currentUser.get().loggedIn() || (cookies != null && Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals("name") && cookie.getValue().equals(name)))) {
+                resp.addCookie(new Cookie("name", name));
+                currentUser.get().setLoggedIn(true);
                 resp.setStatus(HttpServletResponse.SC_OK);
             }
             else
