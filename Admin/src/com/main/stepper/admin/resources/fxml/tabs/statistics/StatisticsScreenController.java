@@ -118,7 +118,11 @@ public class StatisticsScreenController {
             for (String name : uniqueFlowNames) {
                 // calculate new statDTO
                 List<FlowRunResultDTO> collection = PropertiesManager.flowRunResults.stream().filter(f -> (statisticsSelectedUser.get().equals("") ? true : f.user().equals(statisticsSelectedUser.get())) && f.name().equals(name) && !f.result().equals(FlowResult.RUNNING)).collect(Collectors.toList());
-                Duration duration = Duration.ofMillis(collection.stream().mapToLong(f -> f.duration().toMillis()).sum() / collection.size());
+                Duration duration;
+                if (collection.size() > 0)
+                    duration = Duration.ofMillis(collection.stream().mapToLong(f -> f.duration().toMillis()).sum() / collection.size());
+                else
+                    duration = Duration.ZERO;
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.FLOW, name, collection.size(), duration);
 
                 // check if statDTO already exists in list
@@ -162,7 +166,11 @@ public class StatisticsScreenController {
             for (String name : uniqueStepNames) {
                 // calculate new statDTO
                 List<StepRunResultDTO> collection = PropertiesManager.stepRunResults.stream().filter(s -> (statisticsSelectedUser.get().equals("") ? true : s.user().equals(statisticsSelectedUser.get())) && s.name().equals(name)).collect(Collectors.toList());
-                Duration duration = Duration.ofMillis(collection.stream().mapToLong(s -> s.duration().toMillis()).sum() / collection.size());
+                Duration duration;
+                if (collection.size() > 0)
+                    duration = Duration.ofMillis(collection.stream().mapToLong(s -> s.duration().toMillis()).sum() / collection.size());
+                else
+                    duration = Duration.ZERO;
                 StatDTO statDTO = new StatDTO(StatDTO.TYPE.STEP, name, collection.size(), duration);
 
                 // check if statDTO already exists in list
