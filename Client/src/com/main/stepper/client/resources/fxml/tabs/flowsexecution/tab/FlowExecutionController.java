@@ -78,8 +78,6 @@ public class FlowExecutionController {
 
         // add listener for selected flow change and update ui accordingly
         executionSelectedFlow.addListener((observable, oldValue, newValue) -> {
-            if (oldValue == null && newValue == null)
-                return;
             onCurrentFlowChange();
         });
 
@@ -87,6 +85,7 @@ public class FlowExecutionController {
         reloadFlow.addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 return;
+            executionSelectedFlow.set(null);
             executionSelectedFlow.set(newValue.flowInfo());
             // add one time listener for input components change
             flowInputControllers.addListener(oneTimeListener);
