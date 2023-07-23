@@ -41,5 +41,17 @@ public class RootController {
 
         // select initial window
         tabs.getSelectionModel().select(usersManagementTab);
+
+        // tab listeners
+        usersManagementTab.setOnSelectionChanged(event -> {
+            if (!usersManagementTab.isSelected()) {
+                PropertiesManager.selectedUser.set(null);
+            }
+        });
+        rolesManagementTab.setOnSelectionChanged(event -> {
+            if (!rolesManagementTab.isSelected()) {
+                PropertiesManager.selectedRole.set(null);
+            }
+        });
     }
 }

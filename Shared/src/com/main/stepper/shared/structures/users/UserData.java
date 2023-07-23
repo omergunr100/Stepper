@@ -92,6 +92,7 @@ public class UserData {
         this.roles.addAll(userData.roles);
         this.flowExecutionHistory.clear();
         this.flowExecutionHistory.addAll(userData.flowExecutionHistory);
+        this.loggedIn = userData.loggedIn;
     }
 
     @Override
@@ -104,6 +105,7 @@ public class UserData {
         if (isManager != userData.isManager) return false;
         if (!Objects.equals(name, userData.name)) return false;
         if (!roles.equals(userData.roles)) return false;
+        if (!loggedIn.equals(userData.loggedIn)) return false;
         return flowExecutionHistory.equals(userData.flowExecutionHistory);
     }
 

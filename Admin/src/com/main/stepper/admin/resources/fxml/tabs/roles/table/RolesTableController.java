@@ -35,6 +35,12 @@ public class RolesTableController {
         descriptionCol.setPrefWidth(200);
 
         rolesTable.getColumns().addAll(nameCol, descriptionCol);
+
+        // add listener for selected role change to clear table selection
+        selectedRole.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null)
+                rolesTable.getSelectionModel().clearSelection();
+        });
     }
 
 }

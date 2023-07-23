@@ -167,6 +167,7 @@ public class UpdatePropertiesThread extends Thread{
                                 });
 
                                 userDataList.removeAll(toRemove);
+                                onlineUsers.removeAll(toRemove);
 
                                 for (UserData data : dataList) {
                                     Optional<UserData> first = userDataList.stream().filter(user -> user.name().equals(data.name())).findFirst();
@@ -174,12 +175,30 @@ public class UpdatePropertiesThread extends Thread{
                                         if (!first.get().equals(data)) {
                                             if (selectedUser.isNotNull().get() && first.get().name().equals(selectedUser.get().name()))
                                                 selectedUser.set(data);
+                                            // online status changed
+                                            if (!first.get().loggedIn().equals(data.loggedIn())) {
+                                                if (data.loggedIn())
+                                                    onlineUsers.add(data);
+                                                else
+                                                    onlineUsers.remove(first.get());
+                                            }
+                                            else if (first.get().loggedIn()) {
+                                                Optional<UserData> onlineMatch;
+                                                synchronized (onlineUsers) {
+                                                    onlineMatch = onlineUsers.stream().filter(user -> user.name().equals(data.name())).findFirst();
+                                                }
+                                                if (onlineMatch.isPresent())
+                                                    onlineMatch.get().update(data);
+                                            }
+
                                             first.get().update(data);
                                             updated = true;
                                         }
                                     }
                                     else {
                                         userDataList.add(data);
+                                        if (data.loggedIn())
+                                            onlineUsers.add(data);
                                     }
                                 }
                             }

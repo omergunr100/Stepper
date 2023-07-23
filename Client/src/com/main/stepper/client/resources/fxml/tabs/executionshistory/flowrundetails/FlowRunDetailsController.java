@@ -49,6 +49,9 @@ public class FlowRunDetailsController {
 
         table.getColumns().addAll(nameColumn, timeColumn, resultColumn);
 
+        if (PropertiesManager.isManager.get())
+            table.getColumns().add(userColumn);
+
         // add listener on manager status to disable/enable user column
         PropertiesManager.isManager.addListener((observable, oldValue, newValue) -> {
             if(!oldValue && newValue) {

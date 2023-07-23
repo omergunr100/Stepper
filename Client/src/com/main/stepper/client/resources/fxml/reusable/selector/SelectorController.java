@@ -23,8 +23,14 @@ public class SelectorController {
 
     @FXML public void initialize() {
         // initialize selector
-        selection.setDisable(true);
-        loadOptions(null);
+        if (PropertiesManager.isManager.not().get()) {
+            selection.setDisable(true);
+            loadOptions(null);
+        }
+        else {
+            selection.setDisable(false);
+            loadOptions(PropertiesManager.usernamesList);
+        }
 
         // add listener for selector change
         selection.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

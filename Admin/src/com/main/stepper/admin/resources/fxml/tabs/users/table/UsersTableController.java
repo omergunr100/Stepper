@@ -4,6 +4,7 @@ import com.main.stepper.shared.structures.users.UserData;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,7 +31,22 @@ public class UsersTableController {
         table.getColumns().addAll(nameCol, isManagerCol);
 
         // bind to properties
-        Bindings.bindContent(table.getItems(), userDataList);
+        Bindings.bindContent(table.getItems(), onlineUsers);
+        userUpdated.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                table.refresh();
+                userUpdated.set(false);
+            }
+        });
+
+        // listen for selected user changes
+        selectedUser.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                table.getSelectionModel().clearSelection();
+            }
+        });
+
+        // change selected user based on table selection
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedUser.set(newValue);
         });

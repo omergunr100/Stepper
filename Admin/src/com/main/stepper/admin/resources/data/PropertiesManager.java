@@ -27,6 +27,7 @@ public class PropertiesManager {
     public static final ObservableList<Role> rolesList = FXCollections.observableArrayList();
     public static final SimpleObjectProperty<Role> localRole = new SimpleObjectProperty<>(null);
     public static final ObservableList<UserData> userDataList = FXCollections.observableArrayList();
+    public static final ObservableList<UserData> onlineUsers = FXCollections.observableArrayList();
     public static final SimpleBooleanProperty userUpdated = new SimpleBooleanProperty(false);
     public static final ObservableList<FlowInfoDTO> flowInformationList = FXCollections.observableArrayList();
     public static final ObservableList<FlowRunResultDTO> flowRunResults = FXCollections.observableArrayList();
