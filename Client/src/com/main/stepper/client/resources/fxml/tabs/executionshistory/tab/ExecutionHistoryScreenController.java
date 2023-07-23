@@ -6,7 +6,6 @@ import com.main.stepper.client.resources.fxml.reusable.selector.SelectorControll
 import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
-import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -3,7 +3,6 @@ package com.main.stepper.step.definition.implementation;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.main.stepper.data.DDRegistry;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.StepRunResult;
