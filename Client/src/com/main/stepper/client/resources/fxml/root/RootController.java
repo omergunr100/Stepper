@@ -67,6 +67,12 @@ public class RootController {
                 tabs.getSelectionModel().select(flowsExecutionTab);
             }
         });
+        // add listener to switch to execution tab on reload of execution history
+        PropertiesManager.reloadFlow.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tabs.getSelectionModel().select(flowsExecutionTab);
+            }
+        });
     }
 
     @FXML private void openChat() {

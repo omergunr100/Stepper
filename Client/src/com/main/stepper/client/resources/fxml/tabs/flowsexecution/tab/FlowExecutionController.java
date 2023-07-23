@@ -16,6 +16,11 @@ import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInput
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -37,23 +42,40 @@ import static com.main.stepper.client.resources.data.PropertiesManager.*;
 
 public class FlowExecutionController {
     private Thread validateInputsThread = null;
-    private List<FlowInputController> flowInputControllers;
+    private ObservableList<FlowInputController> flowInputControllers;
     private List<Parent> flowInputComponents = new ArrayList<>();
-    @FXML GridPane flowInputsGrid;
-    @FXML FlowPane inputsFlowPane;
-    @FXML Button startButton;
-    @FXML CheckBox mandatoryBox;
-    @FXML CheckBox optionalBox;
-    @FXML FlowContinuationsController continuationsController;
-    @FXML FlowExecutionElementsController executionElementsController;
-    @FXML StepDetailsController stepExecutionDetailsController;
+    @FXML private GridPane flowInputsGrid;
+    @FXML private FlowPane inputsFlowPane;
+    @FXML private Button startButton;
+    @FXML private CheckBox mandatoryBox;
+    @FXML private CheckBox optionalBox;
+    @FXML private FlowContinuationsController continuationsController;
+    @FXML private FlowExecutionElementsController executionElementsController;
+    @FXML private StepDetailsController stepExecutionDetailsController;
+
+    private ListChangeListener<? super FlowInputController> oneTimeListener = new ListChangeListener<FlowInputController>() {
+        @Override
+        public void onChanged(Change<? extends FlowInputController> c) {
+            Map<DataIODTO, Object> userInputs = reloadFlow.get().userInputs();
+            synchronized (flowInputControllers) {
+                while (c.next()) {
+                    c.getAddedSubList().forEach(controller -> {
+                            DataIODTO input = controller.input();
+                            controller.setValue(userInputs.get(input).toString());
+                    });
+                }
+            }
+            reloadFlow.set(null);
+            flowInputControllers.removeListener(this);
+        }
+    };
 
     public FlowExecutionController() {
     }
 
     @FXML public void initialize(){
         startButton.setOnAction(event -> startFlow());
-        flowInputControllers = new ArrayList<>();
+        flowInputControllers = FXCollections.observableArrayList();
         flowInputComponents = new ArrayList<>();
 
         // add listener for selected flow change and update ui accordingly
@@ -61,6 +83,15 @@ public class FlowExecutionController {
             if (oldValue == null && newValue == null)
                 return;
             onCurrentFlowChange();
+        });
+
+        // add listener for reload flow execution user inputs
+        reloadFlow.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null)
+                return;
+            executionSelectedFlow.set(newValue.flowInfo());
+            // add one time listener for input components change
+            flowInputControllers.addListener(oneTimeListener);
         });
 
         // setup sub-controllers
@@ -113,10 +144,10 @@ public class FlowExecutionController {
 
     // initialize input components - happens when currentFlowExecutionUserInputs is changed
     private void setInputs(FlowRunResultDTO runResult) {
-        this.flowInputControllers.clear();
         this.flowInputComponents.clear();
         this.inputsFlowPane.getChildren().clear();
         List<FadeTransition> animations = new ArrayList<>();
+        List<FlowInputController> inputControllersList = new ArrayList<>();
         if (currentFlowExecutionUserInputs.isNotNull().get()) {
             synchronized (currentFlowExecutionUserInputs.get()) {
                 for (DataIODTO dataIO : currentFlowExecutionUserInputs.get().getOpenUserInputs()) {
@@ -139,7 +170,7 @@ public class FlowExecutionController {
                                 flowInputController.setValue(value.toString());
                         }
 
-                        flowInputControllers.add(flowInputController);
+                        inputControllersList.add(flowInputController);
                         flowInputComponents.add(inputComp);
                         inputComp.setOpacity(0.0);
                         inputsFlowPane.getChildren().add(inputComp);
@@ -151,6 +182,7 @@ public class FlowExecutionController {
                     } catch (IOException ignored) {
                     }
                 }
+                flowInputControllers.setAll(inputControllersList);
                 for (int i = 0; i < animations.size() - 1; i++) {
                     final FadeTransition next = animations.get(i + 1);
                     animations.get(i).setOnFinished(event -> next.play());

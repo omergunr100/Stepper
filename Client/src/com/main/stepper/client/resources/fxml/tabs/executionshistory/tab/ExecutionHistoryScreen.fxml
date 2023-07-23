@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -21,5 +22,6 @@
       <fx:include fx:id="flowExecutionElements" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/executionelements/FlowExecutionElements.fxml" GridPane.rowIndex="3" />
       <fx:include fx:id="stepDetails" prefHeight="300.0" prefWidth="400.0" source="../../../reusable/stepdetails/StepDetails.fxml" GridPane.columnIndex="2" GridPane.rowIndex="3" />
       <fx:include fx:id="userSelector" source="../../../reusable/selector/Selector.fxml" GridPane.halignment="CENTER" />
+      <Button fx:id="rerunFlowButton" mnemonicParsing="false" onAction="#onRerunButtonPress" text="Run Again" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
    </children>
 </GridPane>
