@@ -1,6 +1,5 @@
 package com.main.stepper.admin.resources.fxml.tabs.executionshistory.flowrundetails;
 
-import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.*;
-import static com.main.stepper.admin.resources.data.PropertiesManager.executionHistorySelectedUser;
 
 public class FlowRunDetailsController {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());

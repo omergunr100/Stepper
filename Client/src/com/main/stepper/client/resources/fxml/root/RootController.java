@@ -8,10 +8,7 @@ import com.main.stepper.client.resources.fxml.header.rolesfilter.RolesFilterCont
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
 import com.main.stepper.client.resources.fxml.tabs.flowsdefinition.FlowsDefinitionController;
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.tab.FlowExecutionController;
-import com.main.stepper.shared.structures.roles.Role;
 import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

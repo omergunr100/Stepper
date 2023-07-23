@@ -1,14 +1,12 @@
 package com.main.stepper.admin.resources.fxml.reusable.selector;
 
 import com.main.stepper.admin.resources.data.PropertiesManager;
-import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 
-import javax.script.Bindings;
 import java.util.List;
 import java.util.stream.Collectors;
 

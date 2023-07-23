@@ -6,7 +6,6 @@ import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.admin.resources.dynamic.errorpopup.ErrorPopup;
 import com.main.stepper.admin.resources.fxml.root.RootController;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

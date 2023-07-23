@@ -16,8 +16,6 @@ import com.main.stepper.shared.structures.executionuserinputs.ExecutionUserInput
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -53,7 +51,7 @@ public class FlowExecutionController {
     @FXML private FlowExecutionElementsController executionElementsController;
     @FXML private StepDetailsController stepExecutionDetailsController;
 
-    private ListChangeListener<? super FlowInputController> oneTimeListener = new ListChangeListener<FlowInputController>() {
+    private final ListChangeListener<? super FlowInputController> oneTimeListener = new ListChangeListener<FlowInputController>() {
         @Override
         public void onChanged(Change<? extends FlowInputController> c) {
             Map<DataIODTO, Object> userInputs = reloadFlow.get().userInputs();
