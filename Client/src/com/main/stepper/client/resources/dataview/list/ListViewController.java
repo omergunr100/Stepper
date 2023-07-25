@@ -38,6 +38,15 @@ public class ListViewController {
         reset();
         if (list == null || list.isEmpty())
             return;
+        TableColumn<Object, String> index = new TableColumn<>("Index");
+        index.setPrefWidth(50);
+        index.setCellFactory(param -> new TableCell<Object, String>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : Integer.toString(getIndex() + 1));
+            }
+        });
         TableColumn<Object, String> column = new TableColumn<>("Items");
         if (list.get(0) instanceof Relation) {
             column.setCellFactory(new Callback<TableColumn<Object, String>, javafx.scene.control.TableCell<Object, String>>() {
@@ -86,7 +95,7 @@ public class ListViewController {
             column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toString()));
         }
         table.getColumns().clear();
-        table.getColumns().add(column);
+        table.getColumns().addAll(index, column);
         table.getItems().addAll(list);
     }
 }
