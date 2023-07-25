@@ -180,7 +180,7 @@ public class FlowRunResult implements IFlowRunResult {
                 runId,
                 result,
                 startTime,
-                duration,
+                duration(),
                 continuationMappings,
                 userInputs == null || userInputs.isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
                 internalOutputs == null || internalOutputs.isEmpty() ? new HashMap<>() : internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),

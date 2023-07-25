@@ -45,6 +45,7 @@ public class PropertiesManager {
     public static final SimpleObjectProperty<FlowRunResultDTO> continuation = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<UUID> currentRunningFlowUUID = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<FlowRunResultDTO> reloadFlow = new SimpleObjectProperty<>(null);
+    public static final SimpleBooleanProperty executionIsFlowSelected = new SimpleBooleanProperty(false);
 
     // execution history screen properties
     public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");

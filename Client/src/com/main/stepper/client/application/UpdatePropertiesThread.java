@@ -34,8 +34,6 @@ public class UpdatePropertiesThread extends Thread{
         updateStepRunResults();
         // update available flow information list
         updateFlowInformation();
-        // update currently running flow
-        updateCurrentlyRunningFlow();
         // update usernames list
         updateUsernamesList();
         // update chat messages
@@ -114,6 +112,26 @@ public class UpdatePropertiesThread extends Thread{
                                 if (flowRunResults.isEmpty())
                                     flowRunResults.addAll(flowRunResultList);
                                 else {
+                                    // update currently running flow
+                                    if (currentRunningFlowUUID.isNotNull().get()) {
+                                        for (FlowRunResultDTO result : flowRunResultList) {
+                                            if (result.runId().equals(currentRunningFlowUUID.get())) {
+                                                Platform.runLater(() -> {
+                                                    synchronized (executionRunningFlow) {
+                                                        executionRunningFlow.set(result);
+                                                    }
+                                                });
+                                                if (!result.result().equals(FlowResult.RUNNING))
+                                                    Platform.runLater(() -> {
+                                                        synchronized (currentRunningFlowUUID) {
+                                                            currentRunningFlowUUID.set(null);
+                                                        }
+                                                    });
+                                                break;
+                                            }
+                                        }
+                                    }
+
                                     // check for new run results and add them
                                     int i = 0;
                                     while (!flowRunResultList.get(i).runId().equals(flowRunResults.get(i).runId())) {
@@ -244,23 +262,6 @@ public class UpdatePropertiesThread extends Thread{
                         response.close();
                 }
             });
-        }
-    }
-
-    private static void updateCurrentlyRunningFlow() {
-        if (currentRunningFlowUUID.isNotNull().get() && !flowRunResults.isEmpty()) {
-            synchronized (flowRunResults) {
-                Platform.runLater(() -> {
-                    flowRunResults.stream()
-                            .filter(exe -> exe.runId().equals(currentRunningFlowUUID.get()))
-                            .findFirst()
-                            .ifPresent(exe -> {
-                                executionRunningFlow.set(exe);
-                                if(!exe.result().equals(FlowResult.RUNNING))
-                                    currentRunningFlowUUID.set(null);
-                            });
-                });
-            }
         }
     }
 

@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.data.URLManager;
 import com.main.stepper.client.resources.dynamic.errorpopup.ErrorPopup;
-import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
+import com.main.stepper.client.resources.fxml.reusable.executioninfotree.ExecutionInfoTreeController;
+import com.main.stepper.client.resources.fxml.reusable.executionstepsbox.ExecutionStepsBoxController;
 import com.main.stepper.client.resources.fxml.reusable.flowinput.FlowInputController;
-import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
 import com.main.stepper.client.resources.fxml.tabs.flowsexecution.continuations.FlowContinuationsController;
 import com.main.stepper.exceptions.data.BadTypeException;
 import com.main.stepper.io.api.DataNecessity;
@@ -48,8 +48,8 @@ public class FlowExecutionController {
     @FXML private CheckBox mandatoryBox;
     @FXML private CheckBox optionalBox;
     @FXML private FlowContinuationsController continuationsController;
-    @FXML private FlowExecutionElementsController executionElementsController;
-    @FXML private StepDetailsController stepExecutionDetailsController;
+    @FXML private ExecutionStepsBoxController flowStepsBoxController;
+    @FXML private ExecutionInfoTreeController infoTreeController;
 
     private final ListChangeListener<? super FlowInputController> oneTimeListener = new ListChangeListener<FlowInputController>() {
         @Override
@@ -92,8 +92,8 @@ public class FlowExecutionController {
         });
 
         // setup sub-controllers
-        executionElementsController.setBindings(executionRunningFlow, executionSelectedStep);
-        stepExecutionDetailsController.setBinding(executionSelectedStep);
+        flowStepsBoxController.setBindings(executionRunningFlow, executionSelectedStep, executionIsFlowSelected);
+        infoTreeController.setBindings(executionRunningFlow, executionSelectedStep, executionIsFlowSelected);
     }
 
     public void reset() {
@@ -107,8 +107,8 @@ public class FlowExecutionController {
         inputsFlowPane.getChildren().clear();
 
         flowInputControllers.clear();
-        executionElementsController.reset();
-        stepExecutionDetailsController.reset();
+        flowStepsBoxController.reset();
+        infoTreeController.reset();
     }
 
     private void onCurrentFlowChange() {
@@ -131,8 +131,8 @@ public class FlowExecutionController {
         requestExecutionUserInputs();
 
 
-        executionElementsController.reset();
-        stepExecutionDetailsController.reset();
+        flowStepsBoxController.reset();
+        infoTreeController.reset();
 
         flowInputsGrid.setDisable(false);
         mandatoryBox.setDisable(false);
@@ -190,8 +190,8 @@ public class FlowExecutionController {
     }
 
     @FXML private void startFlow() {
-        stepExecutionDetailsController.reset();
-        executionElementsController.reset();
+        flowStepsBoxController.reset();
+        infoTreeController.reset();
         flowInputsGrid.setDisable(true);
         requestExecuteFlow();
     }
