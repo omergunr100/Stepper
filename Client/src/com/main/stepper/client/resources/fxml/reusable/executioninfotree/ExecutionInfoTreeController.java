@@ -1,5 +1,6 @@
 package com.main.stepper.client.resources.fxml.reusable.executioninfotree;
 
+import com.main.stepper.client.resources.dataview.customtreecell.CustomTreeItem;
 import com.main.stepper.client.resources.fxml.reusable.executioninfotree.trees.FlowInfoTree;
 import com.main.stepper.client.resources.fxml.reusable.executioninfotree.trees.StepInfoTree;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
@@ -13,7 +14,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 public class ExecutionInfoTreeController {
-    @FXML private TreeView<String> tree;
+    @FXML private TreeView<CustomTreeItem> tree;
 
     private SimpleObjectProperty<FlowRunResultDTO> selectedFlowResult = null;
     private SimpleObjectProperty<StepRunResultDTO> selectedStepResult = null;
@@ -67,7 +68,7 @@ public class ExecutionInfoTreeController {
         }
     }
 
-    private TreeItem<String> makeTree() {
+    private TreeItem<CustomTreeItem> makeTree() {
         if (isFlowSelected.get())
             synchronized (selectedFlowResult) {
                 return FlowInfoTree.make(selectedFlowResult.get());

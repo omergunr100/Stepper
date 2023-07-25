@@ -1,6 +1,7 @@
 package com.main.stepper.client.resources.fxml.header.loadcss;
 
 import com.main.stepper.client.resources.css.CSSRegistry;
+import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.root.RootController;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -32,12 +33,12 @@ public class LoadCSSController {
     }
 
     public void onChange(String newValue) {
-        rootController.getPrimaryStage().getScene().getStylesheets().clear();
+        PropertiesManager.primaryStage.get().getScene().getStylesheets().clear();
         CSSRegistry value = Arrays.stream(CSSRegistry.values()).filter(cssRegistry -> cssRegistry.getName().equals(newValue)).findFirst().orElse(null);
         if(value == null){
             return;
         }
         URL url = CSSRegistry.class.getResource(value.getFile().getPath());
-        rootController.getPrimaryStage().getScene().getStylesheets().add(url.toExternalForm());
+        PropertiesManager.primaryStage.get().getScene().getStylesheets().add(url.toExternalForm());
     }
 }

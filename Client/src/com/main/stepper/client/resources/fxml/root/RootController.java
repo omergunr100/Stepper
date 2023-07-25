@@ -20,8 +20,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class RootController {
-    // stage
-    private Stage primaryStage;
     // root
     @FXML private GridPane root;
     // header elements
@@ -82,14 +80,14 @@ public class RootController {
                 this.chatController.isOpen.set(true);
                 this.chatStage = new Stage();
                 Scene scene = new Scene(component);
-                Bindings.bindContent(scene.getStylesheets(), primaryStage.getScene().getStylesheets());
+                Bindings.bindContent(scene.getStylesheets(), PropertiesManager.primaryStage.get().getScene().getStylesheets());
                 this.chatStage.setScene(scene);
                 this.chatStage.setTitle("Chat");
                 this.chatStage.show();
                 this.chatStage.setOnCloseRequest(event -> {
                     this.chatController.isOpen.set(false);
                     this.chatStage = null;
-                    Bindings.unbindContent(scene.getStylesheets(), primaryStage.getScene().getStylesheets());
+                    Bindings.unbindContent(scene.getStylesheets(), PropertiesManager.primaryStage.get().getScene().getStylesheets());
                 });
             } catch (IOException ignored) {
             }
@@ -97,13 +95,5 @@ public class RootController {
         else {
             new ErrorPopup("Chat already open");
         }
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    public Stage getPrimaryStage() {
-        return primaryStage;
     }
 }

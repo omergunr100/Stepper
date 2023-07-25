@@ -72,4 +72,8 @@ public final class OptionController {
     public IconLoadEnum currentState() {
         return currentState;
     }
+
+    public void deselect() {
+        name.setVisited(false);
+    }
 }

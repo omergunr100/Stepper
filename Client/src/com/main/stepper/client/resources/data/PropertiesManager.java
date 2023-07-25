@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class PropertiesManager {
             .cookieJar(new CookieManager())
             .build();
 
+    public static final SimpleObjectProperty<Stage> primaryStage = new SimpleObjectProperty<>(null);
     public static final SimpleBooleanProperty health = new SimpleBooleanProperty(false);
     public static final SimpleStringProperty userName = new SimpleStringProperty();
     public static final SimpleBooleanProperty isManager = new SimpleBooleanProperty();

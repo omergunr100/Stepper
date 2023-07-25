@@ -1,6 +1,7 @@
 package com.main.stepper.client.application;
 
 import com.main.stepper.client.resources.css.CSSRegistry;
+import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +21,8 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        PropertiesManager.primaryStage.set(primaryStage);
+
         primaryStage.setTitle("Stepper");
 
         FXMLLoader loader = new FXMLLoader();
@@ -27,7 +30,6 @@ public class Application extends javafx.application.Application {
         loader.setLocation(resource);
         Parent loginScreen = loader.load();
         LoginScreenController loginController = loader.getController();
-        loginController.setPrimaryStage(primaryStage);
 
         Scene scene = new Scene(loginScreen, 840, 520);
         scene.getStylesheets().add(CSSRegistry.class.getResource(CSSRegistry.DEFAULT.getFile().getPath()).toExternalForm());

@@ -22,6 +22,7 @@ import java.util.Map;
 public class ExecutionStepsBoxController {
     @FXML private VBox root;
 
+    private SimpleObjectProperty<OptionController> currentlySelectedOption = new SimpleObjectProperty<>(null);
     private OptionController flowOptionController = null;
     private Map<String, OptionController> stepOptionControllers = new HashMap<>();
 
@@ -30,6 +31,13 @@ public class ExecutionStepsBoxController {
     private SimpleObjectProperty<StepRunResultDTO> selectedStepResult = null;
 
     public ExecutionStepsBoxController() {
+    }
+
+    @FXML public void initialize() {
+        currentlySelectedOption.addListener((observable, oldValue, newValue) -> {
+            if (oldValue != null)
+                oldValue.deselect();
+        });
     }
 
     public void setBindings(SimpleObjectProperty<FlowRunResultDTO> runningFlowResult, SimpleObjectProperty<StepRunResultDTO> selectedStepResult, SimpleBooleanProperty isFlowSelected) {
@@ -80,6 +88,7 @@ public class ExecutionStepsBoxController {
             flowOptionController.setOnAction(() -> {
                 selectedStepResult.set(null);
                 isFlowSelected.set(true);
+                currentlySelectedOption.set(flowOptionController);
             });
 
             root.getChildren().add(node);
@@ -98,6 +107,7 @@ public class ExecutionStepsBoxController {
 
                 stepOptionController.setName("Step " + (i + 1) + ": " + steps.get(i).name());
                 stepOptionController.setStatus(FlowResult.RUNNING);
+                stepOptionController.setOnAction(stepOptionController::deselect);
 
                 stepOptionControllers.put(steps.get(i).name(), stepOptionController);
                 root.getChildren().add(node);
@@ -132,6 +142,7 @@ public class ExecutionStepsBoxController {
                 Platform.runLater(() -> {
                     selectedStepResult.set(null);
                     selectedStepResult.set(step);
+                    currentlySelectedOption.set(stepOptionController);
                 });
             }
             stepOptionController.setOnAction(() -> {

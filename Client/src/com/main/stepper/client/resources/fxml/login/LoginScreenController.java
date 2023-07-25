@@ -28,13 +28,7 @@ public class LoginScreenController {
     @FXML private Button loginButton;
     @FXML private TextField errorTextField;
 
-    private Stage primaryStage;
-
     public LoginScreenController() {
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
     }
 
     @FXML public void initialize(){
@@ -76,8 +70,6 @@ public class LoginScreenController {
                         PropertiesManager.flowExecutionHistory.setAll(userData.flowExecutionHistory());
                         // continue to main screen
                         Platform.runLater(() -> {
-                            primaryStage.setTitle("Stepper");
-
                             FXMLLoader loader = new FXMLLoader();
                             URL resource = RootController.class.getResource("Root.fxml");
                             loader.setLocation(resource);
@@ -85,11 +77,10 @@ public class LoginScreenController {
                             try {
                                 root = loader.load();
                                 RootController rootController = loader.getController();
-                                rootController.setPrimaryStage(primaryStage);
 
                                 Scene scene = new Scene(root, 840, 520);
                                 scene.getStylesheets().add(CSSRegistry.class.getResource(CSSRegistry.DEFAULT.getFile().getPath()).toExternalForm());
-                                primaryStage.setOnCloseRequest(event -> {
+                                PropertiesManager.primaryStage.get().setOnCloseRequest(event -> {
                                     Request request = new Request.Builder()
                                             .url(URLManager.LOGOUT)
                                             .get()
@@ -103,8 +94,8 @@ public class LoginScreenController {
 
                                     System.exit(0);
                                 });
-                                primaryStage.setScene(scene);
-                                primaryStage.show();
+                                PropertiesManager.primaryStage.get().setScene(scene);
+                                PropertiesManager.primaryStage.get().show();
                             } catch (IOException ignored) {
                                 ignored.printStackTrace();
                             }
