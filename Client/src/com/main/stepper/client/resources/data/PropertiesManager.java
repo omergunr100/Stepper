@@ -53,6 +53,7 @@ public class PropertiesManager {
     public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+    public static final SimpleBooleanProperty historyIsFlowSelected = new SimpleBooleanProperty(false);
 
     // chat properties
     public static final ObservableList<Message> chatMessages = FXCollections.observableArrayList();

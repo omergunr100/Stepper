@@ -2,6 +2,8 @@ package com.main.stepper.client.resources.fxml.tabs.executionshistory.tab;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
 import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
+import com.main.stepper.client.resources.fxml.reusable.executioninfotree.ExecutionInfoTreeController;
+import com.main.stepper.client.resources.fxml.reusable.executionstepsbox.ExecutionStepsBoxController;
 import com.main.stepper.client.resources.fxml.reusable.selector.SelectorController;
 import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
@@ -14,17 +16,18 @@ import java.util.Optional;
 
 public class ExecutionHistoryScreenController {
     @FXML private FlowRunDetailsController detailsTableController;
-    @FXML private FlowExecutionElementsController flowExecutionElementsController;
-    @FXML private StepDetailsController stepDetailsController;
     @FXML private SelectorController userSelectorController;
     @FXML private Button rerunFlowButton;
+
+    @FXML private ExecutionStepsBoxController flowStepsBoxController;
+    @FXML private ExecutionInfoTreeController infoTreeController;
 
     public ExecutionHistoryScreenController() {
     }
 
     @FXML public void initialize() {
-        flowExecutionElementsController.setBindings(PropertiesManager.executionHistorySelectedFlow, PropertiesManager.executionHistorySelectedStep);
-        stepDetailsController.setBinding(PropertiesManager.executionHistorySelectedStep);
+        flowStepsBoxController.setBindings(PropertiesManager.executionHistorySelectedFlow, PropertiesManager.executionHistorySelectedStep, PropertiesManager.historyIsFlowSelected);
+        infoTreeController.setBindings(PropertiesManager.executionHistorySelectedFlow, PropertiesManager.executionHistorySelectedStep, PropertiesManager.historyIsFlowSelected);
         userSelectorController.setProperty(PropertiesManager.executionHistorySelectedUser);
 
         // initialize rerun button
