@@ -1,16 +1,24 @@
 package com.main.stepper.admin.resources.dataview.list;
 
+import com.main.stepper.admin.resources.data.PropertiesManager;
+import com.main.stepper.admin.resources.dataview.relation.RelationViewController;
+import com.main.stepper.data.implementation.relation.Relation;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ListViewController {
-    @FXML private TableView<List> table;
+    @FXML private TableView<Object> table;
 
     public ListViewController(){
     }
@@ -27,17 +35,57 @@ public class ListViewController {
 
     public void loadList(List list) {
         reset();
-        for(Integer i = 1; i <= list.size(); i++) {
-            TableColumn<List, String> column = new TableColumn<>(i.toString());
-            final Integer j = i - 1;
-            column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
-            TextField field = new TextField();
-            field.setText(list.get(j).toString());
-            column.setMinWidth(field.getLayoutBounds().getWidth());
-            table.getColumns().add(column);
+        if (list == null || list.isEmpty())
+            return;
+        TableColumn<Object, String> column = new TableColumn<>("Items");
+        if (list.get(0) instanceof Relation) {
+            column.setCellFactory(new Callback<TableColumn<Object, String>, TableCell<Object, String>>() {
+                @Override
+                public TableCell<Object, String> call(TableColumn<Object, String> param) {
+                    final TableCell<Object, String> cell = new TableCell<Object, String>() {
+                        final Button button = new Button(Integer.toString(getIndex() + 1));
+
+                        @Override
+                        public void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                                setText(null);
+                            }
+                            else {
+                                final Relation relation = (Relation) getTableView().getItems().get(getIndex());
+                                button.setOnAction(event -> {
+                                    FXMLLoader loader = new FXMLLoader();
+                                    loader.setLocation(RelationViewController.class.getResource("RelationView.fxml"));
+                                    try {
+                                        Parent relationView = loader.load();
+                                        RelationViewController controller = loader.getController();
+                                        controller.updateTable(relation);
+                                        Stage stage = new Stage();
+                                        stage.initModality(Modality.APPLICATION_MODAL);
+                                        stage.setTitle("Relation view");
+                                        Scene scene = new Scene(relationView);
+                                        Bindings.bindContent(scene.getStylesheets(), PropertiesManager.primaryStage.get().getScene().getStylesheets());
+                                        stage.setScene(scene);
+                                        stage.show();
+                                    } catch (IOException ignored) {
+                                    }
+                                });
+                                setGraphic(button);
+                                setText(null);
+                            }
+                        }
+                    };
+
+                    return cell;
+                }
+            });
         }
-        table.getItems().add(list);
-        table.fixedCellSizeProperty().set(35);
-        table.prefHeightProperty().bind(table.fixedCellSizeProperty().multiply(table.getItems().size()).add(60));
+        else {
+            column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toString()));
+        }
+        table.getColumns().clear();
+        table.getColumns().add(column);
+        table.getItems().addAll(list);
     }
 }

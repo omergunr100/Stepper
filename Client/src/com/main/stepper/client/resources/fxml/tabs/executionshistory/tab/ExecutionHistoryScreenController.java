@@ -1,11 +1,9 @@
 package com.main.stepper.client.resources.fxml.tabs.executionshistory.tab;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
-import com.main.stepper.client.resources.fxml.reusable.executionelements.FlowExecutionElementsController;
 import com.main.stepper.client.resources.fxml.reusable.executioninfotree.ExecutionInfoTreeController;
 import com.main.stepper.client.resources.fxml.reusable.executionstepsbox.ExecutionStepsBoxController;
 import com.main.stepper.client.resources.fxml.reusable.selector.SelectorController;
-import com.main.stepper.client.resources.fxml.reusable.stepdetails.StepDetailsController;
 import com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails.FlowRunDetailsController;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import javafx.collections.ListChangeListener;

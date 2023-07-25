@@ -32,5 +32,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="Shared" />
     <orderEntry type="module" module-name="Engine" scope="PROVIDED" />
+    <orderEntry type="module" module-name="Client" />
   </component>
 </module>

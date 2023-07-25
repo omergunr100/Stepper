@@ -43,6 +43,7 @@ public class PropertiesManager {
     public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");
     public static final SimpleObjectProperty<FlowRunResultDTO> executionHistorySelectedFlow = new SimpleObjectProperty<>();
     public static final SimpleObjectProperty<StepRunResultDTO> executionHistorySelectedStep = new SimpleObjectProperty<>();
+    public static SimpleBooleanProperty historyIsFlowSelected = new SimpleBooleanProperty(false);
 
     // statistics screen properties
     public static final SimpleStringProperty statisticsSelectedUser = new SimpleStringProperty("");

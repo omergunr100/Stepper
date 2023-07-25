@@ -91,7 +91,8 @@ public class UpdatePropertiesThread extends Thread{
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.code() == 200) {
                         Gson gson = new Gson();
-                        List<FlowRunResultDTO> flowRunResultList = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
+                        List<FlowRunResultDTO> temp = gson.fromJson(response.body().string(), new TypeToken<ArrayList<FlowRunResultDTO>>(){}.getType());
+                        final List<FlowRunResultDTO> flowRunResultList = temp.stream().map(FlowRunResultDTO::fix).collect(Collectors.toList());
                         Platform.runLater(() -> {
                             synchronized (flowRunResults) {
                                 // if received an empty list exit
@@ -127,7 +128,7 @@ public class UpdatePropertiesThread extends Thread{
         List<StepRunResultDTO> stepRunResultList = new ArrayList<>();
         synchronized (stepRunResults) {
             for (FlowRunResultDTO result : flowRunResults) {
-                stepRunResultList.addAll(result.stepRunResults());
+                stepRunResultList.addAll(result.stepRunResults().stream().map(StepRunResultDTO::fix).collect(Collectors.toList()));
             }
         }
         if (stepRunResultList.isEmpty())
