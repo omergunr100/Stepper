@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
+import com.main.stepper.data.implementation.enumeration.httpprotocol.HttpProtocolEnumData;
+import com.main.stepper.data.implementation.enumeration.httpverb.HttpVerbEnumData;
 import com.main.stepper.data.implementation.enumeration.zipper.ZipperEnumData;
 import com.main.stepper.data.implementation.file.FileData;
 import com.main.stepper.data.implementation.list.datatype.*;
@@ -11,6 +13,7 @@ import com.main.stepper.data.implementation.mapping.implementation.IntToIntPair;
 import com.main.stepper.data.implementation.relation.Relation;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,9 @@ public final class FixerUtility {
                 }
             }
 
+            if (entry.getKey().type().getType().isAssignableFrom(value.getClass()))
+                continue;
+
             switch (entry.getKey().type()) {
                 case STRING:
                     // no need to fix
@@ -58,7 +64,9 @@ public final class FixerUtility {
                     break;
                 case FILE:
                     // convert LinkedTreeMap to FileData
-                    value = gson.fromJson(gson.toJson(value), FileData.class);
+                    if (value instanceof LinkedTreeMap && ((LinkedTreeMap) value).get("path") != null) {
+                        value = new FileData(((LinkedTreeMap) value).get("path").toString());
+                    }
                     entry.setValue(value);
                     break;
                 case INT_TO_INT_MAPPING:
@@ -83,8 +91,14 @@ public final class FixerUtility {
                     break;
                 case FILE_LIST:
                     // convert ArrayList of LinkedTreeMap to FileList
-                    value = gson.fromJson(gson.toJson(value), FileList.class);
-                    entry.setValue(value);
+                    FileList list = new FileList();
+                    for (int j = 0; j < ((ArrayList) value).size(); j++) {
+                        Object tempValue = ((ArrayList) value).get(j);
+                        if (tempValue instanceof LinkedTreeMap && ((LinkedTreeMap) tempValue).get("path") != null) {
+                            list.add(new FileData(((LinkedTreeMap) tempValue).get("path").toString()));
+                        }
+                    }
+                    entry.setValue(list);
                     break;
                 case DOUBLE_LIST:
                     // convert ArrayList to DoubleList
@@ -94,6 +108,16 @@ public final class FixerUtility {
                 case ZIPPER_ENUM:
                     // convert LinkedTreeMap to ZipperEnumData
                     value = gson.fromJson(gson.toJson(value), ZipperEnumData.class);
+                    entry.setValue(value);
+                    break;
+                case HTTP_VERB_ENUM:
+                    // convert LinkedTreeMap to HttpVerbEnumData
+                    value = gson.fromJson(gson.toJson(value), HttpVerbEnumData.class);
+                    entry.setValue(value);
+                    break;
+                case HTTP_PROTOCOL_ENUM:
+                    // convert LinkedTreeMap to HttpProtocolEnumData
+                    value = gson.fromJson(gson.toJson(value), HttpProtocolEnumData.class);
                     entry.setValue(value);
                     break;
                 case JSON:

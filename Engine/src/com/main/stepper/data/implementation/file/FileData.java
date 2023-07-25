@@ -12,18 +12,6 @@ public class FileData extends File {
         super(pathname);
     }
 
-    public FileData(String parent, String child) {
-        super(parent, child);
-    }
-
-    public FileData(File parent, String child) {
-        super(parent, child);
-    }
-
-    public FileData(URI uri) {
-        super(uri);
-    }
-
     @Override
     public String toString() {
         return getAbsolutePath();

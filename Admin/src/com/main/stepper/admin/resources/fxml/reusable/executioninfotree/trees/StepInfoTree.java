@@ -93,7 +93,7 @@ public final class StepInfoTree {
                         try {
                             Parent listView = fxmlLoader.load();
                             ListViewController listViewController = fxmlLoader.getController();
-                            listViewController.loadList((List) blob);
+                            listViewController.loadList((GenericList) blob);
                             Stage stage = new Stage();
                             stage.initModality(Modality.APPLICATION_MODAL);
                             stage.setTitle("List view");
