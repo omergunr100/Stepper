@@ -38,6 +38,7 @@ public class PropertiesManager {
 
     // role management screen properties
     public static final SimpleObjectProperty<Role> selectedRole = new SimpleObjectProperty<>();
+    public static final SimpleBooleanProperty roleUpdated = new SimpleBooleanProperty(false);
 
     // execution history screen properties
     public static final SimpleStringProperty executionHistorySelectedUser = new SimpleStringProperty("");

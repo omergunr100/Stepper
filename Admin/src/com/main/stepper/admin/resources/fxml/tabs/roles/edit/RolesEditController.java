@@ -8,6 +8,7 @@ import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.roles.Role;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -42,6 +43,9 @@ public class RolesEditController {
     }
 
     @FXML public void initialize() {
+        // bind table items to flow checks
+        Bindings.bindContent(flowInfoTable.getItems(), flowChecks);
+
         // force initialize flow checks
         if (flowChecks.isEmpty() && !flowInformationList.isEmpty()) {
             synchronized (flowInformationList) {
@@ -50,7 +54,6 @@ public class RolesEditController {
                     flowChecks.add(flowCheck);
                 });
             }
-            flowInfoTable.setItems(flowChecks);
             flowInfoTable.refresh();
         }
 
@@ -91,7 +94,6 @@ public class RolesEditController {
                     flowChecks.add(flowCheck);
                 });
             }
-            flowInfoTable.setItems(flowChecks);
             flowInfoTable.refresh();
         });
 
@@ -100,7 +102,6 @@ public class RolesEditController {
             if (newValue == null) {
                 root.setDisable(true);
                 root.setVisible(false);
-                flowInfoTable.getItems().clear();
             }
             else {
                 nameTextField.setText(newValue.name());
@@ -175,6 +176,7 @@ public class RolesEditController {
                             localRole.set(null);
                         });
                     }
+                    Platform.runLater(() -> selectedRole.set(null));
                 }
             });
         }

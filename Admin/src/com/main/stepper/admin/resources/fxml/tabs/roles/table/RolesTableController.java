@@ -7,8 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-import static com.main.stepper.admin.resources.data.PropertiesManager.rolesList;
-import static com.main.stepper.admin.resources.data.PropertiesManager.selectedRole;
+import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 
 public class RolesTableController {
     @FXML private TableView<Role> rolesTable;
@@ -40,6 +39,14 @@ public class RolesTableController {
         selectedRole.addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 rolesTable.getSelectionModel().clearSelection();
+        });
+
+        // add listener for role update to refresh
+        roleUpdated.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                rolesTable.refresh();
+                roleUpdated.set(false);
+            }
         });
     }
 

@@ -243,8 +243,12 @@ public class UpdatePropertiesThread extends Thread{
                                         // check if exact match
                                         Role found = first.get();
                                         // if not exact match update
-                                        if (!found.equals(role))
+                                        if (!found.equals(role)) {
+                                            roleUpdated.set(true);
                                             found.update(role);
+                                            if (selectedRole.isNotNull().get() && found.name().equals(selectedRole.get().name()))
+                                                selectedRole.set(found);
+                                        }
                                     }
                                     else {
                                         // no match - add to list
@@ -256,8 +260,11 @@ public class UpdatePropertiesThread extends Thread{
                                 for (Role role : rolesList) {
                                     // check if a role of the same name doesn't exist in new list
                                     Optional<Role> match = finalList.stream().filter(curr -> curr.name().equals(role.name())).findFirst();
-                                    if (!match.isPresent())
+                                    if (!match.isPresent()) {
+                                        if (selectedRole.isNotNull().get() && role.name().equals(selectedRole.get().name()))
+                                            selectedRole.set(null);
                                         toRemove.add(role);
+                                    }
                                 }
 
                                 rolesList.removeAll(toRemove);

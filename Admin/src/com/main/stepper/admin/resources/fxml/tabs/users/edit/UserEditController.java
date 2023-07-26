@@ -97,6 +97,23 @@ public class UserEditController {
             rolesTable.setItems(roleChecksList);
             rolesTable.refresh();
         });
+
+        // listener on role update
+        roleUpdated.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                roleChecksList.forEach(roleCheck -> {
+                    synchronized (rolesList) {
+                        rolesList.forEach(role -> {
+                            roleChecksList.stream().filter(check -> check.name.get().equals(role.name())).findFirst().ifPresent(check -> {
+                                check.description.set(role.description());
+                                check.allowedFlows.setAll(role.allowedFlows());
+                            });
+                        });
+                    }
+                });
+                rolesTable.refresh();
+            }
+        });
     }
 
     private void setupFlowRunTable() {
@@ -260,9 +277,8 @@ public class UserEditController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() == 404) {
+                    if (response.code() == 404)
                         Platform.runLater(() -> new ErrorPopup("User not found, make sure the user is still in the system."));
-                    }
                     response.close();
                 }
             });
