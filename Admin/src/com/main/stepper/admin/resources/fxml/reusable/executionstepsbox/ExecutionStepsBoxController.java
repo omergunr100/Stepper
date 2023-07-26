@@ -132,7 +132,7 @@ public class ExecutionStepsBoxController {
     private void updateStepOptions() {
         FlowRunResultDTO result = runningFlowResult.get();
         for (StepRunResultDTO step : result.stepRunResults()) {
-            OptionController stepOptionController = stepOptionControllers.get(step.name());
+            OptionController stepOptionController = stepOptionControllers.get(step.alias());
             try {
                 stepOptionController.setStatus(step.result());
             } catch (IOException e) {
