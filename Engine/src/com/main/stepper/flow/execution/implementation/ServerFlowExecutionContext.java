@@ -113,10 +113,7 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
                 uniqueRunId,
                 logger,
                 newMappings,
-                variables.entrySet().isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(Collectors.toMap(
-                        entry -> entry.getKey().toDTO(),
-                        entry -> entry
-                )),
+                variables.entrySet().isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll),
                 stepRunResults.isEmpty() ? new ArrayList<>() : stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
                 userCookie
         );

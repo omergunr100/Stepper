@@ -64,7 +64,7 @@ public class ExecutionUserInputs {
     public ExecutionUserInputsDTO toDTO() {
         return new ExecutionUserInputsDTO(
                 openUserInputs.isEmpty() ? new ArrayList<>() : openUserInputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
-                userInputs.entrySet().isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue()))
+                userInputs.entrySet().isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll)
         );
     }
 }

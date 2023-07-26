@@ -170,11 +170,8 @@ public class FlowRunResult implements IFlowRunResult {
         Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().stream().collect(Collectors.toMap(
                 cont -> cont.information().toDTO(),
                 cont -> flowDefinition.continuationMapping(cont).entrySet().isEmpty() ? new HashMap<>() : new HashMap<>(flowDefinition.continuationMapping(cont).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                e -> e.getKey().toDTO(),
-                                e -> e.getValue().toDTO()
-                        )))
-        ));
+                        .collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue().toDTO()), HashMap::putAll)))
+        );
         return new FlowRunResultDTO(
                 flowDefinition.information().toDTO(),
                 runId,
@@ -182,9 +179,9 @@ public class FlowRunResult implements IFlowRunResult {
                 startTime,
                 duration(),
                 continuationMappings,
-                userInputs == null || userInputs.isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
-                internalOutputs == null || internalOutputs.isEmpty() ? new HashMap<>() : internalOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
-                flowOutputs == null || flowOutputs.isEmpty() ? new HashMap<>() : flowOutputs.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toDTO(), Map.Entry::getValue)),
+                userInputs == null || userInputs.isEmpty() ? new HashMap<>() : userInputs.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll),
+                internalOutputs == null || internalOutputs.isEmpty() ? new HashMap<>() : internalOutputs.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll),
+                flowOutputs == null || flowOutputs.isEmpty() ? new HashMap<>() : flowOutputs.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll),
                 stepRunUUID,
                 stepRunResults == null || stepRunResults.isEmpty() ? new ArrayList<>() : stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
                 flowExecutionContext.toDTO(),

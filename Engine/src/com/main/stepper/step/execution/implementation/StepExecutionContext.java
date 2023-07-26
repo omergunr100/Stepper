@@ -76,7 +76,7 @@ public class StepExecutionContext implements IStepExecutionContext {
         return new StepExecutionContextDTO(
                 runId,
                 mapping.isEmpty() ? new HashMap<>() : mapping.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue().toDTO())),
-                variables.isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), Map.Entry::getValue)),
+                variables.isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(HashMap::new, (m, v) -> m.put(v.getKey().toDTO(), v.getValue()), HashMap::putAll),
                 logger
         );
     }
