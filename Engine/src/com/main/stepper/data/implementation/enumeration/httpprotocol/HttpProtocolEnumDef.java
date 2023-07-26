@@ -7,7 +7,7 @@ import com.main.stepper.exceptions.data.EnumValueMissingException;
 
 public class HttpProtocolEnumDef extends AbstractDataDef {
     public HttpProtocolEnumDef() {
-        super("Http Protocol Enumerator", true, HttpVerbEnumData.class);
+        super("Http Protocol Enumerator", true, HttpProtocolEnumData.class);
     }
 
     @Override

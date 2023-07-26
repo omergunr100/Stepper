@@ -93,7 +93,7 @@ public class FlowExecutor implements IFlowExecutor {
         }
 
         // Add all internal flow outputs
-        context.variables().keySet().stream().filter(dataIO -> !userInputs.keySet().contains(dataIO)).forEach(dataIO -> {
+        context.variables().keySet().stream().filter(dataIO -> !userInputs.containsKey(dataIO)).forEach(dataIO -> {
             thisFlowRunResult.addInternalOutput(dataIO,context.getVariable(dataIO, dataIO.getDataDefinition().getType()));
         });
 
