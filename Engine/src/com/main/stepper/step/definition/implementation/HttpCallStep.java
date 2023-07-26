@@ -109,6 +109,8 @@ public class HttpCallStep extends AbstractStepDefinition {
             context.setOutput(responseBody, null);
         }
 
+        client.dispatcher().executorService().shutdown();
+
         // return result
         return new StepRunResult(context.getUniqueRunId(), getName(), result, startTime, Duration.between(startTime, Instant.now()), summary);
     }
