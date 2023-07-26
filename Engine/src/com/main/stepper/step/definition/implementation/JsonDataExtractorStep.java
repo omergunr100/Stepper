@@ -52,7 +52,7 @@ public class JsonDataExtractorStep extends AbstractStepDefinition {
         // Split json path to list of paths and parse json document
         List<String> jsonPaths = Arrays.asList(jsonPath.split("\\|"));
         Configuration conf = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
-        Object document = conf.jsonProvider().parse(json.getAsString());
+        Object document = conf.jsonProvider().parse(json.toString());
         StringBuilder result = new StringBuilder();
         for (String path : jsonPaths) {
             String current = JsonPath.read(document, path);

@@ -1,0 +1,34 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Admin">
+    <output-path>$PROJECT_DIR$/out/artifacts/admin</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.main.stepper.admin.application.Application" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Admin.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/out/admin/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="Admin" />
+        <element id="module-output" name="Shared" />
+        <element id="module-output" name="Engine" />
+        <element id="module-output" name="Client" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8/gson-2.8.8.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8/gson-2.8.8-javadoc.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8/gson-2.8.8-sources.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp/okio-2.8.0.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp/okhttp-4.9.1.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp/annotations-13.0.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp/kotlin-stdlib-1.4.10.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp/kotlin-stdlib-common-1.4.10.jar" />
+    </root>
+  </artifact>
+</component>

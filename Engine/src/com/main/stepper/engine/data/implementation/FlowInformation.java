@@ -7,10 +7,7 @@ import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FlowInformation implements IFlowInformation {
@@ -91,22 +88,27 @@ public class FlowInformation implements IFlowInformation {
     @Override
     public FlowInfoDTO toDTO() {
         HashMap<DataIODTO, List<StepUsageDTO>> newDataToConsumer = new HashMap<>();
-        for (Map.Entry<IDataIO, List<IStepUsageDeclaration>> entry : dataToConsumer.entrySet())
-            newDataToConsumer.put(entry.getKey().toDTO(), entry.getValue().stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()));
+        if (!dataToConsumer.entrySet().isEmpty()) {
+            for (Map.Entry<IDataIO, List<IStepUsageDeclaration>> entry : dataToConsumer.entrySet())
+                if (!entry.getValue().isEmpty())
+                    newDataToConsumer.put(entry.getKey().toDTO(), entry.getValue().stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()));
+        }
         HashMap<DataIODTO, StepUsageDTO> newDataToProducer = new HashMap<>();
-        for (Map.Entry<IDataIO, IStepUsageDeclaration> entry : dataToProducer.entrySet())
-            newDataToProducer.put(entry.getKey().toDTO(), entry.getValue().toDTO());
+        if (!dataToProducer.entrySet().isEmpty()) {
+            for (Map.Entry<IDataIO, IStepUsageDeclaration> entry : dataToProducer.entrySet())
+                newDataToProducer.put(entry.getKey().toDTO(), entry.getValue().toDTO());
+        }
         return new FlowInfoDTO(
                 name,
                 description,
-                steps.stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()),
-                openUserInputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                steps.isEmpty() ? new ArrayList<>() : steps.stream().map(IStepUsageDeclaration::toDTO).collect(Collectors.toList()),
+                openUserInputs.isEmpty() ? new ArrayList<>() : openUserInputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
                 continuations,
                 isReadOnly,
-                formalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
+                formalOutputs.isEmpty() ? new ArrayList<>() : formalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList()),
                 newDataToConsumer,
                 newDataToProducer,
-                internalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList())
+                internalOutputs.isEmpty() ? new ArrayList<>() : internalOutputs.stream().map(IDataIO::toDTO).collect(Collectors.toList())
         );
     }
 

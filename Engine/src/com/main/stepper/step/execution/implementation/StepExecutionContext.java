@@ -6,6 +6,7 @@ import com.main.stepper.logger.implementation.data.Log;
 import com.main.stepper.shared.structures.step.StepExecutionContextDTO;
 import com.main.stepper.step.execution.api.IStepExecutionContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -74,8 +75,8 @@ public class StepExecutionContext implements IStepExecutionContext {
     public StepExecutionContextDTO toDTO() {
         return new StepExecutionContextDTO(
                 runId,
-                mapping.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue().toDTO())),
-                variables.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), Map.Entry::getValue)),
+                mapping.isEmpty() ? new HashMap<>() : mapping.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), entry -> entry.getValue().toDTO())),
+                variables.isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toDTO(), Map.Entry::getValue)),
                 logger
         );
     }

@@ -99,10 +99,10 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
 
     @Override
     public FlowExecutionContextDTO toDTO() {
-        Map<StepUsageDTO, HashMap<DataIODTO, DataIODTO>> newMappings = mappings.entrySet().stream()
+        Map<StepUsageDTO, HashMap<DataIODTO, DataIODTO>> newMappings = mappings.entrySet().isEmpty() ? new HashMap<>() : mappings.entrySet().stream()
                 .collect(Collectors.toMap(
                                 entry -> entry.getKey().toDTO(),
-                                entry -> new HashMap<>(entry.getValue().entrySet().stream()
+                                entry -> entry.getValue().entrySet().isEmpty() ? new HashMap<>() : new HashMap<>(entry.getValue().entrySet().stream()
                                         .collect(Collectors.toMap(
                                                 innerEntry -> innerEntry.getKey().toDTO(),
                                                 innerEntry -> innerEntry.getValue().toDTO()
@@ -113,11 +113,11 @@ public class ServerFlowExecutionContext implements IFlowExecutionContext {
                 uniqueRunId,
                 logger,
                 newMappings,
-                variables.entrySet().stream().collect(Collectors.toMap(
+                variables.entrySet().isEmpty() ? new HashMap<>() : variables.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey().toDTO(),
                         entry -> entry
                 )),
-                stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
+                stepRunResults.isEmpty() ? new ArrayList<>() : stepRunResults.stream().map(IStepRunResult::toDTO).collect(Collectors.toList()),
                 userCookie
         );
     }

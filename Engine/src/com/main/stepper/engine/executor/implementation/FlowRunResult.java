@@ -167,9 +167,9 @@ public class FlowRunResult implements IFlowRunResult {
 
     @Override
     public FlowRunResultDTO toDTO() {
-        Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().stream().collect(Collectors.toMap(
+        Map<FlowInfoDTO, HashMap<DataIODTO, DataIODTO>> continuationMappings = flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().isEmpty() ? new HashMap<>() : flowDefinition.continuations().stream().collect(Collectors.toMap(
                 cont -> cont.information().toDTO(),
-                cont -> new HashMap<>(flowDefinition.continuationMapping(cont).entrySet().stream()
+                cont -> flowDefinition.continuationMapping(cont).entrySet().isEmpty() ? new HashMap<>() : new HashMap<>(flowDefinition.continuationMapping(cont).entrySet().stream()
                         .collect(Collectors.toMap(
                                 e -> e.getKey().toDTO(),
                                 e -> e.getValue().toDTO()

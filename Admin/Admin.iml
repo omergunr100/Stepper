@@ -30,8 +30,8 @@
         <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/gson-2.8.8" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Shared" scope="PROVIDED" />
-    <orderEntry type="module" module-name="Engine" scope="PROVIDED" />
-    <orderEntry type="module" module-name="Client" scope="PROVIDED" />
+    <orderEntry type="module" module-name="Shared" />
+    <orderEntry type="module" module-name="Engine" />
+    <orderEntry type="module" module-name="Client" />
   </component>
 </module>

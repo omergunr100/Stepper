@@ -9,8 +9,8 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Shared" scope="PROVIDED" />
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module" module-name="Shared" />
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../../Tools/Java/gson-2.8.8/gson-2.8.8.jar!/" />
@@ -25,7 +25,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" />
@@ -35,7 +35,7 @@
         <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../../../Tools/Java/jayson path" />
