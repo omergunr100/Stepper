@@ -37,8 +37,8 @@ public class ValidateInitialValues implements IValidator {
                         Object initial = match.get().getDataDefinition().readValue(entry.getValue());
                         flow.addInitialValue(match.get(), initial);
                         // if found make sure it isn't open
-                        flow.userRequiredInputs().remove(match.get());
-                        flow.userOptionalInputs().remove(match.get());
+                        flow.userRequiredInputs().removeIf(open -> open.equals(match.get()));
+                        flow.userOptionalInputs().removeIf(open -> open.equals(match.get()));
                     } catch (BadTypeException e) {
                         errors.add("Input: " + entry.getKey() + " has assigned initial value with a type missmatch in flow: " + flow.name() + ".");
                     } catch (UnfriendlyInputException e) {
