@@ -1,6 +1,7 @@
 package com.main.stepper.client.resources.fxml.tabs.executionshistory.flowrundetails;
 
 import com.main.stepper.client.resources.data.PropertiesManager;
+import com.main.stepper.flow.definition.api.FlowResult;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -68,12 +69,12 @@ public class FlowRunDetailsController {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // add initial binding on flowRunResults
-        Bindings.bindContent(table.itemsProperty().get(), currentBinding);
+        Bindings.bindContent(table.itemsProperty().get(), currentBinding.filtered(result -> !result.result().equals(FlowResult.RUNNING)));
         // add listener on selector change
         executionHistorySelectedUser.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 Bindings.unbindContent(table.itemsProperty().get(), currentBinding);
-                currentBinding = flowRunResults.filtered(result -> (executionHistorySelectedUser.get().equals("") ? true : result.user().equals(executionHistorySelectedUser.get())));
+                currentBinding = flowRunResults.filtered(result -> !result.result().equals(FlowResult.RUNNING) && (executionHistorySelectedUser.get().equals("") ? true : result.user().equals(executionHistorySelectedUser.get())));
                 Bindings.bindContent(table.itemsProperty().get(), currentBinding);
             }
         });

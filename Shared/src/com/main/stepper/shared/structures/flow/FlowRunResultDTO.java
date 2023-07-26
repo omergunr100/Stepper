@@ -114,6 +114,7 @@ public class FlowRunResultDTO {
         if (result != that.result) return false;
         if (!Objects.equals(user, that.user)) return false;
         if (stepRunResults.size() != that.stepRunResults.size()) return false;
+        if (!duration.equals(that.duration)) return false;
         return Objects.equals(stepRunResults, that.stepRunResults);
     }
 
