@@ -7,7 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module" module-name="Engine" scope="PROVIDED" />
+    <orderEntry type="module" module-name="Shared" scope="PROVIDED" />
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../../../Tools/Java/gson-2.8.8" />
@@ -20,7 +22,7 @@
         <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/gson-2.8.8" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" />
@@ -30,7 +32,5 @@
         <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Shared" />
-    <orderEntry type="module" module-name="Engine" scope="PROVIDED" />
   </component>
 </module>

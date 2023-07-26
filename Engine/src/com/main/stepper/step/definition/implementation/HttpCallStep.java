@@ -2,8 +2,11 @@ package com.main.stepper.step.definition.implementation;
 
 import com.google.gson.JsonObject;
 import com.main.stepper.data.DDRegistry;
+import com.main.stepper.data.implementation.enumeration.httpprotocol.HttpProtocolEnumData;
+import com.main.stepper.data.implementation.enumeration.httpverb.HttpVerbEnumData;
 import com.main.stepper.engine.executor.api.IStepRunResult;
 import com.main.stepper.engine.executor.implementation.StepRunResult;
+import com.main.stepper.exceptions.data.EnumValueMissingException;
 import com.main.stepper.io.api.DataNecessity;
 import com.main.stepper.io.api.IDataIO;
 import com.main.stepper.io.implementation.DataIO;
@@ -43,9 +46,15 @@ public class HttpCallStep extends AbstractStepDefinition {
         List<IDataIO> inputs = getInputs();
         String resource = (String) context.getInput(inputs.get(0), DDRegistry.STRING.getType());
         String address = (String) context.getInput(inputs.get(1), DDRegistry.STRING.getType());
-        String protocol = (String) context.getInput(inputs.get(2), DDRegistry.HTTP_PROTOCOL_ENUM.getType());
-        String method = (String) context.getInput(inputs.get(3), DDRegistry.HTTP_VERB_ENUM.getType());
-        method = (method == null ? "GET" : method);
+        HttpProtocolEnumData protocol = (HttpProtocolEnumData) context.getInput(inputs.get(2), DDRegistry.HTTP_PROTOCOL_ENUM.getType());
+        HttpVerbEnumData method = (HttpVerbEnumData) context.getInput(inputs.get(3), DDRegistry.HTTP_VERB_ENUM.getType());
+        if (method == null) {
+            method = new HttpVerbEnumData();
+            try {
+                method.setValue("GET");
+            } catch (EnumValueMissingException ignored) {
+            }
+        }
         JsonObject body = (JsonObject) context.getInput(inputs.get(4), DDRegistry.JSON.getType());
 
         String bodyString = (body == null ? "" : body.getAsString());
@@ -75,10 +84,15 @@ public class HttpCallStep extends AbstractStepDefinition {
 
         // make http client
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .method(method, RequestBody.create(bodyString, MediaType.parse("application/json")))
-                .build();
+        Request.Builder builder = new Request.Builder()
+                .url(url);
+        if (method.getValue().get().equals("GET"))
+            builder.get();
+        else
+            builder.method(method.toString(), RequestBody.create(bodyString, MediaType.parse("application/json")));
+
+        Request request = builder.build();
+
         String summary;
         StepResult result;
         try (Response response = client.newCall(request).execute()) {

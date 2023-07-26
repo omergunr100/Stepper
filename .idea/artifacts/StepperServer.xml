@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="StepperServer">
-    <output-path>$PROJECT_DIR$/out/artifacts/StepperServer</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/stepper</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="Server/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -10,7 +10,9 @@
           <element id="module-output" name="Engine" />
         </element>
         <element id="directory" name="lib">
-          <element id="file-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8/gson-2.8.8.jar" />
+          <element id="dir-copy" path="$PROJECT_DIR$/../../../Tools/Java/okHttp" />
+          <element id="dir-copy" path="$PROJECT_DIR$/../../../Tools/Java/jayson path" />
+          <element id="dir-copy" path="$PROJECT_DIR$/../../../Tools/Java/gson-2.8.8" />
         </element>
       </element>
     </root>

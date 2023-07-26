@@ -32,6 +32,6 @@
           <NumberAxis label="Amount" side="LEFT" />
         </yAxis>
       </BarChart>
-      <fx:include fx:id="userSelector" source="../../../reusable/selector/Selector.fxml" GridPane.halignment="CENTER" />
+      <fx:include fx:id="userSelector" source="../../reusable/selector/Selector.fxml" GridPane.halignment="CENTER" />
    </children>
 </GridPane>

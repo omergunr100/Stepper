@@ -36,5 +36,25 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Engine" scope="PROVIDED" />
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../Tools/Java/jayson path" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/jayson path" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Tools/Java/okHttp" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

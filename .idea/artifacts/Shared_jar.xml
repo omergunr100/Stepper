@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="Shared:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/shared</output-path>
+    <root id="root">
+      <element id="archive" name="Shared.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/shared/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="Shared" />
+      </element>
+    </root>
+  </artifact>
+</component>
