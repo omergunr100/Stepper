@@ -108,7 +108,7 @@ public class StepRunResult implements IStepRunResult {
     public StepRunResultDTO toDTO() {
         return new StepRunResultDTO(
                 runId,
-                alias,
+                alias == null ? name : alias,
                 stepDefinition.toDTO(),
                 result,
                 startTime,
