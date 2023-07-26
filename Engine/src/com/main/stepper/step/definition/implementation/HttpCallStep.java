@@ -57,7 +57,7 @@ public class HttpCallStep extends AbstractStepDefinition {
         }
         JsonObject body = (JsonObject) context.getInput(inputs.get(4), DDRegistry.JSON.getType());
 
-        String bodyString = (body == null ? "" : body.getAsString());
+        String bodyString = (body == null ? "" : body.toString());
 
         List<IDataIO> outputs = getOutputs();
         IDataIO code = outputs.get(0);
