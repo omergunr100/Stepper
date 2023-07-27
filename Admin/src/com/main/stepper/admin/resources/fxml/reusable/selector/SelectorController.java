@@ -22,6 +22,12 @@ public class SelectorController {
         selectedUser.bind(this.selectedUser);
     }
 
+    public void forceTriggerChange() {
+        String selectedItem = selectedUser.get();
+        selectedUser.set("trigger");
+        selectedUser.set(selectedItem);
+    }
+
     @FXML public void initialize() {
         // initialize selector
         loadOptions(null);

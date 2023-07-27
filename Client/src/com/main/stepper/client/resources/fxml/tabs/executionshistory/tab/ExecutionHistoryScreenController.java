@@ -44,6 +44,8 @@ public class ExecutionHistoryScreenController {
                 rerunFlowButton.setDisable(!checkIfFlowIsRerunnable(PropertiesManager.executionHistorySelectedFlow.get().flowInfo()));
             }
         });
+
+        userSelectorController.forceTriggerChange();
     }
 
     private Boolean checkIfFlowIsRerunnable(FlowInfoDTO flowInfoDTO) {

@@ -17,8 +17,9 @@ public class ExecutionHistoryScreenController {
     }
 
     @FXML public void initialize() {
+        userSelectorController.setProperty(PropertiesManager.executionHistorySelectedUser);
         flowStepsBoxController.setBindings(PropertiesManager.executionHistorySelectedFlow, PropertiesManager.executionHistorySelectedStep, PropertiesManager.historyIsFlowSelected);
         infoTreeController.setBindings(PropertiesManager.executionHistorySelectedFlow, PropertiesManager.executionHistorySelectedStep, PropertiesManager.historyIsFlowSelected);
-        userSelectorController.setProperty(PropertiesManager.executionHistorySelectedUser);
+        userSelectorController.forceTriggerChange();
     }
 }
