@@ -1,5 +1,6 @@
 package com.main.stepper.admin.resources.fxml.tabs.flowmaker.draggablestep;
 
+import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.shared.structures.step.StepDefinitionDTO;
 import com.main.stepper.shared.structures.step.StepUsageDTO;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -72,6 +73,8 @@ public class DraggableStep extends VBox {
         isReadOnlyCheckBox.selectedProperty().bind(isReadOnly);
         isReadOnlyContainer.getChildren().addAll(isReadOnlyLabel, isReadOnlyCheckBox);
         this.getChildren().add(isReadOnlyContainer);
+
+        this.setStyle("-fx-border-color: #000000; -fx-border-width: 2px; -fx-border-style: solid;");
     }
 
     public StepUsageDTO usage() {
@@ -80,5 +83,9 @@ public class DraggableStep extends VBox {
 
     public StepDefinitionDTO step() {
         return step;
+    }
+
+    public void onSelect() {
+        PropertiesManager.selectedStep.set(step);
     }
 }

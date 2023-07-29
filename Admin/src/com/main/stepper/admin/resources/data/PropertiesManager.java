@@ -54,4 +54,5 @@ public class PropertiesManager {
 
     // flow maker screen properties
     public static final ObservableList<StepDefinitionDTO> stepDefinitions = FXCollections.observableArrayList();
+    public static final SimpleObjectProperty<StepDefinitionDTO> selectedStep = new SimpleObjectProperty<>(null);
 }

@@ -1,6 +1,5 @@
 package com.main.stepper.admin.resources.fxml.tabs.flowmaker.componentdragview;
 
-import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.admin.resources.fxml.tabs.flowmaker.draggablestep.DraggableStep;
 import com.main.stepper.shared.structures.step.StepDefinitionDTO;
 import javafx.collections.ListChangeListener;
