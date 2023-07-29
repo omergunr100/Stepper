@@ -12,10 +12,10 @@ import javafx.scene.layout.VBox;
 
 public class DraggableStep extends VBox {
     // data
-    private StepDefinitionDTO step;
-    private SimpleBooleanProperty isSkipIfFailed;
-    private SimpleStringProperty alias;
-    private SimpleBooleanProperty isReadOnly;
+    private final StepDefinitionDTO step;
+    private final SimpleBooleanProperty isSkipIfFailed;
+    private final SimpleStringProperty alias;
+    private final SimpleBooleanProperty isReadOnly;
 
     // ui components
     private HBox aliasContainer; // contains alias textfield
@@ -33,6 +33,8 @@ public class DraggableStep extends VBox {
         this.alias = new SimpleStringProperty(step.name());
         this.isSkipIfFailed = new SimpleBooleanProperty(false);
         this.isReadOnly = new SimpleBooleanProperty(step.isReadOnly());
+
+        initialize();
     }
 
     private void initialize() {
@@ -72,7 +74,11 @@ public class DraggableStep extends VBox {
         this.getChildren().add(isReadOnlyContainer);
     }
 
-    public StepUsageDTO getUsage() {
+    public StepUsageDTO usage() {
         return new StepUsageDTO(alias.get(), step, isSkipIfFailed.get());
+    }
+
+    public StepDefinitionDTO step() {
+        return step;
     }
 }

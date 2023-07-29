@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.admin.resources.fxml.root.RootController">
    <content>
       <GridPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0">
@@ -33,7 +42,7 @@
             </VBox>
             <TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
               <tabs>
-                <Tab fx:id="usersManagementTab" text="Users Management">
+                <Tab fx:id="usersManagementTab" closable="false" text="Users Management">
                      <content>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
@@ -41,7 +50,7 @@
                            </content>
                         </ScrollPane>
                      </content></Tab>
-                  <Tab fx:id="rolesManagementTab" text="Roles Management">
+                  <Tab fx:id="rolesManagementTab" closable="false" text="Roles Management">
                      <content>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
@@ -58,7 +67,7 @@
                         </ScrollPane>
                      </content>
                   </Tab>
-                  <Tab fx:id="statisticsTab" text="Statistics">
+                  <Tab fx:id="statisticsTab" closable="false" text="Statistics">
                      <content>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
@@ -66,6 +75,15 @@
                            </content>
                         </ScrollPane>
                      </content></Tab>
+                  <Tab fx:id="flowMakerTab" closable="false" text="Flow Maker">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <fx:include fx:id="flowMakerScreen" source="../tabs/flowmaker/tab/FlowMakerScreen.fxml" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
               </tabs>
             </TabPane>
          </children>

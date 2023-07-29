@@ -4,6 +4,7 @@ import com.main.stepper.admin.resources.data.PropertiesManager;
 import com.main.stepper.admin.resources.fxml.header.loadcss.LoadCSSController;
 import com.main.stepper.admin.resources.fxml.header.loadfile.LoadFileController;
 import com.main.stepper.admin.resources.fxml.tabs.executionshistory.tab.ExecutionHistoryScreenController;
+import com.main.stepper.admin.resources.fxml.tabs.flowmaker.tab.FlowMakerScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.roles.tab.RolesManagementScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.statistics.StatisticsScreenController;
 import com.main.stepper.admin.resources.fxml.tabs.users.tab.UsersManagementScreenController;
@@ -24,11 +25,13 @@ public class RootController {
     @FXML private Tab rolesManagementTab;
     @FXML private Tab executionsHistoryTab;
     @FXML private Tab statisticsTab;
+    @FXML private Tab flowMakerTab;
     // tab screen controllers
     @FXML private UsersManagementScreenController usersManagementScreenController;
     @FXML private RolesManagementScreenController rolesManagementScreenController;
     @FXML private ExecutionHistoryScreenController flowExecutionHistoryController;
     @FXML private StatisticsScreenController statisticsScreenController;
+    @FXML private FlowMakerScreenController flowMakerScreenController;
 
     public RootController() {
     }
