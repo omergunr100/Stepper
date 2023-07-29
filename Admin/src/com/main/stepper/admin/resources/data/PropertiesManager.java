@@ -1,5 +1,6 @@
 package com.main.stepper.admin.resources.data;
 
+import com.main.stepper.admin.resources.fxml.tabs.flowmaker.componentdragview.datalink.DataLink;
 import com.main.stepper.admin.resources.fxml.tabs.flowmaker.draggablestep.DraggableStep;
 import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
@@ -14,6 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 
@@ -59,4 +61,6 @@ public class PropertiesManager {
     public static final SimpleObjectProperty<StepDefinitionDTO> selectedStep = new SimpleObjectProperty<>(null);
     public static final SimpleObjectProperty<DraggableStep> selectedDraggableStepForMoving = new SimpleObjectProperty<>(null);
     public static final SimpleObjectProperty<DraggableStep> selectedDraggableStepForProperties = new SimpleObjectProperty<>(null);
+    public static final ObservableMap<DraggableStep, ObservableMap<DataIODTO, DataLink>> stepToDataLinkMap = FXCollections.observableHashMap();
+    public static final ObservableMap<DataIODTO, String> initialValues = FXCollections.observableHashMap();
 }

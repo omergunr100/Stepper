@@ -166,4 +166,16 @@ public class DraggableStep extends VBox {
     public String getAlias() {
         return alias.get();
     }
+
+    public SimpleStringProperty aliasProperty() {
+        return alias;
+    }
+
+    public SimpleBooleanProperty isSkipIfFailedProperty() {
+        return isSkipIfFailed;
+    }
+
+    public SimpleBooleanProperty isReadOnlyProperty() {
+        return isReadOnly;
+    }
 }

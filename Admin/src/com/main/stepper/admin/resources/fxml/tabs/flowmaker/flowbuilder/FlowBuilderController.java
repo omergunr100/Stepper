@@ -7,13 +7,12 @@ import com.main.stepper.shared.structures.flowbuilder.BuiltFlowDTO;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.main.stepper.admin.resources.data.PropertiesManager.*;
 
@@ -23,8 +22,6 @@ public class FlowBuilderController {
     private SimpleDoubleProperty maxWidthOfElements = new SimpleDoubleProperty(0);
     private SimpleDoubleProperty maxHeightOfElements = new SimpleDoubleProperty(0);
 
-    private Map<DraggableStep, Map<DataIODTO, DataLink>> stepToDataLinkMap;
-
     public FlowBuilderController() {
     }
 
@@ -32,7 +29,6 @@ public class FlowBuilderController {
         root.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) onMousePress(event.getX(), event.getY());
         });
-        stepToDataLinkMap = new HashMap<>();
     }
 
     public BuiltFlowDTO build() {
@@ -68,7 +64,7 @@ public class FlowBuilderController {
                 }
             });
 
-            Map<DataIODTO, DataLink> dataLinkMap = new HashMap<>();
+            ObservableMap<DataIODTO, DataLink> dataLinkMap = FXCollections.observableHashMap();
             for (DataIODTO dto : step.step().inputs()) {
                 dataLinkMap.put(dto, new DataLink(dto));
             }

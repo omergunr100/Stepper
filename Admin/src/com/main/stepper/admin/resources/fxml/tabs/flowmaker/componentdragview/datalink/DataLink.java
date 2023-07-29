@@ -15,6 +15,7 @@ public class DataLink {
     public final SimpleObjectProperty<DDRegistry> typeProperty = new SimpleObjectProperty<>();
     public final SimpleBooleanProperty hasInitialValueProperty = new SimpleBooleanProperty();
     public final SimpleStringProperty initialValueProperty = new SimpleStringProperty();
+    public final SimpleStringProperty prevInitialValueProperty = new SimpleStringProperty();
     // for tracking if the data link has been changed since last checked for connections
     public final SimpleBooleanProperty changedProperty = new SimpleBooleanProperty();
 
@@ -26,6 +27,7 @@ public class DataLink {
         this.typeProperty.set(dataIO.type());
         this.hasInitialValueProperty.set(false);
         this.initialValueProperty.set("");
+        this.prevInitialValueProperty.set("");
         this.changedProperty.set(false);
     }
 
