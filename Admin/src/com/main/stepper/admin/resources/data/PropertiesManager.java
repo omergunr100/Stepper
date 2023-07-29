@@ -1,5 +1,7 @@
 package com.main.stepper.admin.resources.data;
 
+import com.main.stepper.admin.resources.fxml.tabs.flowmaker.draggablestep.DraggableStep;
+import com.main.stepper.shared.structures.dataio.DataIODTO;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
@@ -55,4 +57,6 @@ public class PropertiesManager {
     // flow maker screen properties
     public static final ObservableList<StepDefinitionDTO> stepDefinitions = FXCollections.observableArrayList();
     public static final SimpleObjectProperty<StepDefinitionDTO> selectedStep = new SimpleObjectProperty<>(null);
+    public static final SimpleObjectProperty<DraggableStep> selectedDraggableStepForMoving = new SimpleObjectProperty<>(null);
+    public static final SimpleObjectProperty<DraggableStep> selectedDraggableStepForProperties = new SimpleObjectProperty<>(null);
 }

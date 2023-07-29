@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.main.stepper.admin.resources.fxml.tabs.flowmaker.tab.FlowMakerScreenController">
+<GridPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.stepper.admin.resources.fxml.tabs.flowmaker.tab.FlowMakerScreenController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" />
+    <ColumnConstraints hgrow="ALWAYS" maxWidth="400.0" />
     <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints fx:id="propertiesCol" hgrow="SOMETIMES" maxWidth="0.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints vgrow="SOMETIMES" />
+    <RowConstraints vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <fx:include fx:id="componentsView" source="../componentdragview/ComponentDrag.fxml" GridPane.rowSpan="2147483647" />
+      <fx:include fx:id="componentsView" source="../componentdragview/ComponentDrag.fxml" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
+      <fx:include fx:id="flowBuilder" source="../flowbuilder/FlowBuilder.fxml" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <VBox spacing="10.0" GridPane.columnSpan="2147483647">
+         <children>
+            <HBox spacing="10.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Step:" />
+                  <Text fx:id="selectedStepText" strokeType="OUTSIDE" strokeWidth="0.0" />
+               </children>
+            </HBox>
+            <HBox spacing="10.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scene Size: (width, height)" />
+                  <TextField fx:id="widthTextField" alignment="CENTER_RIGHT" text="400" />
+                  <TextField fx:id="heightTextField" text="400" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+      <fx:include fx:id="stepProperties" source="../stepproperties/StepProperties.fxml" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" />
    </children>
 </GridPane>
