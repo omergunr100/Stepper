@@ -8,6 +8,7 @@ import com.main.stepper.admin.resources.data.URLManager;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepDefinitionDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import javafx.application.Platform;
@@ -34,6 +35,8 @@ public class UpdatePropertiesThread extends Thread{
         updateRolesList();
         // update flowInformationList
         updateFlowInformation();
+        // update stepDefinitions
+        updateStepDefinitions();
     }
 
     @Override
@@ -313,6 +316,52 @@ public class UpdatePropertiesThread extends Thread{
                                             .collect(Collectors.toList());
                                     flowInformationList.addAll(newInfoList);
                                     flowInformationList.removeAll(deletedInfoList);
+                                }
+                            }
+                        });
+                    }
+                    else
+                        response.close();
+                }
+            });
+        }
+    }
+
+    private static void updateStepDefinitions() {
+        Request request = new Request.Builder()
+                .addHeader("isAdmin", "true")
+                .url(URLManager.STEP_DEFINITIONS)
+                .get()
+                .build();
+        synchronized (HTTP_CLIENT) {
+            Call call = HTTP_CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    // ignore failure, updates regularly
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() == 200) {
+                        Gson gson = new Gson();
+                        String responseBody = response.body().string();
+                        final List<StepDefinitionDTO> definitions = gson.fromJson(responseBody, new TypeToken<ArrayList<StepDefinitionDTO>>(){}.getType());
+                        Platform.runLater(() -> {
+                            synchronized (stepDefinitions) {
+                                // if list was empty, add all
+                                if (stepDefinitions.isEmpty())
+                                    stepDefinitions.addAll(definitions);
+                                else {
+                                    // else add new information
+                                    List<StepDefinitionDTO> newDefsList = definitions.stream()
+                                            .filter(definition -> !stepDefinitions.contains(definition))
+                                            .collect(Collectors.toList());
+                                    List<StepDefinitionDTO> deletedInfoList = stepDefinitions.stream()
+                                            .filter(definition -> !definitions.contains(definition))
+                                            .collect(Collectors.toList());
+                                    stepDefinitions.addAll(newDefsList);
+                                    stepDefinitions.removeAll(deletedInfoList);
                                 }
                             }
                         });

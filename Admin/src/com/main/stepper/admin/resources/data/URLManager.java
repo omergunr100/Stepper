@@ -30,4 +30,5 @@ public class URLManager {
 
     // Roles assignment
     public static final String ROLES_ASSIGNMENT = SERVER_ADDRESS + "/roles/assign";
+    public static final String STEP_DEFINITIONS = SERVER_ADDRESS + "/step/definitions";
 }

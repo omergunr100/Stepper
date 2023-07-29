@@ -3,6 +3,7 @@ package com.main.stepper.admin.resources.data;
 import com.main.stepper.shared.structures.flow.FlowInfoDTO;
 import com.main.stepper.shared.structures.flow.FlowRunResultDTO;
 import com.main.stepper.shared.structures.roles.Role;
+import com.main.stepper.shared.structures.step.StepDefinitionDTO;
 import com.main.stepper.shared.structures.step.StepRunResultDTO;
 import com.main.stepper.shared.structures.users.UserData;
 import com.main.stepper.statistics.dto.StatDTO;
@@ -50,4 +51,7 @@ public class PropertiesManager {
     public static final SimpleStringProperty statisticsSelectedUser = new SimpleStringProperty("");
     public static final ObservableList<StatDTO> filteredFlowStatDTOs = FXCollections.observableArrayList();
     public static final ObservableList<StatDTO> filteredStepStatDTOs = FXCollections.observableArrayList();
+
+    // flow maker screen properties
+    public static final ObservableList<StepDefinitionDTO> stepDefinitions = FXCollections.observableArrayList();
 }
