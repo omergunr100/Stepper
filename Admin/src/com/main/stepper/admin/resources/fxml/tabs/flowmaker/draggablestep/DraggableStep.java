@@ -18,6 +18,9 @@ public class DraggableStep extends VBox {
     private final SimpleStringProperty alias;
     private final SimpleBooleanProperty isReadOnly;
 
+    // ui property
+    private final SimpleBooleanProperty isInFlow;
+
     // ui components
     private HBox aliasContainer; // contains alias textfield
     private HBox skipIfFailedContainer; // contains skip if failed checkbox
@@ -29,11 +32,13 @@ public class DraggableStep extends VBox {
         // setup root
         super();
         this.setSpacing(10);
+        this.setOnMouseClicked(event -> onSelect());
 
         this.step = step;
         this.alias = new SimpleStringProperty(step.name());
         this.isSkipIfFailed = new SimpleBooleanProperty(false);
         this.isReadOnly = new SimpleBooleanProperty(step.isReadOnly());
+        this.isInFlow = new SimpleBooleanProperty(false);
 
         initialize();
     }
@@ -44,6 +49,7 @@ public class DraggableStep extends VBox {
         aliasContainer.setSpacing(10);
         Label aliasLabel = new Label("Alias:");
         TextField aliasTextField = new TextField();
+        aliasTextField.editableProperty().bind(isInFlow);
         aliasTextField.textProperty().bindBidirectional(alias);
         aliasContainer.getChildren().addAll(aliasLabel, aliasTextField);
         this.getChildren().add(aliasContainer);
@@ -53,6 +59,12 @@ public class DraggableStep extends VBox {
         skipIfFailedContainer.setSpacing(10);
         Label skipIfFailedLabel = new Label("Skip if failed:");
         CheckBox skipIfFailedCheckBox = new CheckBox();
+        skipIfFailedCheckBox.setDisable(true);
+        skipIfFailedCheckBox.setStyle("-fx-opacity: 1");
+        isInFlow.addListener((observable, oldValue, newValue) -> {
+            skipIfFailedCheckBox.setDisable(!newValue);
+            skipIfFailedCheckBox.setStyle("-fx-opacity: 1");
+        });
         skipIfFailedCheckBox.selectedProperty().bindBidirectional(isSkipIfFailed);
         skipIfFailedContainer.getChildren().addAll(skipIfFailedLabel, skipIfFailedCheckBox);
         this.getChildren().add(skipIfFailedContainer);
@@ -71,6 +83,8 @@ public class DraggableStep extends VBox {
         Label isReadOnlyLabel = new Label("Is read only:");
         CheckBox isReadOnlyCheckBox = new CheckBox();
         isReadOnlyCheckBox.selectedProperty().bind(isReadOnly);
+        isReadOnlyCheckBox.setDisable(true);
+        isReadOnlyCheckBox.setStyle("-fx-opacity: 1");
         isReadOnlyContainer.getChildren().addAll(isReadOnlyLabel, isReadOnlyCheckBox);
         this.getChildren().add(isReadOnlyContainer);
 
@@ -87,5 +101,10 @@ public class DraggableStep extends VBox {
 
     public void onSelect() {
         PropertiesManager.selectedStep.set(step);
+        System.out.println("Selected step: " + step.name());
+    }
+
+    public void setIsInFlow(boolean isInFlow) {
+        this.isInFlow.set(isInFlow);
     }
 }
